@@ -1,0 +1,64 @@
+TODAS ESTAS MIGRACIONES SON PARA SER EJECUTADAS EN LA TERMINAL DEL PROYECTO
+    perfecto para crear la base de datos en produccion.
+
+    
+
+PRIMER PASO
+
+
+php artisan make:migration create_roles_administradores_table --create=roles_administradores
+php artisan make:migration create_departamentos_table --create=departamentos
+php artisan make:migration create_ciudades_table --create=ciudades
+php artisan make:migration create_claseproducto_table --create=claseproducto
+php artisan make:migration create_sexoproducto_table --create=sexoproducto
+php artisan make:migration create_colorproducto_table --create=colorproducto
+php artisan make:migration create_estadoproducto_table --create=estadoproducto
+php artisan make:migration create_tipooferta_table --create=tipooferta
+php artisan make:migration create_estadooferta_table --create=estadooferta
+
+SEGUNDO PASO
+
+php artisan make:migration create_administradores_table --create=administradores
+php artisan make:migration create_clientes_table --create=clientes
+
+TERCER PASO
+php artisan make:migration create_productos_table --create=productos
+php artisan make:migration create_imagenes_producto_table --create=imagenes_producto
+php artisan make:migration create_categorias_productos_table --create=categorias_productos
+php artisan make:migration create_categoria_producto_table --create=categoria_producto
+
+CUARTO PASO
+
+php artisan make:migration create_pedidos_table --create=pedidos
+php artisan make:migration create_ventas_table --create=ventas
+php artisan make:migration create_devoluciones_table --create=devoluciones
+php artisan make:migration create_historial_estados_venta_table --create=historial_estados_venta
+
+QUINTO PASO
+php artisan make:migration create_carrito_table --create=carrito
+php artisan make:migration create_favoritos_clientes_table --create=favoritos_clientes
+php artisan make:migration create_reseñas_productos_table --create=reseñas_productos
+php artisan make:migration create_mensajes_soporte_table --create=mensajes_soporte
+php artisan make:migration create_notificaciones_clientes_table --create=notificaciones_clientes
+php artisan make:migration create_notificaciones_admins_table --create=notificaciones_admins
+
+SEXTO PASO
+
+php artisan make:migration create_cupones_descuento_table --create=cupones_descuento
+php artisan make:migration create_cupones_usados_table --create=cupones_usados
+php artisan make:migration create_ofertas_por_categoria_table --create=ofertas_por_categoria
+
+SEPTIMO PASO
+
+php artisan make:migration create_inventario_productos_table --create=inventario_productos
+php artisan make:migration create_historial_precios_table --create=historial_precios
+
+OCTAVO PASO
+
+php artisan make:migration create_sessions_table --create=sessions
+php artisan make:migration create_password_reset_tokens_table --create=password_resets
+php artisan make:migration create_cache_table --create=cache
+php artisan make:migration create_jobs_table --create=jobs
+php artisan make:migration create_failed_jobs_table --create=failed_jobs
+php artisan make:migration create_migrations_table --create=migrations
+
