@@ -9,18 +9,19 @@ class AdminSession extends Model
 {
     use HasFactory;
 
-    protected $table = 'sessions';
-    protected $primaryKey = 'id';
-    public $incrementing = false;
-    protected $keyType = 'string';
+    protected $table = 'sesiones_administradores';
+    protected $primaryKey = 'id_sesion';
     public $timestamps = false;
 
     protected $fillable = [
-        'id',
-        'user_id',
-        'ip_address',
+        'id_administrador',
+        'ip_cliente',
         'user_agent',
-        'payload',
-        'last_activity'
+        'ultima_actividad'
     ];
+
+    public function administrator()
+    {
+        return $this->belongsTo(\App\Models\admin\Administrator::class, 'id_administrador', 'id_administrador');
+    }
 }

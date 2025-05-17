@@ -39,4 +39,16 @@ class ReturnProduct extends Model
     {
         return $this->belongsTo(\App\Models\admin\Administrator::class, 'id_administrador', 'id_administrador');
     }
+
+    public function product()
+    {
+        return $this->hasOneThrough(
+            \App\Models\admin\Product::class,
+            \App\Models\admin\Sale::class,
+            'id_venta',     // Foreign key en Sale
+            'idProducto',   // Foreign key en Product
+            'id_venta',     // Local key en ReturnProduct
+            'idProducto'    // Local key en Sale
+        );
+    }
 }

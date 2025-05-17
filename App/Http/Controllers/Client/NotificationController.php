@@ -2,65 +2,55 @@
 
 namespace App\Http\Controllers\client;
 
-use App\Http\Controllers\Controller;
 use App\Models\client\Notification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
-class NotificationController extends Controller
+class NotificationController extends \App\Http\Controllers\Controller
 {
     /**
-     * Display a listing of the resource.
+     * Mostrar todas las notificaciones del cliente autenticado
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        // Obtenemos el cliente desde sesión
+        $clienteId = $request->session()->get('cliente_id');
+
+        if (!$clienteId) {
+            return redirect()->route('client.login')->with('error', 'Debe iniciar sesión');
+        }
+
+        // Cargamos todas las notificaciones del cliente
+        $notifications = Notification::where('n_identificacion_cliente', $clienteId)
+            ->orderByDesc('fecha_envio')
+            ->with(['administrator'])
+            ->get();
+
+        return view('client.notificaciones.index', compact('notifications'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Marcar una notificación como leída
      */
-    public function create()
+    public function update(Request $request, int $id_notificacion)
     {
-        //
+        $notification = Notification::findOrFail($id_notificacion);
+
+        $notification->leido = 1;
+        $notification->fecha_lectura = now();
+        $notification->save();
+
+        return back()->with('success', 'Notificación marcada como leída');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Eliminar una notificación (opcional)
      */
-    public function store(Request $request)
+    public function destroy(int $id_notificacion)
     {
-        //
-    }
+        $notification = Notification::findOrFail($id_notificacion);
+        $notification->delete();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Notification $notification)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Notification $notification)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Notification $notification)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Notification $notification)
-    {
-        //
+        return back()->with('success', 'Notificación eliminada correctamente');
     }
 }

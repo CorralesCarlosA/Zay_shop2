@@ -5,27 +5,28 @@ namespace App\Models\admin;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CartItem extends Model
+class SaleDetail extends Model
 {
     use HasFactory;
 
-    protected $table = 'carrito';
-    protected $primaryKey = 'id_carrito';
+    protected $table = 'detalles_venta';
+    protected $primaryKey = 'id_detalle_venta';
     public $timestamps = false;
 
     protected $fillable = [
-        'n_identificacion_cliente',
+        'id_venta',
         'idProducto',
         'id_talla',
         'id_color',
-        'cantidad',
-        'fecha_agregado'
+        'cantidad_vendida',
+        'precio_unitario',
+        'subtotal'
     ];
 
     // Relaciones
-    public function client()
+    public function sale()
     {
-        return $this->belongsTo(\App\Models\client\Client::class, 'n_identificacion_cliente', 'n_identificacion');
+        return $this->belongsTo(\App\Models\admin\Sale::class, 'id_venta', 'id_venta');
     }
 
     public function product()

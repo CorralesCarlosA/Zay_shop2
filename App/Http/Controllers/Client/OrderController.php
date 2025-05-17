@@ -2,65 +2,57 @@
 
 namespace App\Http\Controllers\client;
 
-use App\Http\Controllers\Controller;
 use App\Models\client\Order;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
+use App\Models\admin\Product;
+use App\Models\admin\City;
 
-class OrderController extends Controller
+class OrderController extends \App\Http\Controllers\Controller
 {
     /**
-     * Display a listing of the resource.
+     * Mostrar historial de pedidos del cliente autenticado
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        // Obtenemos el cliente desde sesión
+        $clienteId = $request->session()->get('cliente_id');
+
+        if (!$clienteId) {
+            return redirect()->route('client.login')->with('error', 'Debe iniciar sesión');
+        }
+
+        // Cargamos todos los pedidos del cliente con relaciones
+        $orders = Order::where('n_identificacion_cliente', $clienteId)->with(['city'])->get();
+
+        return view('client.pedidos.index', compact('orders'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Mostrar detalles de un pedido específico
      */
-    public function create()
+    public function show(int $id_pedido)
     {
-        //
+        $pedido = Order::with(['items.product'])->findOrFail($id_pedido);
+        return view('client.pedidos.show', compact('pedido'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Cancelar pedido (si está pendiente)
      */
-    public function store(Request $request)
+    public function update(Request $request, int $id_pedido)
     {
-        //
-    }
+        $pedido = Order::findOrFail($id_pedido);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Order $order)
-    {
-        //
-    }
+        // Validación simple: solo se puede cancelar si es Pendiente
+        if ($pedido->estado_pedido !== 'Pendiente') {
+            return back()->with('error', 'Solo puedes cancelar pedidos Pendientes');
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Order $order)
-    {
-        //
-    }
+        $pedido->estado_pedido = 'Cancelado';
+        $pedido->save();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Order $order)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Order $order)
-    {
-        //
+        return back()->with('success', 'Pedido cancelado correctamente');
     }
 }

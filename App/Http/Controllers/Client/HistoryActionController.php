@@ -2,65 +2,62 @@
 
 namespace App\Http\Controllers\client;
 
-use App\Http\Controllers\Controller;
 use App\Models\client\HistoryAction;
 use Illuminate\Http\Request;
 
-class HistoryActionController extends Controller
+class HistoryActionController extends \App\Http\Controllers\Controller
 {
     /**
-     * Display a listing of the resource.
+     * Mostrar historial de acciones del cliente autenticado
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        // Obtenemos el cliente desde sesión
+        $clienteId = $request->session()->get('cliente_id');
+
+        if (!$clienteId) {
+            return redirect()->route('client.login')->with('error', 'Debe iniciar sesión');
+        }
+
+        // Cargamos todas las acciones del cliente
+        $acciones = HistoryAction::where('n_identificacion_cliente', $clienteId)
+            ->orderByDesc('fecha_accion')
+            ->get();
+
+        return view('client.historial.index', compact('acciones'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Mostrar detalles de una acción específica
      */
-    public function create()
+    public function show(int $id_registro)
     {
-        //
+        $accion = HistoryAction::findOrFail($id_registro);
+
+        // Validar que sea del cliente autenticado
+        $clienteId = request()->session()->get('cliente_id');
+        if ($accion->n_identificacion_cliente !== $clienteId) {
+            abort(403, 'Acceso denegado');
+        }
+
+        return view('client.historial.show', compact('accion'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Eliminar un registro de acción (opcional)
      */
-    public function store(Request $request)
+    public function destroy(int $id_registro)
     {
-        //
-    }
+        $accion = HistoryAction::findOrFail($id_registro);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(HistoryAction $historyAction)
-    {
-        //
-    }
+        // Solo el cliente puede eliminar su propio historial
+        $clienteId = request()->session()->get('cliente_id');
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(HistoryAction $historyAction)
-    {
-        //
-    }
+        if ($accion->n_identificacion_cliente !== $clienteId) {
+            abort(403, 'No puedes eliminar este registro');
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, HistoryAction $historyAction)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(HistoryAction $historyAction)
-    {
-        //
+        $accion->delete();
+        return back()->with('success', 'Acción eliminada del historial');
     }
 }

@@ -15,6 +15,11 @@ class CartItemController extends \App\Http\Controllers\Controller
         $items = CartItem::with(['product', 'client'])->get();
         return view('admin.carrito.index', compact('items'));
     }
+    public function index()
+    {
+        $cartItems = CartItem::with(['product', 'size', 'color'])->get();
+        return view('admin.carrito.index', compact('cartItems'));
+    }
 
     public function show(int $id_carrito)
     {

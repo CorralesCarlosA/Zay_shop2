@@ -46,7 +46,7 @@ class Client extends Model
 
     public function cartItems()
     {
-        return $this->hasMany(\App\Models\client\CartItem::class, 'n_identificacion_cliente', 'n_identificacion');
+        return $this->hasMany(\App\Models\client\Cartltem::class, 'n_identificacion_cliente', 'n_identificacion');
     }
 
     public function favorites()

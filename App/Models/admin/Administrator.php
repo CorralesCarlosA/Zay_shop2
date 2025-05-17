@@ -5,11 +5,13 @@ namespace App\Models\admin;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use App\Models\admin\AdminRole;
+
+// use Laravel\Sanctum\HasApiTokens;  no se esta usando, se deja comentado por si se llega a necesitar
 
 class Administrator extends Authenticatable
 {
-    use HasFactory, HasApiTokens, Notifiable;
+    use HasFactory, Notifiable;
 
     protected $table = 'administradores';
     protected $primaryKey = 'id_administrador';
@@ -27,11 +29,20 @@ class Administrator extends Authenticatable
         'n_identificacion'
     ];
 
+
+    public function hasPermissionTo(string $permission): bool
+    {
+        return in_array($permission, json_decode($this->role->permisos ?? '[]', true));
+    }
+
+    protected $hidden = ['password'];
+
     // Relaciones
     public function role()
     {
-        return $this->belongsTo(\App\Models\admin\AdminRole::class, 'id_rol_admin', 'id_rol_admin');
+        return $this->belongsTo(AdminRole::class, 'id_rol_admin', 'id_rol_admin');
     }
+
 
     public function products()
     {

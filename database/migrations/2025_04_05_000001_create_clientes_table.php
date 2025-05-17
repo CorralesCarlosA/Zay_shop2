@@ -11,6 +11,9 @@ class CreateClientesTable extends Migration
      */
     public function up(): void
     {
+        Schema::table('clientes', function (Blueprint $table) {
+            $table->datetime('email_verified_at')->nullable()->after('correoE');
+        });
         Schema::create('clientes', function (Blueprint $table) {
             $table->string('n_identificacion', 10)->primary();
             $table->string('nombres', 50);
@@ -19,6 +22,7 @@ class CreateClientesTable extends Migration
                 'Cedula de ciudadania (CC)',
                 'Tarjeta de identidad (TI)',
                 'NIT'
+
             ])->default('Cedula de ciudadania (CC)');
             $table->string('correoE', 150)->unique();
             $table->enum('tipo_cliente', ['Oro', 'Plata', 'Bronce', 'Hierro'])->default('Hierro');
@@ -44,5 +48,9 @@ class CreateClientesTable extends Migration
     public function down(): void
     {
         Schema::dropIfExists('clientes');
+
+        Schema::table('clientes', function (Blueprint $table) {
+            $table->dropColumn('email_verified_at');
+        });
     }
 }

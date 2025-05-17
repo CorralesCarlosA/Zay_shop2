@@ -11,13 +11,14 @@ class ReturnProduct extends Model
 
     protected $table = 'devoluciones';
     protected $primaryKey = 'id_devolucion';
-    public $incrementing = false;
-    protected $keyType = 'int';
     public $timestamps = false;
 
     protected $fillable = [
-        'id_venta',
         'n_identificacion_cliente',
+        'id_venta',
+        'idProducto',
+        'id_talla',
+        'id_color',
         'motivo_devolucion',
         'estado_devolucion',
         'fecha_solicitud',
@@ -27,18 +28,24 @@ class ReturnProduct extends Model
         'id_administrador'
     ];
 
+    // Relaciones
     public function sale()
     {
         return $this->belongsTo(\App\Models\admin\Sale::class, 'id_venta', 'id_venta');
     }
 
-    public function client()
+    public function product()
     {
-        return $this->belongsTo(\App\Models\client\Client::class, 'n_identificacion_cliente', 'n_identificacion');
+        return $this->belongsTo(\App\Models\admin\Product::class, 'idProducto', 'idProducto');
     }
 
-    public function administrator()
+    public function size()
     {
-        return $this->belongsTo(\App\Models\admin\Administrator::class, 'id_administrador', 'id_administrador');
+        return $this->belongsTo(\App\Models\admin\ProductSize::class, 'id_talla', 'id_talla');
+    }
+
+    public function color()
+    {
+        return $this->belongsTo(\App\Models\admin\ProductColor::class, 'id_color', 'idColor');
     }
 }

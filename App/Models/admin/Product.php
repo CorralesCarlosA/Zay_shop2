@@ -44,6 +44,11 @@ class Product extends Model
         return $this->belongsTo(\App\Models\admin\Category::class, 'id_categoria', 'id_categoria');
     }
 
+    public function sizes()
+    {
+        return $this->hasMany(\App\Models\admin\ProductSize::class, 'idProducto', 'idProducto');
+    }
+
     public function productClass()
     {
         return $this->belongsTo(\App\Models\admin\ClassProduct::class, 'idClaseProducto', 'idClaseProducto');
@@ -54,9 +59,18 @@ class Product extends Model
         return $this->belongsTo(\App\Models\admin\GenderProduct::class, 'idSexoProducto', 'idSexoProducto');
     }
 
+
+
+
     public function status()
     {
         return $this->belongsTo(\App\Models\admin\ProductStatus::class, 'idEstadoProducto', 'idEstadoProducto');
+    }
+
+    // app/Models\admin\Product.php
+    public function color()
+    {
+        return $this->belongsTo(\App\Models\admin\ProductColor::class, 'idColor', 'idColor');
     }
 
     public function offerStatus()
@@ -69,10 +83,8 @@ class Product extends Model
         return $this->belongsTo(\App\Models\admin\OfferType::class, 'idTipoOferta', 'idTipoOferta');
     }
 
-    public function color()
-    {
-        return $this->belongsTo(\App\Models\admin\Color::class, 'idColor', 'idColor');
-    }
+
+
 
     public function administrator()
     {

@@ -5,7 +5,7 @@ namespace App\Models\client;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CartItem extends Model
+class Cartltem extends Model
 {
     use HasFactory;
 

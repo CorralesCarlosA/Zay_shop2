@@ -6,9 +6,24 @@ use App\Models\client\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class ClientController extends \App\Http\Controllers\Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            // Supongamos que el cliente tiene un campo id_regla
+            $cliente = session('cliente');
+
+            if (!$cliente || !$cliente->rule->accesible) {
+                abort(403, 'No tienes acceso a esta sección');
+            }
+
+            return $next($request);
+        })->only(['ruta_protegida']);
+    }
     /**
      * Mostrar perfil del cliente autenticado
      */

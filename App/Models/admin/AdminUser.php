@@ -52,6 +52,6 @@ class AdminUser extends Authenticatable
 
     public function returns()
     {
-        return $this->hasMany(\App\Models\admin\Return::class, 'id_administrador', 'id_administrador');
+        return $this->hasMany(\App\Models\admin\ReturnProduct::class, 'id_administrador', 'id_administrador');
     }
 }
