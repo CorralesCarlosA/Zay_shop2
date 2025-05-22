@@ -63,4 +63,9 @@ class Administrator extends Authenticatable
     {
         return $this->hasMany(\App\Models\admin\ReturnProduct::class, 'id_administrador', 'id_administrador');
     }
+
+    public function notifications()
+    {
+        return $this->hasMany(\App\Models\admin\Notification::class, 'id_administrador', 'id_administrador');
+    }
 }

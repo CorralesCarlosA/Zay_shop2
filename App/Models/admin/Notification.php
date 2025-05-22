@@ -11,8 +11,7 @@ class Notification extends Model
 
     protected $table = 'notificaciones_admins';
     protected $primaryKey = 'id_notificacion';
-    public $incrementing = false;
-    protected $keyType = 'int';
+
     public $timestamps = false;
 
     protected $fillable = [
@@ -21,6 +20,13 @@ class Notification extends Model
         'leido',
         'fecha_creacion',
         'hora_creacion',
-        'importante'
+        'importante',
+        'id_administrador'
     ];
+
+    // Relación con administrador
+    public function admin()
+    {
+        return $this->belongsTo(\App\Models\admin\Administrator::class, 'id_administrador', 'id_administrador');
+    }
 }

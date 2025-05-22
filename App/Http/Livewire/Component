@@ -1,0 +1,19 @@
+<?php
+abstract class Component
+{
+    use Macroable,
+        AuthorizesRequests,
+        InteractsWithProperties,
+        HandlesEvents,
+        HandlesRedirects,
+        HandlesStreaming,
+        HandlesAttributes,
+        HandlesValidation,
+        HandlesFormObjects,
+        HandlesJsEvaluation,
+        HandlesPageComponents,
+        HandlesDisablingBackButtonCache;
+}
+<?php
+abstract class Component
+abstract class Livewire\Component

@@ -1,134 +1,119 @@
-@include ('admin.header-admin')
+@extends('admin.layouts.app')
 
-<ul class="nav nav-tabs" id="myTab" role="tablist">
-    <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#listaPedidos" type="button" role="tab" aria-controls="listaPedidos" aria-selected="true">Pedidos</button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="proceso-tab" data-bs-toggle="tab" data-bs-target="#listaProceso" type="button" role="tab" aria-controls="listaProceso" aria-selected="false">Proceso</button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#pedidosFinalizados" type="button" role="tab" aria-controls="pedidosFinalizados" aria-selected="false">Finalizados</button>
-    </li>
-</ul>
-<div class="tab-content" id="myTabContent">
-    <div class="tab-pane fade show active" id="listaPedidos" role="tabpanel" aria-labelledby="home-tab">
-        <div class="card">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover align-middle" style="width: 100%;" id="tblPendientes">
-                        <thead>
-                            <tr>
-                                <th>Id Transacción</th>
-                                <th>Monto</th>
-                                <th>Estado</th>
-                                <th>Fecha</th>
-                                <th>Correo</th>
-                                <th>Nombre</th>
-                                <th>Apellido</th>
-                                <th>Dirección</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
+@section('title', 'Pedidos - Panel Admin')
+@section('breadcrumbs', [
+['name' => 'Inicio', 'url' => route('admin.dashboard')],
+['name' => 'Pedidos']
+])
+
+@section('content')
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Listado de Pedidos</h2>
+        <a href="{{ route('admin.pedidos.create') }}" class="btn btn-success">Nuevo Pedido</a>
+    </div>
+
+    @if(session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
+    <!-- Filtros -->
+    <!-- Filtros -->
+    <form method="GET" action="{{ route('admin.pedidos.index') }}" class="mb-4">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <input type="text" name="cliente" class="form-control" placeholder="Buscar por cliente o identificación"
+                    value="{{ request('cliente') }}">
+            </div>
+            <div class="col-md-4">
+                <select name="estado_pedido" class="form-select">
+                    <option value="">Todos los estados</option>
+                    <option value="En proceso" {{ request('estado_pedido') == 'En proceso' ? 'selected' : '' }}>En
+                        proceso</option>
+                    <option value="Listo para recogida"
+                        {{ request('estado_pedido') == 'Listo para recogida' ? 'selected' : '' }}>Listo para recogida
+                    </option>
+                    <option value="Enviado" {{ request('estado_pedido') == 'Enviado' ? 'selected' : '' }}>Enviado
+                    </option>
+                    <option value="Entregado" {{ request('estado_pedido') == 'Entregado' ? 'selected' : '' }}>Entregado
+                    </option>
+                    <option value="Cancelado" {{ request('estado_pedido') == 'Cancelado' ? 'selected' : '' }}>Cancelado
+                    </option>
+                </select>
+            </div>
+
+            <!-- Aquí insertas el select de método de pago -->
+            <div class="col-md-4">
+                <select name="metodo_pago" class="form-select">
+                    <option value="">Todos los métodos</option>
+                    <option value="Efectivo" {{ request('metodo_pago') == 'Efectivo' ? 'selected' : '' }}>Efectivo
+                    </option>
+                    <option value="Tarjeta" {{ request('metodo_pago') == 'Tarjeta' ? 'selected' : '' }}>Tarjeta</option>
+                    <option value="Transferencia" {{ request('metodo_pago') == 'Transferencia' ? 'selected' : '' }}>
+                        Transferencia</option>
+                    <option value="Contraentrega" {{ request('metodo_pago') == 'Contraentrega' ? 'selected' : '' }}>
+                        Contraentrega</option>
+                    <option value="Mercado Pago" {{ request('metodo_pago') == 'Mercado Pago' ? 'selected' : '' }}>
+                        Mercado Pago</option>
+                    <option value="PayPal" {{ request('metodo_pago') == 'PayPal' ? 'selected' : '' }}>PayPal</option>
+                    <option value="PayU" {{ request('metodo_pago') == 'PayU' ? 'selected' : '' }}>PayU</option>
+                </select>
+            </div>
+
+            <div class="col-md-3 d-grid">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
             </div>
         </div>
-    </div>
-    <div class="tab-pane fade" id="listaProceso" role="tabpanel" aria-labelledby="proceso-tab">
-        <div class="card">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover align-middle" style="width: 100%;" id="tblProceso">
-                        <thead>
-                            <tr>
-                                <th>Id Transacción</th>
-                                <th>Monto</th>
-                                <th>Estado</th>
-                                <th>Fecha</th>
-                                <th>Correo</th>
-                                <th>Nombre</th>
-                                <th>Apellido</th>
-                                <th>Dirección</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="tab-pane fade" id="pedidosFinalizados" role="tabpanel" aria-labelledby="profile-tab">
-        <div class="card">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover align-middle" style="width: 100%;" id="tblFinalizados">
-                        <thead>
-                            <tr>
-                                <th>Id Transacción</th>
-                                <th>Monto</th>
-                                <th>Estado</th>
-                                <th>Fecha</th>
-                                <th>Correo</th>
-                                <th>Nombre</th>
-                                <th>Apellido</th>
-                                <th>Dirección</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
+    </form>
+
+    <!-- Tabla de pedidos -->
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Dirección</th>
+                <th>Ciudad</th>
+                <th>Total</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($pedidos as $pedido)
+            <tr>
+                <td>{{ $pedido->id_pedido }}</td>
+                <td>{{ optional($pedido->client)->nombres ?? 'Desconocido' }}</td>
+                <td>{{ $pedido->fecha_pedido }}</td>
+                <td>
+                    <span class="badge bg-{{ match($pedido->estado_pedido) {
+                            'En proceso' => 'primary',
+                            'Listo para recogida' => 'warning',
+                            'Enviado' => 'info',
+                            'Entregado' => 'success',
+                            default => 'danger'
+                        } }}">
+                        {{ $pedido->estado_pedido }}
+                    </span>
+                </td>
+                <td>{{ $pedido->direccion_envio }}</td>
+                <td>{{ optional($pedido->city)->nombre_ciudad ?? 'Sin ciudad' }}</td>
+                <td>${{ number_format($pedido->total_pedido, 2) }}</td>
+                <td>
+                    <a href="{{ route('admin.pedidos.show', $pedido->id_pedido) }}" class="btn btn-sm btn-info">Ver</a>
+                    <a href="{{ route('admin.pedidos.edit', $pedido->id_pedido) }}"
+                        class="btn btn-sm btn-warning">Editar</a>
+                    <form action="{{ route('admin.pedidos.destroy', $pedido->id_pedido) }}" method="POST"
+                        style="display:inline;" onsubmit="return confirm('¿Eliminar este pedido?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
 </div>
-
-<div id="modalPedidos" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="my-modal-title" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Productos</h5>
-                <button class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="table-responsive">
-                    <table class="table table-borderer table-striped table-hover align-middle" id="tablePedidos" style="width: 100%;">
-                        <thead>
-                            <tr>
-                                <th>Producto</th>
-                                <th>Precio</th>
-                                <th>Cantidad</th>
-                                <th>SubTotal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-@include('admin.footer-admin')
-
-
-<script>
-    const listarPedidosUrl = "{{ route('pedidos.listarPedidos') }}";
-    const listarProcesoUrl = "{{ route('pedidos.listarProceso') }}";
-    const listarFinalizadosUrl = "{{ route('pedidos.listarFinalizados') }}";
-    const actualizarPedidoUrl = "{{ route('pedidos.update', ['idPedido' => '__ID__', 'proceso' => '__PROCESO__']) }}";
-    const verPedidoUrl = "{{ route('clientes.verPedido', ['idPedido' => '__ID__']) }}";
-</script>
-<script src="js/modulos/pedidos.js"></script>
-</body>
-
-</html>
+@endsection

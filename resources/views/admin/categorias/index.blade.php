@@ -1,55 +1,68 @@
-@include ('admin.header-admin')
+@extends('admin.layouts.app')
 
-<button class="btn btn-primary mb-2" type="button" id="nuevo_registro">Nuevo</button>
+@section('title', 'Categorías - Panel Admin')
+@section('breadcrumbs', [
+['name' => 'Inicio', 'url' => route('admin.dashboard')],
+['name' => 'Categorías']
+])
 
-<div class="card">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped table-hover align-middle" style="width: 100%;" id="tblCategorias">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Nombre</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
+@section('content')
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Listado de Categorías</h2>
+        <a href="{{ route('admin.categorias.create') }}" class="btn btn-success">Nueva Categoría</a>
     </div>
-</div>
 
-<div id="nuevoModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="my-modal-title" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-primary">
-                <h5 class="modal-title" id="titleModal"></h5>
-                <button class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                </button>
+    @if(session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
+    <!-- Filtros -->
+    <form method="GET" action="{{ route('admin.categorias.index') }}" class="mb-4">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <input type="text" name="nombre_categoria" class="form-control"
+                    placeholder="Buscar por nombre de categoría" value="{{ request('nombre_categoria') }}">
             </div>
-            <form id="frmRegistro">
-                <div class="modal-body">
-                    <input type="hidden" id="id" name="id">
-                    <input type="hidden" id="imagen_actual" name="imagen_actual">
-                    <div class="input-group input-group-outline my-3">
-                        <label class="form-label" for="categoria">Nombre</label>
-                        <input id="categoria" class="form-control" type="text" name="categoria">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary" type="submit" id="btnAccion">Registrar</button>
-                    <button class="btn btn-danger" type="button" data-bs-dismiss="modal">Cancelar</button>
-                </div>
-            </form>
+            <div class="col-md-3 d-grid">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+            </div>
         </div>
-    </div>
+    </form>
+
+    <!-- Tabla de categorías -->
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Cantidad de Productos</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($categorias as $categoria)
+            <tr>
+                <td>{{ $categoria->id_categoria }}</td>
+                <td>{{ $categoria->nombre_categoria }}</td>
+                <td>{{ $categoria->descripcion ?: '-' }}</td>
+                <td>{{ $categoria->products()->count() }}</td>
+                <td>
+                    <a href="{{ route('admin.categorias.show', $categoria->id_categoria) }}"
+                        class="btn btn-sm btn-info">Ver</a>
+                    <a href="{{ route('admin.categorias.edit', $categoria->id_categoria) }}"
+                        class="btn btn-sm btn-warning">Editar</a>
+                    <form action="{{ route('admin.categorias.destroy', $categoria->id_categoria) }}" method="POST"
+                        style="display:inline;" onsubmit="return confirm('¿Eliminar esta categoría?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
 </div>
-
-@include('admin.footer-admin')
-
-<script src="js/modulos/categorias.js"></script>
-
-</body>
-
-</html>
+@endsection

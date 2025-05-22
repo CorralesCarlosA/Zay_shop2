@@ -1,3 +1,5 @@
+// app/Models/admin/Coupon.php
+
 <?php
 
 namespace App\Models\admin;
@@ -11,17 +13,28 @@ class Coupon extends Model
 
     protected $table = 'cupones_descuento';
     protected $primaryKey = 'id_cupon';
-    public $incrementing = false;
-    protected $keyType = 'int';
-    public $timestamps = false;
 
     protected $fillable = [
-        'nombre_cupon',
         'codigo_cupon',
         'tipo_descuento',
+        'valor_comprado',
         'valor',
         'fecha_expiracion',
         'activo',
-        'cantidad_productos_minimos'
+        'cantidad_prudcutos_minimos',
+        'max_usos_por_cliente'
     ];
+
+    // Relación con clientes que usaron este cupón
+    public function users()
+    {
+        return $this->hasMany(\App\Models\client\Client::class, 'n_identificacion', 'n_identificacion_cliente')
+            ->using(\App\Models\admin\CouponUsed::class);
+    }
+
+    // Relación con tabla cupones_usados
+    public function usedBy()
+    {
+        return $this->hasMany(\App\Models\admin\CouponUsed::class, 'id_cupon', 'id_cupon');
+    }
 }

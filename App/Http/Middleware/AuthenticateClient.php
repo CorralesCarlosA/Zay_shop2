@@ -13,9 +13,9 @@ class AuthenticateClient
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle($request, Closure $next)
     {
-        if (!session()->has('cliente_id')) {
+        if (!$request->session()->has('client')) {
             return redirect()->route('client.login');
         }
 

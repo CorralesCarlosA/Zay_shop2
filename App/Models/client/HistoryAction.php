@@ -15,10 +15,11 @@ class HistoryAction extends Model
 
     protected $fillable = [
         'n_identificacion_cliente',
-        'accion',
+        'accion_realizada',
         'descripcion',
         'fecha_accion',
-        'ip_cliente'
+        'ip_cliente',
+        'hora_accion',
     ];
 
     public function client()

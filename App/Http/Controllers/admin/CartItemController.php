@@ -10,14 +10,11 @@ use App\Models\client\Client;
 
 class CartItemController extends \App\Http\Controllers\Controller
 {
+
+
     public function index()
     {
-        $items = CartItem::with(['product', 'client'])->get();
-        return view('admin.carrito.index', compact('items'));
-    }
-    public function index()
-    {
-        $cartItems = CartItem::with(['product', 'size', 'color'])->get();
+        $cartItems = CartItem::with(['product', 'client', 'size', 'color'])->get();
         return view('admin.carrito.index', compact('cartItems'));
     }
 

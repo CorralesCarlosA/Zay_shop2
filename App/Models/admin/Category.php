@@ -1,3 +1,5 @@
+// app/Models/admin/Category.php
+
 <?php
 
 namespace App\Models\admin;
@@ -11,14 +13,21 @@ class Category extends Model
 
     protected $table = 'categorias_productos';
     protected $primaryKey = 'id_categoria';
-    public $incrementing = false;
-    protected $keyType = 'int';
-    public $timestamps = false;
 
-    protected $fillable = ['nombre_categoria'];
+    protected $fillable = [
+        'nombre_categoria',
+        'descripcion'
+    ];
 
+    // Relación con productos
     public function products()
     {
         return $this->hasMany(\App\Models\admin\Product::class, 'id_categoria', 'id_categoria');
+    }
+
+    // Relación con ofertas por categoría
+    public function offerByCategory()
+    {
+        return $this->hasOne(\App\Models\admin\OfferByCategory::class, 'id_categoria', 'id_categoria');
     }
 }

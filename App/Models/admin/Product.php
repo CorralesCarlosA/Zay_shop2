@@ -11,71 +11,116 @@ class Product extends Model
 
     protected $table = 'productos';
     protected $primaryKey = 'idProducto';
-    public $incrementing = false;
-    protected $keyType = 'int';
-    public $timestamps = false;
 
     protected $fillable = [
         'nombreProducto',
+        'descripcionProducto',
         'precioProducto',
         'tallaProducto',
         'idClaseProducto',
         'idSexoProducto',
-        'descripcionProducto',
-        'codigoIdentificador',
-        'idEstadoOferta',
-        'idTipoOferta',
         'idColor',
         'idEstadoProducto',
+        'codigoIdentificador',
         'id_categoria',
+        'id_administrador',
         'fechaIngreso',
         'calificacion',
         'comentarios',
-        'id_administrador',
         'ultima_modificacion_oferta',
         'id_administrador_oferta',
-        'valor_oferta',
         'fecha_inicio_oferta',
         'fecha_fin_oferta'
     ];
 
+
+    public function colors()
+    {
+        return $this->belongsToMany(\App\Models\admin\Color::class, 'colores_producto', 'idProducto', 'idColor');
+    }
+
+    public function sizes()
+    {
+        return $this->belongsToMany(Size::class, 'tallas_producto', 'idProducto', 'id_talla');
+    }
+
+
+    // Relación con categoría
     public function category()
     {
         return $this->belongsTo(\App\Models\admin\Category::class, 'id_categoria', 'id_categoria');
     }
 
-    public function sizes()
+    // Relación con color
+    public function color()
     {
-        return $this->hasMany(\App\Models\admin\ProductSize::class, 'idProducto', 'idProducto');
+        return $this->belongsTo(\App\Models\admin\Color::class, 'idColor', 'idColor');
     }
 
-    public function productClass()
+    // Relación con talla
+    public function size()
     {
-        return $this->belongsTo(\App\Models\admin\ClassProduct::class, 'idClaseProducto', 'idClaseProducto');
+        return $this->belongsTo(\App\Models\admin\Size::class, 'tallaProducto', 'id_talla');
     }
 
-    public function gender()
-    {
-        return $this->belongsTo(\App\Models\admin\GenderProduct::class, 'idSexoProducto', 'idSexoProducto');
-    }
-
-
-
-
-    public function status()
+    // Relación con estado del producto
+    public function productStatus()
     {
         return $this->belongsTo(\App\Models\admin\ProductStatus::class, 'idEstadoProducto', 'idEstadoProducto');
     }
 
-    // app/Models\admin\Product.php
-    public function color()
+    // Relación con clase del producto
+    public function classProduct()
     {
-        return $this->belongsTo(\App\Models\admin\ProductColor::class, 'idColor', 'idColor');
+        return $this->belongsTo(\App\Models\admin\ClassProduct::class, 'idClaseProducto', 'idClaseProducto');
     }
 
+    // Relación con sexo del producto
+    public function genderProduct()
+    {
+        return $this->belongsTo(\App\Models\admin\GenderProduct::class, 'idSexoProducto', 'idSexoProducto');
+    }
+
+    // Relación con imágenes
+    public function images()
+    {
+        return $this->hasMany(\App\Models\admin\ImageProduct::class, 'id_producto', 'idProducto');
+    }
+
+    // Relación con carrito
+    public function cartItems()
+    {
+        return $this->hasMany(\App\Models\admin\CartItem::class, 'idProducto', 'idProducto');
+    }
     public function offerStatus()
     {
         return $this->belongsTo(\App\Models\admin\OfferStatus::class, 'idEstadoOferta', 'idEstadoOferta');
+    }
+
+    // Relación con favoritos
+    public function favorites()
+    {
+        return $this->hasMany(\App\Models\admin\Favorite::class, 'idProducto', 'idProducto');
+    }
+
+    // Relación con pedidos
+    public function orderDetails()
+    {
+        return $this->hasMany(\App\Models\admin\OrderDetail::class, 'idProducto', 'idProducto');
+    }
+
+    // Relación con reseñas
+    public function reviews()
+    {
+        return $this->hasMany(\App\Models\admin\ProductReview::class, 'idProducto', 'idProducto');
+    }
+
+    // Verificar si puede ser eliminado
+    public function canBeDeleted(): bool
+    {
+        return !($this->orderDetails()->exists() ||
+            $this->cartItems()->exists() ||
+            $this->favorites()->exists());
     }
 
     public function offerType()
@@ -83,26 +128,8 @@ class Product extends Model
         return $this->belongsTo(\App\Models\admin\OfferType::class, 'idTipoOferta', 'idTipoOferta');
     }
 
-
-
-
-    public function administrator()
+    public function offerStatus()
     {
-        return $this->belongsTo(\App\Models\admin\Administrator::class, 'id_administrador', 'id_administrador');
-    }
-
-    public function inventory()
-    {
-        return $this->hasOne(\App\Models\admin\Inventory::class, 'idProducto', 'idProducto');
-    }
-
-    public function images()
-    {
-        return $this->hasMany(\App\Models\admin\ImageProduct::class, 'idProducto', 'idProducto');
-    }
-
-    public function reviews()
-    {
-        return $this->hasMany(\App\Models\admin\ProductReview::class, 'idProducto', 'idProducto');
+        return $this->belongsTo(\App\Models\admin\OfferStatus::class, 'idEstadoOferta', 'idEstadoOferta');
     }
 }

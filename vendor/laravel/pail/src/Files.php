@@ -22,7 +22,7 @@ class Files
      */
     public function all(): Collection
     {
-        $files = glob($this->path.'/*.pail') ?: [];
+        $files = glob(pattern: $this->path.'/*.pail') ?: [];
 
         return collect($files)
             ->map(fn (string $file) => new File($file));

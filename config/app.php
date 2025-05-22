@@ -16,7 +16,9 @@ return [
     'name' => env('APP_NAME', 'Laravel'),
 
     /*
-    |--------------------------------------------------------------------------
+    |
+    
+    --------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |
@@ -27,6 +29,17 @@ return [
     */
 
     'env' => env('APP_ENV', 'production'),
+
+    'providers' => [
+
+        Illuminate\View\ViewServiceProvider::class,
+
+    ],
+
+    'aliases' => [
+        'PDF' => Barryvdh\DomPDF\Facade\Pdf::class
+    ],
+
 
     /*
     |--------------------------------------------------------------------------
@@ -122,5 +135,7 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+
+
 
 ];

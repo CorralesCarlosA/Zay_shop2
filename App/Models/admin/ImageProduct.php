@@ -1,3 +1,5 @@
+// app/Models/admin/ImageProduct.php
+
 <?php
 
 namespace App\Models\admin;
@@ -10,19 +12,17 @@ class ImageProduct extends Model
     use HasFactory;
 
     protected $table = 'imagenes_producto';
-    protected $primaryKey = 'id_imagen_producto';
-    public $incrementing = false;
-    protected $keyType = 'int';
-    public $timestamps = false;
+    protected $primaryKey = 'id_imagen';
 
     protected $fillable = [
-        'idProducto',
+        'id_producto',
         'url_imagen',
-        'is_main'
+        'orden'
     ];
 
+    // Relación con Producto
     public function product()
     {
-        return $this->belongsTo(\App\Models\admin\Product::class, 'idProducto', 'idProducto');
+        return $this->belongsTo(\App\Models\admin\Product::class, 'id_producto', 'idProducto');
     }
 }

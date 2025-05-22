@@ -41,4 +41,9 @@ class Sale extends Model
     {
         return $this->belongsTo(\App\Models\admin\Administrator::class, 'id_administrador', 'id_administrador');
     }
+
+    public function items()
+    {
+        return $this->hasMany(\App\Models\admin\OrderDetail::class, 'id_venta', 'id_venta');
+    }
 }

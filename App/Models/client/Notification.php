@@ -10,15 +10,20 @@ class Notification extends Model
     use HasFactory;
 
     protected $table = 'notificaciones_clientes';
-    protected $primaryKey = 'id_notificacion_cliente';
+    protected $primaryKey = 'id_notificacion'; // ❌ No es `id_notificacion_cliente`
     public $timestamps = false;
 
     protected $fillable = [
         'n_identificacion_cliente',
+        'titulo',
         'mensaje',
+        'tipo_notificacion',
         'leido',
+        'importante',
         'fecha_envio',
         'hora_envio',
+        'fecha_lectura',
+        'hora_lectura',
         'id_administrador'
     ];
 

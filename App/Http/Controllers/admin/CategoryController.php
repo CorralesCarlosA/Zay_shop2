@@ -4,22 +4,27 @@ namespace App\Http\Controllers\admin;
 
 use App\Models\admin\Category;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends \App\Http\Controllers\Controller
 {
     /**
      * Mostrar todas las categorías
      */
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::all();
-        return view('admin.categorias.index', compact('categories'));
+        $query = Category::query();
+
+        if ($request->has('nombre_categoria') && $request->input('nombre_categoria')) {
+            $search = $request->input('nombre_categoria');
+            $query->where('nombre_categoria', 'like', "%$search%");
+        }
+
+        $categorias = $query->get();
+        return view('admin.categorias.index', compact('categorias'));
     }
 
     /**
-     * Mostrar formulario para nueva categoría
+     * Formulario para nueva categoría
      */
     public function create()
     {
@@ -31,39 +36,31 @@ class CategoryController extends \App\Http\Controllers\Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $request->validate([
             'nombre_categoria' => 'required|string|max:50|unique:categorias_productos,nombre_categoria',
             'descripcion' => 'nullable|string'
         ]);
 
-        if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
-        }
-
-        Category::create([
-            'nombre_categoria' => $request->input('nombre_categoria'),
-            'descripcion' => $request->input('descripcion')
-        ]);
-
+        Category::create($validated);
         return redirect()->route('admin.categorias.index')->with('success', 'Categoría creada correctamente');
     }
 
     /**
-     * Mostrar detalles de una categoría
+     * Ver detalles de una categoría
      */
     public function show(int $id_categoria)
     {
-        $category = Category::findOrFail($id_categoria);
-        return view('admin.categorias.show', compact('category'));
+        $categoria = Category::with(['products'])->findOrFail($id_categoria);
+        return view('admin.categorias.show', compact('categoria'));
     }
 
     /**
-     * Mostrar formulario de edición
+     * Formulario de edición
      */
     public function edit(int $id_categoria)
     {
-        $category = Category::findOrFail($id_categoria);
-        return view('admin.categorias.edit', compact('category'));
+        $categoria = Category::findOrFail($id_categoria);
+        return view('admin.categorias.edit', compact('categoria'));
     }
 
     /**
@@ -71,34 +68,37 @@ class CategoryController extends \App\Http\Controllers\Controller
      */
     public function update(Request $request, int $id_categoria)
     {
-        $category = Category::findOrFail($id_categoria);
+        $categoria = Category::findOrFail($id_categoria);
 
-        $validator = Validator::make($request->all(), [
-            'nombre_categoria' => 'required|string|max:50|unique:categorias_productos,nombre_categoria,' . $id_categoria . ',id_categoria',
+        $validated = $request->validate([
+            'nombre_categoria' => "required|string|max:50|unique:categorias_productos,nombre_categoria,$id_categoria,id_categoria",
             'descripcion' => 'nullable|string'
         ]);
 
-        if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
-        }
-
-        $category->fill([
+        $categoria->fill([
             'nombre_categoria' => $request->input('nombre_categoria'),
             'descripcion' => $request->input('descripcion')
         ])->save();
 
-        return redirect()->route('admin.categorias.index')
-            ->with('success', 'Categoría actualizada correctamente');
+        return back()->with('success', 'Categoría actualizada correctamente');
     }
 
     /**
-     * Eliminar categoría
+     * Eliminar categoría (si no tiene productos ni ofertas)
      */
     public function destroy(int $id_categoria)
     {
-        $category = Category::findOrFail($id_categoria);
-        $category->delete();
+        $categoria = Category::findOrFail($id_categoria);
 
+        if ($categoria->products()->exists()) {
+            return back()->withErrors(['error' => 'No puedes eliminar una categoría que tenga productos']);
+        }
+
+        if ($categoria->offerByCategory()->exists()) {
+            return back()->withErrors(['error' => 'Esta categoría tiene ofertas activas']);
+        }
+
+        $categoria->delete();
         return back()->with('success', 'Categoría eliminada correctamente');
     }
 }

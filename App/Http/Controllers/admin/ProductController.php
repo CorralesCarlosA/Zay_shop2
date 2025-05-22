@@ -1,55 +1,56 @@
+// app/Http/Controllers/admin/ProductController.php
+
 <?php
 
 namespace App\Http\Controllers\admin;
 
 use App\Models\admin\Product;
+use App\Models\admin\Category;
+use App\Models\admin\Color;
+use App\Models\admin\Size;
+use App\Models\admin\ProductStatus;
+use App\Models\admin\GenderProduct;
+use App\Models\admin\ClassProduct;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Validator;
-use App\Models\admin\Category;
-use App\Models\admin\ClassProduct;
-use App\Models\admin\Color;
-use App\Models\admin\GenderProduct;
-use App\Models\admin\ProductStatus;
-use App\Models\admin\OfferStatus;
-use App\Models\admin\OfferType;
-use App\Models\admin\Administrator;
 
 class ProductController extends \App\Http\Controllers\Controller
 {
     /**
-     * Mostrar todos los productos con relaciones
+     * Mostrar listado de productos
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with(['category', 'productClass', 'color', 'gender', 'status'])->get();
-        return view('admin.productos.index', compact('products'));
+        $query = Product::with(['category', 'productStatus']);
+
+        if ($request->has('categoria') && $request->input('categoria')) {
+            $query->where('id_categoria', $request->input('categoria'));
+        }
+
+        if ($request->has('estado') && $request->input('estado')) {
+            $query->where('idEstadoProducto', $request->input('estado'));
+        }
+
+        $productos = $query->get();
+        $categorias = Category::all();
+        $estados = ProductStatus::all();
+
+        return view('admin.productos.index', compact('productos', 'categorias', 'estados'));
     }
 
     /**
-     * Mostrar formulario para crear producto
+     * Formulario para crear nuevo producto
      */
     public function create()
     {
-        $categories = Category::all();
-        $classes = ClassProduct::all();
-        $colors = Color::all();
-        $genders = GenderProduct::all();
-        $statuses = ProductStatus::all();
-        $offerStatuses = OfferStatus::all();
-        $offerTypes = OfferType::all();
-        $administrators = Administrator::all();
+        $categorias = Category::all();
+        $colores = Color::all();
+        $tallas = Size::all();
+        $estados = ProductStatus::all();
+        $generos = GenderProduct::all();
+        $clases = ClassProduct::all();
 
-        return view('admin.productos.create', compact(
-            'categories',
-            'classes',
-            'colors',
-            'genders',
-            'statuses',
-            'offerStatuses',
-            'offerTypes',
-            'administrators'
-        ));
+        return view('admin.productes.create', compact('categorias', 'colores', 'tallas', 'estados', 'generos', 'clases'));
     }
 
     /**
@@ -57,116 +58,61 @@ class ProductController extends \App\Http\Controllers\Controller
      */
     public function store(Request $request)
     {
-        // Validación avanzada
-        $validator = Validator::make($request->all(), [
-            'nombreProducto' => 'required|string|max:100',
-            'precioProducto' => 'required|numeric|min:0',
-            'tallaProducto' => 'required|string|max:10',
-            'idClaseProducto' => 'required|exists:claseproducto,idClaseProducto',
-            'idSexoProducto' => 'required|exists:sexoproducto,idSexoProducto',
-            'descripcionProducto' => 'required|string',
-            'codigoIdentificador' => 'required|string|max:100|unique:productos,codigoIdentificador',
-            'idEstadoOferta' => 'nullable|exists:estadooferta,idEstadoOferta',
-            'idTipoOferta' => 'nullable|exists:tipooferta,idTipoOferta',
-            'idColor' => 'required|exists:colorproducto,idColor',
-            'idEstadoProducto' => 'required|exists:estadoproducto,idEstadoProducto',
-            'id_categoria' => 'nullable|exists:categorias_productos,id_categoria',
-            'fechaIngreso' => 'nullable|date',
-            'calificacion' => 'nullable|numeric|min:0|max:5',
-            'comentarios' => 'nullable|string',
-            'id_administrador' => 'nullable|exists:administradores,id_administrador',
-            'valor_oferta' => 'nullable|numeric|min:0',
-            'fecha_inicio_oferta' => 'nullable|date',
-            'fecha_fin_oferta' => 'nullable|date|after_or_equal:fecha_inicio_oferta',
+        $validated = $request->validate([
+            'nombreProducto' => 'required|string|max:100|unique:productos,nombreProducto',
+            'descripcionProducto' => 'nullable|string',
+            'precioProducto' => 'required|numeric|min:0.01',
+            'tallaProducto' => 'nullable|string',
+            'idClaseProducto' => 'required|int|exists:claseproducto,idClaseProducto',
+            'idSexoProducto' => 'required|int|exists:sexoproducto,idSexoProducto',
+            'idColor' => 'required|int|exists:colorproducto,idColor',
+            'idEstadoProducto' => 'required|int|exists:estadoproducto,idEstadoProducto',
+            'id_categoria' => 'nullable|int|exists:categorias_productos,id_categoria',
+            'codigoIdentificador' => 'required|string|unique:productos,codigoIdentificador'
         ]);
 
-        if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
-        }
+        $producto = Product::create([
+            'nombreProducto' => $request->input('nombreProducto'),
+            'descripcionProducto' => $request->input('descripcionProducto'),
+            'precioProducto' => $request->input('precioProducto'),
+            'tallaProducto' => $request->input('tallaProducto'),
+            'idClaseProducto' => $request->input('idClaseProducto'),
+            'idSexoProducto' => $request->input('idSexoProducto'),
+            'idColor' => $request->input('idColor'),
+            'idEstadoProducto' => $request->input('idEstadoProducto'),
+            'codigoIdentificador' => $request->input('codigoIdentificador'),
+            'id_categoria' => $request->input('id_categoria'),
+            'id_administrador' => session('admin.id_administrador'),
+            'fechaIngreso' => now(),
+        ]);
 
-        $product = new Product();
-        $product->nombreProducto = $request->input('nombreProducto');
-        $product->precioProducto = $request->input('precioProducto');
-        $product->tallaProducto = $request->input('tallaProducto');
-        $product->idClaseProducto = $request->input('idClaseProducto');
-        $product->idSexoProducto = $request->input('idSexoProducto');
-        $product->descripcionProducto = $request->input('descripcionProducto');
-        $product->codigoIdentificador = $request->input('codigoIdentificador');
-
-        // Oferta
-        $product->idEstadoOferta = $request->input('idEstadoOferta');
-        $product->idTipoOferta = $request->input('idTipoOferta');
-
-        // Estado del producto
-        $product->idEstadoProducto = $request->input('idEstadoProducto');
-
-        // Categoría
-        $product->id_categoria = $request->input('id_categoria');
-
-        // Fecha de ingreso
-        $product->fechaIngreso = $request->input('fechaIngreso') ?: now();
-
-        // Calificación y comentarios
-        $product->calificacion = $request->input('calificacion');
-        $product->comentarios = $request->input('comentarios');
-
-        // Administrador que lo registró
-        $product->id_administrador = $request->input('id_administrador');
-
-        // Oferta
-        $product->valor_oferta = $request->input('valor_oferta');
-        $product->fecha_inicio_oferta = $request->input('fecha_inicio_oferta');
-        $product->fecha_fin_oferta = $request->input('fecha_fin_oferta');
-
-        $product->save();
-
-        return redirect()->route('admin.productos.show', $product->idProducto)
-            ->with('success', 'Producto creado correctamente');
+        return redirect()->route('admin.productos.edit', $producto->idProducto)->with('success', 'Producto creado correctamente');
     }
 
     /**
-     * Mostrar detalles de un producto
+     * Ver detalles del producto
      */
     public function show(int $idProducto)
     {
-        $product = Product::with([
-            'category',
-            'productClass',
-            'color',
-            'gender',
-            'status',
-            'administrator'
-        ])->findOrFail($idProducto);
-
-        return view('admin.productos.show', compact('product'));
+        $producto = Product::with(['category', 'color', 'size', 'productStatus', 'genderProduct', 'classProduct', 'images'])->findOrFail($idProducto);
+        return view('admin.productos.show', compact('producto'));
     }
 
     /**
-     * Mostrar formulario de edición
+     * Formulario de edición de producto
      */
     public function edit(int $idProducto)
     {
-        $product = Product::findOrFail($idProducto);
-        $categories = Category::all();
-        $classes = ClassProduct::all();
-        $colors = Color::all();
-        $genders = GenderProduct::all();
-        $statuses = ProductStatus::all();
-        $offerStatuses = OfferStatus::all();
-        $offerTypes = OfferType::all();
-        $administrators = Administrator::all();
+        $producto = Product::with(['category', 'color', 'size', 'productStatus', 'genderProduct', 'classProduct'])->findOrFail($idProducto);
 
-        return view('admin.productos.edit', compact(
-            'product',
-            'categories',
-            'classes',
-            'colors',
-            'genders',
-            'statuses',
-            'offerStatuses',
-            'offerTypes',
-            'administrators'
-        ));
+        $categorias = Category::all();
+        $colores = Color::all();
+        $tallas = Size::all();
+        $estados = ProductStatus::all();
+        $generos = GenderProduct::all();
+        $clases = ClassProduct::all();
+
+        return view('admin.productos.edit', compact('producto', 'categorias', 'colores', 'tallas', 'estados', 'generos', 'clases'));
     }
 
     /**
@@ -174,70 +120,49 @@ class ProductController extends \App\Http\Controllers\Controller
      */
     public function update(Request $request, int $idProducto)
     {
-        $product = Product::findOrFail($idProducto);
+        $producto = Product::findOrFail($idProducto);
 
-        $validator = Validator::make($request->all(), [
-            'nombreProducto' => 'required|string|max:100',
-            'precioProducto' => 'required|numeric|min:0',
-            'tallaProducto' => 'required|string|max:10',
-            'idClaseProducto' => 'required|exists:claseproducto,idClaseProducto',
-            'idSexoProducto' => 'required|exists:sexoproducto,idSexoProducto',
-            'descripcionProducto' => 'required|string',
-            'codigoIdentificador' => 'required|string|max:100|unique:productos,codigoIdentificador,' . $idProducto . ',idProducto',
-            'idEstadoOferta' => 'nullable|exists:estadooferta,idEstadoOferta',
-            'idTipoOferta' => 'nullable|exists:tipooferta,idTipoOferta',
-            'idColor' => 'required|exists:colorproducto,idColor',
-            'idEstadoProducto' => 'required|exists:estadoproducto,idEstadoProducto',
-            'id_categoria' => 'nullable|exists:categorias_productos,id_categoria',
-            'fechaIngreso' => 'nullable|date',
-            'calificacion' => 'nullable|numeric|min:0|max:5',
-            'comentarios' => 'nullable|string',
-            'id_administrador' => 'nullable|exists:administradores,id_administrador',
-            'valor_oferta' => 'nullable|numeric|min:0',
-            'fecha_inicio_oferta' => 'nullable|date',
-            'fecha_fin_oferta' => 'nullable|date|after_or_equal:fecha_inicio_oferta',
+        $request->validate([
+            'nombreProducto' => 'required|string|max:100|unique:productos,nombreProducto,' . $idProducto . ',idProducto',
+            'descripcionProducto' => 'nullable|string',
+            'precioProducto' => 'required|numeric|min:0.01',
+            'tallaProducto' => 'nullable|string',
+            'idClaseProducto' => 'required|int|exists:claseproducto,idClaseProducto',
+            'idSexoProducto' => 'required|int|exists:sexoproducto,idSexoProducto',
+            'idColor' => 'required|int|exists:colorproducto,idColor',
+            'idEstadoProducto' => 'required|int|exists:estadoproducto,idEstadoProducto',
+            'codigoIdentificador' => 'required|string|unique:productos,codigoIdentificador,' . $idProducto . ',idProducto',
+            'id_categoria' => 'nullable|int|exists:categorias_productos,id_categoria'
         ]);
 
-        if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
-        }
+        $producto->fill([
+            'nombreProducto' => $request->input('nombreProducto'),
+            'descripcionProducto' => $request->input('descripcionProducto'),
+            'precioProducto' => $request->input('precioProducto'),
+            'tallaProducto' => $request->input('tallaProducto'),
+            'idClaseProducto' => $request->input('idClaseProducto'),
+            'idSexoProducto' => $request->input('idSexoProducto'),
+            'idColor' => $request->input('idColor'),
+            'idEstadoProducto' => $request->input('idEstadoProducto'),
+            'codigoIdentificador' => $request->input('codigoIdentificador'),
+            'id_categoria' => $request->input('id_categoria')
+        ])->save();
 
-        $data = $request->only([
-            'nombreProducto',
-            'precioProducto',
-            'tallaProducto',
-            'idClaseProducto',
-            'idSexoProducto',
-            'descripcionProducto',
-            'codigoIdentificador',
-            'idEstadoOferta',
-            'idTipoOferta',
-            'idColor',
-            'idEstadoProducto',
-            'id_categoria',
-            'fechaIngreso',
-            'calificacion',
-            'comentarios',
-            'id_administrador',
-            'valor_oferta',
-            'fecha_inicio_oferta',
-            'fecha_fin_oferta'
-        ]);
-
-        $product->fill($data)->save();
-
-        return redirect()->route('admin.productos.index')
-            ->with('success', 'Producto actualizado exitosamente');
+        return back()->with('success', 'Producto actualizado correctamente');
     }
 
     /**
-     * Eliminar producto
+     * Eliminar producto (si no tiene dependencias)
      */
     public function destroy(int $idProducto)
     {
-        $product = Product::findOrFail($idProducto);
-        $product->delete();
+        $producto = Product::findOrFail($idProducto);
 
+        if (!$producto->canBeDeleted()) {
+            return back()->withErrors(['error' => 'No puedes eliminar este producto porque está en uso']);
+        }
+
+        $producto->delete();
         return back()->with('success', 'Producto eliminado correctamente');
     }
 }

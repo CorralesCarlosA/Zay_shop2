@@ -50,6 +50,7 @@ class Kernel extends LaravelKernel
         'auth.admin' => \App\Http\Middleware\AuthenticateAdmin::class,
         'auth.client' => \App\Http\Middleware\AuthenticateClient::class,
 
+
         // Middlewares para usuarios ya autenticados (login protegido)
         'admin.guest' => \App\Http\Middleware\RedirectIfAdminIsAuthenticated::class,
         'client.guest' => \App\Http\Middleware\RedirectIfClientIsAuthenticated::class,

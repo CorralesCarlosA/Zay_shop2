@@ -19,6 +19,6 @@ class Color extends Model
 
     public function products()
     {
-        return $this->hasMany(\App\Models\admin\Product::class, 'idColor', 'idColor');
+        return $this->belongsToMany(\App\Models\admin\Product::class, 'colores_producto', 'idColor', 'idProducto');
     }
 }

@@ -81,8 +81,8 @@ class MessageController extends \App\Http\Controllers\Controller
      */
     public function show(int $id_mensaje)
     {
-        $message = Message::with(['client', 'administrator'])->findOrFail($id_mensaje);
-        return view('admin.mensajes.show', compact('message'));
+        $mensaje = Message::with(['client'])->findOrFail($id_mensaje);
+        return view('admin.mensajes.show', compact('mensaje'));
     }
 
     /**

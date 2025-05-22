@@ -448,9 +448,8 @@ class ClassLoader
         if ($this->classMapAuthoritative || isset($this->missingClasses[$class])) {
             return false;
         }
-
         if (null !== $this->apcuPrefix) {
-            $file = apcu_fetch($this->apcuPrefix . $class, $hit);
+            $file = apcu_fetch($this->apcuPrefix.$class, $hit);
             if ($hit) {
                 return $file;
             }
@@ -464,7 +463,7 @@ class ClassLoader
         }
 
         if (null !== $this->apcuPrefix) {
-            apcu_add($this->apcuPrefix . $class, $file);
+            apcu_add($this->apcuPrefix.$class, $file);
         }
 
         if (false === $file) {
@@ -573,7 +572,7 @@ class ClassLoader
          * @param  string $file
          * @return void
          */
-        self::$includeFile = \Closure::bind(static function ($file) {
+        self::$includeFile = \Closure::bind(static function($file) {
             include $file;
         }, null, null);
     }

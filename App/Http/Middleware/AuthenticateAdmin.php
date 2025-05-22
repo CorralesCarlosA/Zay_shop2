@@ -13,9 +13,10 @@ class AuthenticateAdmin
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle($request, $next)
+
+    public function handle($request, Closure $next)
     {
-        if (!session()->has('admin')) {
+        if (!$request->session()->has('admin')) {
             return redirect()->route('admin.login');
         }
 

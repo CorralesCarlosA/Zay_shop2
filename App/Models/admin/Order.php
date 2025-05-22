@@ -11,27 +11,46 @@ class Order extends Model
 
     protected $table = 'pedidos';
     protected $primaryKey = 'id_pedido';
-    public $incrementing = false;
-    protected $keyType = 'int';
-    public $timestamps = false;
 
     protected $fillable = [
         'n_identificacion_cliente',
         'fecha_pedido',
-        'hora_pedido',
         'estado_pedido',
         'direccion_envio',
         'ciudad_envio',
-        'total_pedido'
+        'total_pedido',
+        'metodo_pago',
+        'recoleccion_en_local',
+        'factura_generada'
     ];
 
+    // Relación con cliente
     public function client()
     {
         return $this->belongsTo(\App\Models\client\Client::class, 'n_identificacion_cliente', 'n_identificacion');
     }
 
-    public function shippingCity()
+    // Relación con detalles del pedido
+    public function details()
+    {
+        return $this->hasMany(\App\Models\admin\OrderDetail::class, 'id_pedido', 'id_pedido')
+            ->with(['product.color', 'product.size']);
+    }
+
+    public function paymentMethod()
+    {
+        return $this->belongsTo(\App\Models\admin\PaymentMethod::class, 'metodo_pago', 'metodo_pago');
+    }
+
+    // Relación con ciudad
+    public function city()
     {
         return $this->belongsTo(\App\Models\admin\City::class, 'ciudad_envio', 'id_ciudad');
+    }
+
+    // Verificar si puede ser eliminado
+    public function canBeDeleted(): bool
+    {
+        return !in_array($this->estado_pedido, ['Enviado', 'Entregado']);
     }
 }

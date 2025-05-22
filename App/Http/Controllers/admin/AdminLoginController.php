@@ -4,13 +4,12 @@ namespace App\Http\Controllers\admin;
 
 use App\Models\admin\Administrator;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Routing\Controller as BaseController;
 
-class AdminLoginController extends \App\Http\Controllers\Controller
+class AdminLoginController extends BaseController
 {
     /**
-     * Mostrar formulario de login del administrador
+     * Muestra el formulario de inicio de sesión del admin
      */
     public function showLoginForm()
     {
@@ -18,34 +17,33 @@ class AdminLoginController extends \App\Http\Controllers\Controller
     }
 
     /**
-     * Procesar inicio de sesión del administrador
+     * Procesa el inicio de sesión del admin
      */
     public function login(Request $request)
     {
         // Validación básica
         $request->validate([
             'correo' => 'required|email',
-            'password' => 'required|string'
+            'password' => 'required|string|min:8'
         ]);
 
-        // Buscar al administrador por correo
+        // Buscar al administrador
         $admin = Administrator::where('correoE', $request->input('correo'))->first();
 
-        // Verificar credenciales y estado
-        if (!$admin || !Hash::check($request->input('password'), $admin->password) || $admin->estado_administrador != 1) {
-            return back()->withErrors(['login' => 'Credenciales incorrectas o cuenta inactiva']);
+        // Verificar credenciales
+        if (!$admin || !hash_equals($admin->password, md5($request->input('password')))) {
+            return back()->withErrors(['login' => 'Credenciales incorrectas']);
         }
 
-        // Guardar datos en sesión
-        Session::put('admin', [
+        // Guardar datos del admin en sesión
+        $request->session()->put('admin', [
             'id_administrador' => $admin->id_administrador,
             'nombres' => $admin->nombres,
             'apellidos' => $admin->apellidos,
             'correoE' => $admin->correoE,
             'n_identificacion' => $admin->n_identificacion,
-            'id_rol_admin' => $admin->role->id_rol_admin,
-            'nombre_rol' => $admin->role->nombre_rol,
-            'permisos' => $admin->role->permisos ?? [] // Si los guardas como JSON o relación
+            'role' => $admin->role->nombre_rol,
+            'permisos' => $admin->role->permisos ?? [],
         ]);
 
         // Redirigir al dashboard
@@ -53,11 +51,16 @@ class AdminLoginController extends \App\Http\Controllers\Controller
     }
 
     /**
-     * Cerrar sesión del administrador
+     * Cierra la sesión del administrador
      */
     public function logout(Request $request)
     {
-        Session::forget('admin');
+        $request->session()->forget([
+            'admin',
+            'admin_id',
+            'admin_role',
+            'admin_permisos'
+        ]);
 
         return redirect()->route('admin.login');
     }

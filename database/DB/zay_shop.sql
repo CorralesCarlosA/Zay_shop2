@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-05-2025 a las 09:52:32
+-- Tiempo de generación: 19-05-2025 a las 00:52:00
 -- Versión del servidor: 11.8.0-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -467,6 +467,31 @@ INSERT INTO `estadoproducto` (`idEstadoProducto`, `estado`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `facturas`
+--
+
+CREATE TABLE `facturas` (
+  `id_factura` int(11) NOT NULL,
+  `id_pedido` int(11) DEFAULT NULL,
+  `id_venta` int(11) DEFAULT NULL,
+  `n_identificacion_cliente` varchar(10) NOT NULL,
+  `nombre_cliente` varchar(100) NOT NULL,
+  `apellido_cliente` varchar(100) NOT NULL,
+  `correo_cliente` varchar(150) DEFAULT NULL,
+  `telefono_cliente` varchar(10) DEFAULT NULL,
+  `direccion_cliente` varchar(255) DEFAULT NULL,
+  `metodo_pago` enum('Efectivo','Tarjeta','Transferencia','Contraentrega') NOT NULL,
+  `fecha_factura` datetime NOT NULL DEFAULT current_timestamp(),
+  `total` decimal(10,2) NOT NULL,
+  `estado_factura` enum('Activa','Anulada','Impresa','Digital','Temporal') NOT NULL DEFAULT 'Digital',
+  `id_administrador` int(11) DEFAULT NULL COMMENT 'Quién generó la factura (si aplica)',
+  `notas` text DEFAULT NULL,
+  `pdf_path` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `failed_jobs`
 --
 
@@ -790,16 +815,19 @@ CREATE TABLE `pedidos` (
   `estado_pedido` enum('En proceso','Enviado','Entregado','Cancelado') NOT NULL DEFAULT 'En proceso',
   `direccion_envio` varchar(255) NOT NULL,
   `ciudad_envio` int(11) NOT NULL,
-  `total_pedido` decimal(10,2) NOT NULL
+  `total_pedido` decimal(10,2) NOT NULL,
+  `metodo_pago` enum('Efectivo','Tarjeta','Transferencia','PayPal','Contraentrega') NOT NULL DEFAULT 'Efectivo',
+  `recoleccion_en_local` tinyint(1) NOT NULL DEFAULT 0,
+  `factura_generada` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `pedidos`
 --
 
-INSERT INTO `pedidos` (`id_pedido`, `n_identificacion_cliente`, `fecha_pedido`, `estado_pedido`, `direccion_envio`, `ciudad_envio`, `total_pedido`) VALUES
-(1, '9876543210', '2025-05-14 17:08:14', 'En proceso', 'Cra 10 #20-30', 1, 30.00),
-(2, '9876543210', '2025-05-14 17:27:54', 'En proceso', 'Cra 10 #20-30', 1, 30.00);
+INSERT INTO `pedidos` (`id_pedido`, `n_identificacion_cliente`, `fecha_pedido`, `estado_pedido`, `direccion_envio`, `ciudad_envio`, `total_pedido`, `metodo_pago`, `recoleccion_en_local`, `factura_generada`) VALUES
+(1, '9876543210', '2025-05-14 17:08:14', 'En proceso', 'Cra 10 #20-30', 1, 30.00, 'Efectivo', 0, 0),
+(2, '9876543210', '2025-05-14 17:27:54', 'En proceso', 'Cra 10 #20-30', 1, 30.00, 'Efectivo', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -1043,16 +1071,18 @@ CREATE TABLE `ventas` (
   `total_venta` decimal(10,2) NOT NULL,
   `estado_venta` enum('Pendiente','Completada','Cancelada') NOT NULL DEFAULT 'Pendiente',
   `metodo_pago` enum('Efectivo','Tarjeta','Transferencia','PayPal') NOT NULL,
-  `id_administrador` int(11) NOT NULL
+  `id_administrador` int(11) NOT NULL,
+  `recoleccion_en_local` tinyint(1) NOT NULL DEFAULT 0,
+  `factura_generada` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `ventas`
 --
 
-INSERT INTO `ventas` (`id_venta`, `n_identificacion_cliente`, `fecha_venta`, `total_venta`, `estado_venta`, `metodo_pago`, `id_administrador`) VALUES
-(1, '9876543210', '2025-05-14 17:08:14', 30.00, 'Pendiente', 'Tarjeta', 1),
-(2, '9876543210', '2025-05-14 17:27:54', 30.00, 'Pendiente', 'Tarjeta', 1);
+INSERT INTO `ventas` (`id_venta`, `n_identificacion_cliente`, `fecha_venta`, `total_venta`, `estado_venta`, `metodo_pago`, `id_administrador`, `recoleccion_en_local`, `factura_generada`) VALUES
+(1, '9876543210', '2025-05-14 17:08:14', 30.00, 'Pendiente', 'Tarjeta', 1, 0, 0),
+(2, '9876543210', '2025-05-14 17:27:54', 30.00, 'Pendiente', 'Tarjeta', 1, 0, 0);
 
 --
 -- Índices para tablas volcadas
@@ -1188,6 +1218,15 @@ ALTER TABLE `estadooferta`
 --
 ALTER TABLE `estadoproducto`
   ADD PRIMARY KEY (`idEstadoProducto`);
+
+--
+-- Indices de la tabla `facturas`
+--
+ALTER TABLE `facturas`
+  ADD PRIMARY KEY (`id_factura`),
+  ADD KEY `id_pedido` (`id_pedido`),
+  ADD KEY `id_venta` (`id_venta`),
+  ADD KEY `id_administrador` (`id_administrador`);
 
 --
 -- Indices de la tabla `failed_jobs`
@@ -1474,6 +1513,12 @@ ALTER TABLE `estadooferta`
 --
 ALTER TABLE `estadoproducto`
   MODIFY `idEstadoProducto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+
+--
+-- AUTO_INCREMENT de la tabla `facturas`
+--
+ALTER TABLE `facturas`
+  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `failed_jobs`

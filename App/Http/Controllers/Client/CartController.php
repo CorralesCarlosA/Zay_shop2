@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\client;
 
-use App\Models\client\CartItem;
+use App\Models\client\Cartltem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\admin\Product;
@@ -21,7 +21,7 @@ class CartController extends \App\Http\Controllers\Controller
             return redirect()->route('client.login')->with('error', 'Debes iniciar sesión');
         }
 
-        $items = CartItem::where('n_identificacion_cliente', $clienteId)->with('product')->get();
+        $items = Cartltem::where('n_identificacion_cliente', $clienteId)->with('product')->get();
 
         return view('client.carrito.index', compact('items'));
     }
@@ -47,7 +47,7 @@ class CartController extends \App\Http\Controllers\Controller
         }
 
         // Si ya existe este producto en el carrito, actualiza la cantidad
-        $existing = CartItem::where([
+        $existing = Cartltem::where([
             ['n_identificacion_cliente', '=', $clienteId],
             ['idProducto', '=', $request->input('idProducto')]
         ])->first();
@@ -59,7 +59,7 @@ class CartController extends \App\Http\Controllers\Controller
         }
 
         // Si no existe, lo crea
-        CartItem::create([
+        Cartltem::create([
             'n_identificacion_cliente' => $clienteId,
             'idProducto' => $request->input('idProducto'),
             'cantidad' => $request->input('cantidad', 1),
@@ -74,7 +74,7 @@ class CartController extends \App\Http\Controllers\Controller
      */
     public function destroy(int $id_carrito)
     {
-        $item = CartItem::findOrFail($id_carrito);
+        $item = Cartltem::findOrFail($id_carrito);
         $item->delete();
 
         return back()->with('success', 'Producto eliminado del carrito');
