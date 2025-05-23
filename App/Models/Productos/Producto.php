@@ -4,6 +4,7 @@ namespace App\Models\Productos;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\admin\Administrator;
 
 class Producto extends Model
 {
@@ -32,11 +33,12 @@ class Producto extends Model
         'calificacion',
         'comentarios',
         'id_administrador',
+        'destacado'
     ];
 
     // Relación con el administrador
     public function administrador()
     {
-        return $this->belongsTo(Administrador::class, 'id_administrador', 'id_administrador');
+        return $this->belongsTo(Administrator::class, 'id_administrador', 'id_administrador');
     }
 }

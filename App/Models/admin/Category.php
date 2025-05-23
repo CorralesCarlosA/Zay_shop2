@@ -1,5 +1,3 @@
-// app/Models/admin/Category.php
-
 <?php
 
 namespace App\Models\admin;

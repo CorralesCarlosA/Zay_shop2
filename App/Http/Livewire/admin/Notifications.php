@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire\Admin;
 
-use Livewire\Component;
+// use Livewire\Component;
 use App\Models\admin\Notification;
 use Illuminate\Support\Facades\Session;
 

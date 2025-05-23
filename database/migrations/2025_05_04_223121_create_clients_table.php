@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('clientes', function (Blueprint $table) {
+        Schema::table('clientes', function (Blueprint $table) {
             $table->string('nombres', 50)->comment('Asegúrese que sea el nombre que aparece en su identificación');
             $table->string('apellidos', 50)->comment('Asegúrese que sean los apellidos de su identificación');
             $table->enum('tipo_identificacion', [

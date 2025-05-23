@@ -2,35 +2,69 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\View;
 use App\Models\admin\Product;
 use Illuminate\Http\Request;
 
-class HomeController extends \App\Http\Controllers\Controller
+class HomeController
 {
-    public function index(Request $request)
+    /**
+     * Mostrar página principal con catálogo de productos
+     */
+    public function index()
     {
-        $categorias = \App\Models\admin\Category::all();
-        $colores = \App\Models\admin\Color::all();
-        $tallas = \App\Models\admin\Size::all();
-        $sexos = \App\Models\admin\GenderProduct::all();
-        $clases = \App\Models\admin\ClassProduct::all();
-        $ofertas = \App\Models\admin\OfferStatus::all();
+        // Cargar productos activos
+        $productos = Product::where('estado_producto', 1)
+            ->with(['category', 'brand', 'images'])
+            ->paginate(12);
 
-        // Productos destacados
-        $destacados = Product::where('destacado', 1)->take(4)->get();
+        // Cargar productos destacados
+        $destacados = Product::where('estado_producto', 1)
+            ->where('destacado', true)
+            ->take(4)
+            ->get();
 
-        // Más vendidos
-        $masVendidos = Product::withCount(['orderDetails'])->orderByDesc('ventas_count')->take(4)->get();
+        return view('welcome', compact('productos', 'destacados'));
+    }
 
-        return view('welcome', compact(
-            'categorias',
-            'colores',
-            'tallas',
-            'sexos',
-            'clases',
-            'ofertas',
-            'destacados',
-            'masVendidos'
-        ));
+    /**
+     * Mostrar productos por categoría
+     */
+    public function productosPorCategoria($id_categoria)
+    {
+        $productos = Product::where('estado_producto', 1)
+            ->where('id_categoria', $id_categoria)
+            ->with(['category', 'brand', 'images'])
+            ->paginate(12);
+
+        $destacados = Product::where('estado_producto', 1)
+            ->where('destacado', true)
+            ->take(4)
+            ->get();
+
+        return view('welcome', compact('productos', 'destacados'));
+    }
+
+    /**
+     * Buscar productos por nombre o descripción
+     */
+    public function buscar(Request $request)
+    {
+        $query = $request->input('q');
+
+        $productos = Product::where('estado_producto', 1)
+            ->where(function ($q) use ($query) {
+                $q->where('nombreProducto', 'like', "%$query%")
+                  ->orWhere('descripcionProducto', 'like', "%$query%");
+            })
+            ->with(['category', 'brand', 'images'])
+            ->paginate(12);
+
+        $destacados = Product::where('estado_producto', 1)
+            ->where('destacado', true)
+            ->take(4)
+            ->get();
+
+        return view('welcome', compact('productos', 'destacados'));
     }
 }

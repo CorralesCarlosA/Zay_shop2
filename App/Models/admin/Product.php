@@ -4,6 +4,7 @@ namespace App\Models\admin;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\admin\FavoriteClient as Favorite;
 
 class Product extends Model
 {
@@ -30,7 +31,8 @@ class Product extends Model
         'ultima_modificacion_oferta',
         'id_administrador_oferta',
         'fecha_inicio_oferta',
-        'fecha_fin_oferta'
+        'fecha_fin_oferta',
+        'destacado'
     ];
 
 
@@ -92,15 +94,12 @@ class Product extends Model
     {
         return $this->hasMany(\App\Models\admin\CartItem::class, 'idProducto', 'idProducto');
     }
-    public function offerStatus()
-    {
-        return $this->belongsTo(\App\Models\admin\OfferStatus::class, 'idEstadoOferta', 'idEstadoOferta');
-    }
+  
 
     // Relación con favoritos
     public function favorites()
     {
-        return $this->hasMany(\App\Models\admin\Favorite::class, 'idProducto', 'idProducto');
+        return $this->hasMany(Favorite::class, 'idProducto', 'idProducto');
     }
 
     // Relación con pedidos
