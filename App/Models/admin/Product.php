@@ -5,6 +5,7 @@ namespace App\Models\admin;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\admin\FavoriteClient as Favorite;
+use App\Models\admin\ImageProduct;
 
 class Product extends Model
 {
@@ -32,14 +33,21 @@ class Product extends Model
         'id_administrador_oferta',
         'fecha_inicio_oferta',
         'fecha_fin_oferta',
-        'destacado'
+        'destacado',
+        'id_marca'
     ];
 
 
     public function colors()
     {
-        return $this->belongsToMany(\App\Models\admin\Color::class, 'colores_producto', 'idProducto', 'idColor');
+        return $this->belongsToMany(
+            \App\Models\admin\Size::class,
+            'tallas_producto',
+            'idProducto',
+            'id_talla'
+        );
     }
+
 
     public function sizes()
     {
@@ -86,8 +94,10 @@ class Product extends Model
     // Relación con imágenes
     public function images()
     {
-        return $this->hasMany(\App\Models\admin\ImageProduct::class, 'id_producto', 'idProducto');
+        return $this->hasMany(ImageProduct::class, 'id_producto', 'idProducto');
     }
+    
+    
 
     // Relación con carrito
     public function cartItems()
@@ -114,21 +124,38 @@ class Product extends Model
         return $this->hasMany(\App\Models\admin\ProductReview::class, 'idProducto', 'idProducto');
     }
 
-    // Verificar si puede ser eliminado
-    public function canBeDeleted(): bool
-    {
-        return !($this->orderDetails()->exists() ||
-            $this->cartItems()->exists() ||
-            $this->favorites()->exists());
-    }
+public function mainImage()
+{
+    return $this->hasOne(ImageProduct::class, 'id_producto', 'idProducto')
+    ->oldest('orden'); // o ->orderBy('orden', 'asc')ómo guardes las imágenes
+}
 
     public function offerType()
     {
         return $this->belongsTo(\App\Models\admin\OfferType::class, 'idTipoOferta', 'idTipoOferta');
     }
 
-    public function offerStatus()
+    public function status()
     {
-        return $this->belongsTo(\App\Models\admin\OfferStatus::class, 'idEstadoOferta', 'idEstadoOferta');
+        return $this->belongsTo(\App\Models\admin\ProductStatus::class, 'idEstadoProducto', 'idEstadoProducto');
     }
+    public function brand()
+    {
+        return $this->belongsTo(\App\Models\admin\Brand::class, 'id_marca', 'id_marca');
+    }
+
+    // Método auxiliar para verificar si se puede eliminar
+    public function canBeDeleted(): bool
+    {
+        return $this->orders()->exists() === false &&
+               $this->cartItems()->exists() === false &&
+               $this->reviews()->exists() === false &&
+               $this->favorites()->exists() === false;
+    }
+
+    public function offerStatus()
+{
+    return $this->belongsTo(OfferStatus::class, 'idEstadoOferta', 'idEstadoOferta');
+}
+
 }

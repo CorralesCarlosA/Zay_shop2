@@ -165,6 +165,8 @@ return [
 
     'providers' => ServiceProvider::defaultProviders()->merge([
         // Package Service Providers...
+        Illuminate\Cache\CacheServiceProvider::class,
+    Illuminate\Auth\AuthServiceProvider::class,
     ])->merge([
         // Application Service Providers...
         // App\Providers\AppServiceProvider::class,

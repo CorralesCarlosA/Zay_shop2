@@ -13,13 +13,13 @@ class HomeController
      */
     public function index()
     {
-        // Cargar productos activos
-        $productos = Product::where('estado_producto', 1)
-            ->with(['category', 'brand', 'images'])
+        // Cargar solo productos "Disponibles" (idEstadoProducto = 1)
+        $productos = Product::where('idEstadoProducto', 1)
+            ->with(['category', 'images'])
             ->paginate(12);
 
-        // Cargar productos destacados
-        $destacados = Product::where('estado_producto', 1)
+        // Cargar productos destacados si los usas
+        $destacados = Product::where('idEstadoProducto', 1)
             ->where('destacado', true)
             ->take(4)
             ->get();
@@ -27,17 +27,28 @@ class HomeController
         return view('welcome', compact('productos', 'destacados'));
     }
 
+
+public function productosPorMarca($id_marca)
+{
+    $productos = Product::where([
+        ['idEstadoProducto', 1],
+        ['id_marca', $id_marca]
+    ])->with(['category', 'brand'])->paginate(12);
+
+    return view('welcome', compact('productos'));
+}
+
     /**
      * Mostrar productos por categoría
      */
     public function productosPorCategoria($id_categoria)
     {
-        $productos = Product::where('estado_producto', 1)
+        $productos = Product::where('idEstadoProducto', 1)
             ->where('id_categoria', $id_categoria)
             ->with(['category', 'brand', 'images'])
             ->paginate(12);
 
-        $destacados = Product::where('estado_producto', 1)
+        $destacados = Product::where('idEstadoProducto', 1)
             ->where('destacado', true)
             ->take(4)
             ->get();
@@ -52,7 +63,7 @@ class HomeController
     {
         $query = $request->input('q');
 
-        $productos = Product::where('estado_producto', 1)
+        $productos = Product::where('idEstadoProducto', 1)
             ->where(function ($q) use ($query) {
                 $q->where('nombreProducto', 'like', "%$query%")
                   ->orWhere('descripcionProducto', 'like', "%$query%");
@@ -60,7 +71,7 @@ class HomeController
             ->with(['category', 'brand', 'images'])
             ->paginate(12);
 
-        $destacados = Product::where('estado_producto', 1)
+        $destacados = Product::where('idEstadoProducto', 1)
             ->where('destacado', true)
             ->take(4)
             ->get();

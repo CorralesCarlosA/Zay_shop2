@@ -9,7 +9,9 @@ class AddDestacadoToProductosTable extends Migration
     public function up()
     {
         Schema::table('productos', function (Blueprint $table) {
-            $table->boolean('destacado')->default(false);
+            if (!Schema::hasColumn('productos', 'destacado')) {
+                $table->boolean('destacado')->default(false)->after('codigoIdentificador');
+            }
         });
     }
 

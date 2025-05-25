@@ -1,56 +1,48 @@
-@extends('client.layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Iniciar Sesión - Cliente')
-@section('breadcrumbs', [
-['name' => 'Inicio', 'url' => route('welcome')],
-['name' => 'Iniciar Sesión']
-])
 
 @section('content')
-<div class="container-fluid">
+<div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-white text-center">
                     <h4>Iniciar Sesión</h4>
+                    <p class="text-muted">Bienvenido de nuevo al sistema de clientes</p>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
 
-                    @if(session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
+                    @if(session('error'))
+                    <div class="alert alert-danger">{{ session('error') }}</div>
                     @endif
 
                     <form method="POST" action="{{ route('client.login') }}">
                         @csrf
 
-                        <!-- Correo -->
                         <div class="mb-3">
                             <label for="correoE" class="form-label">Correo Electrónico</label>
                             <input type="email" name="correoE" id="correoE" class="form-control" required autofocus>
                         </div>
 
-                        <!-- Contraseña -->
                         <div class="mb-3">
                             <label for="password" class="form-label">Contraseña</label>
                             <input type="password" name="password" id="password" class="form-control" required>
                         </div>
 
-                        <!-- Recordarme -->
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" name="remember" id="remember" class="form-check-input">
-                            <label for="remember" class="form-check-label">Mantener sesión iniciada</label>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
                         </div>
 
-                        <!-- Botón de envío -->
-                        <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
+                        <div class="mt-3 d-flex justify-content-between">
+                            <a href="{{ route('client.register.form') }}" class="text-decoration-none">¿No tienes
+                                cuenta? Regístrate</a>
+                            <a
+                                href="{{ route('client.password.reset', ['token' => $token, 'email' => $cliente->correoE]) }}">
+                                Restablecer Contraseña
+                            </a>
+                        </div>
                     </form>
-
-                    <hr>
-
-                    <p class="text-center mt-3">
-                        ¿No tienes cuenta?
-                        <a href="{{ route('client.register.form') }}" class="text-decoration-none">Regístrate aquí</a>
-                    </p>
                 </div>
             </div>
         </div>

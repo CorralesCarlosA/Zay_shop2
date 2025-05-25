@@ -627,6 +627,7 @@ class ComposerStaticInit36f237d2966a90ba5464d65fa222f063
         'App\\Http\\Controllers\\Client\\Auth\\ClientRegisterController' => __DIR__ . '/../..' . '/app/Http/Controllers/Client/Auth/ClientRegisterController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\ControllerUser' => __DIR__ . '/../..' . '/app/Http/Controllers/ControllerUser.php',
+        'App\\Http\\Controllers\\HomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/HomeController.php',
         'App\\Http\\Controllers\\NavController' => __DIR__ . '/../..' . '/app/Http/Controllers/NavController.php',
         'App\\Http\\Controllers\\ProductController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProductController.php',
         'App\\Http\\Controllers\\ShopController' => __DIR__ . '/../..' . '/app/Http/Controllers/ShopController.php',
