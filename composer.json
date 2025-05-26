@@ -14,7 +14,8 @@
         "illuminate/database": "*",
         "laravel/framework": "^11.0",
         "laravel/tinker": "^2.10.1",
-        "phpmailer/phpmailer": "^6.10"
+        "phpmailer/phpmailer": "^6.10",
+        "symfony/filesystem": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
