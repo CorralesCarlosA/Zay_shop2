@@ -24,7 +24,7 @@ class HomeController
             ->take(4)
             ->get();
 
-            return redirect()->route('home.index');
+            return view('welcome', compact('productos')); 
     }
 
 

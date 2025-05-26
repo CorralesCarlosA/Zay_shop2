@@ -44,6 +44,8 @@ use App\Http\Controllers\client\ClientFavoriteController;
 use App\Http\Controllers\client\NotificationController as ClientNotificationController;
 use App\Http\Controllers\client\HistoryActionController as ClientHistoryActionController;
 use App\Http\Controllers\client\OfferController;
+use App\Http\Controllers\client\auth\PasswordResetController;
+
 use App\Http\Controllers\HomeController;
 
 /*
