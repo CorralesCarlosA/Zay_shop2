@@ -38,7 +38,7 @@
                         <div class="mb-3">
                             <label for="tipo_identificacion" class="form-label">Tipo de Identificación</label>
                             <select name="tipo_identificacion" id="tipo_identificacion" class="form-select" required>
-                                <option value="">Selecciona un tipo</option>
+                                ` <option value="">Selecciona tipo de documento</option>
                                 <option value="Cedula de ciudadania (CC)">Cédula de Ciudadanía (CC)</option>
                                 <option value="Tarjeta de identidad (TI)">Tarjeta de Identidad (TI)</option>
                                 <option value="NIT">NIT</option>

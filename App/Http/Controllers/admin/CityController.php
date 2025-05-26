@@ -33,18 +33,20 @@ class CityController extends \App\Http\Controllers\Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'nombre_ciudad' => 'required|string|max:100',
+            'nombre_ciudad' => 'required|string|max:100|unique:ciudades,nombre_ciudad',
             'id_departamento' => 'required|exists:departamentos,id_departamento',
+            'estado' => ['required', Rule::in([0, 1])]
         ]);
 
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
 
-        City::create($request->only([
-            'nombre_ciudad',
-            'id_departamento'
-        ]));
+        City::create([
+            'nombre_ciudad' => $request->input('nombre_ciudad'),
+            'id_departamento' => $request->input('id_departamento'),
+            'estado' => $request->input('estado')
+        ]);
 
         return redirect()->route('admin.ciudades.index')
             ->with('success', 'Ciudad creada correctamente');
@@ -55,7 +57,7 @@ class CityController extends \App\Http\Controllers\Controller
      */
     public function show(int $id_ciudad)
     {
-        $city = City::with('department')->findOrFail($id_ciudad);
+        $city = City::with(['department'])->findOrFail($id_ciudad);
         return view('admin.ciudades.show', compact('city'));
     }
 
@@ -78,18 +80,20 @@ class CityController extends \App\Http\Controllers\Controller
         $city = City::findOrFail($id_ciudad);
 
         $validator = Validator::make($request->all(), [
-            'nombre_ciudad' => 'required|string|max:100',
+            'nombre_ciudad' => 'required|string|max:100|unique:ciudades,nombre_ciudad,' . $id_ciudad . ',id_ciudad',
             'id_departamento' => 'required|exists:departamentos,id_departamento',
+            'estado' => ['required', Rule::in([0, 1])]
         ]);
 
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
 
-        $city->fill($request->only([
-            'nombre_ciudad',
-            'id_departamento'
-        ]))->save();
+        $city->fill([
+            'nombre_ciudad' => $request->input('nombre_ciudad'),
+            'id_departamento' => $request->input('id_departamento'),
+            'estado' => $request->input('estado')
+        ])->save();
 
         return redirect()->route('admin.ciudades.index')
             ->with('success', 'Ciudad actualizada correctamente');
@@ -101,6 +105,11 @@ class CityController extends \App\Http\Controllers\Controller
     public function destroy(int $id_ciudad)
     {
         $city = City::findOrFail($id_ciudad);
+
+        if ($city->clients->isNotEmpty()) {
+            return back()->withErrors(['error' => 'No puedes eliminar esta ciudad porque tiene clientes registrados']);
+        }
+
         $city->delete();
 
         return back()->with('success', 'Ciudad eliminada correctamente');

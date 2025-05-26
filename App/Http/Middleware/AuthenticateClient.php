@@ -15,10 +15,10 @@ class AuthenticateClient
      */
     public function handle($request, Closure $next)
     {
-        if (!$request->session()->has('client')) {
-            return redirect()->route('client.login');
+        if (!session()->has('client')) {
+            return redirect()->route('client.login')->with('error', 'Debes iniciar sesión como cliente');
         }
-
+    
         return $next($request);
     }
 }

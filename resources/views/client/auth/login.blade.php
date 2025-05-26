@@ -17,18 +17,12 @@
                     <div class="alert alert-danger">{{ session('error') }}</div>
                     @endif
 
-                    <form method="POST" action="{{ route('client.login') }}">
+                    <form method="POST" action="{{ route('client.login.post') }}">
                         @csrf
-
-                        <!-- Campo oculto para token (opcional) -->
-                        @if ($token ?? false)
-                        <input type="hidden" name="token" value="{{ $token }}">
-                        @endif
 
                         <div class="mb-3">
                             <label for="correoE" class="form-label">Correo Electrónico</label>
-                            <input type="email" name="correoE" id="correoE" class="form-control"
-                                value="{{ old('correoE') ?? $email ?? '' }}" required autofocus>
+                            <input type="email" name="correoE" id="correoE" class="form-control" required autofocus>
                         </div>
 
                         <div class="mb-3">
@@ -43,9 +37,8 @@
                         <div class="mt-3 d-flex justify-content-between">
                             <a href="{{ route('client.register.form') }}" class="text-decoration-none">¿No tienes
                                 cuenta? Regístrate</a>
-                            <a href="{{ route('client.password.email') }}" class="text-decoration-none">
-                                ¿Olvidaste tu contraseña?
-                            </a>
+                            <a href="{{ route('client.password.email') }}" class="text-decoration-none">¿Olvidaste tu
+                                contraseña?</a>
                         </div>
                     </form>
                 </div>

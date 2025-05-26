@@ -4,23 +4,22 @@ namespace App\Models\admin;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Http\Models\admin\FavoriteClient as Favorite;
+
 class Client extends Model
 {
     use HasFactory;
 
     protected $table = 'clientes';
     protected $primaryKey = 'n_identificacion';
-    public $incrementing = false; // PK no auto-incremental
-    protected $keyType = 'string'; // n_identificacion es string (varchar)
-    public $timestamps = false;
+    public $incrementing = false; // PK no es auto-incremental
+    public $timestamps = false; // No usamos created_at / updated_at
 
     protected $fillable = [
         'nombres',
         'apellidos',
         'tipo_identificacion',
         'n_identificacion',
-        'estado_cliente',
+        'estado_cliente', // ✅ Aquí sí está incluido
         'tipo_cliente',
         'n_telefono',
         'Direccion_recidencia',
@@ -30,15 +29,16 @@ class Client extends Model
         'fecha_registro',
         'password',
         'ciudad',
-        'id_administrador'
+        'id_administrador',
+        'email_verified_at'
     ];
 
     /**
-     * Relación con administrador
+     * Relación con administrador (quien registró al cliente)
      */
     public function admin()
     {
-        return $this->belongsTo(Administrator::class, 'id_administrador', 'id_administrador');
+        return $this->belongsTo(\App\Models\admin\Administrator::class, 'id_administrador', 'id_administrador');
     }
 
     /**
@@ -46,7 +46,7 @@ class Client extends Model
      */
     public function city()
     {
-        return $this->belongsTo(City::class, 'ciudad', 'id_ciudad');
+        return $this->belongsTo(\App\Models\admin\City::class, 'ciudad', 'id_ciudad');
     }
 
     /**
@@ -54,15 +54,7 @@ class Client extends Model
      */
     public function cartItems()
     {
-        return $this->hasMany(CartItem::class, 'n_identificacion_cliente', 'n_identificacion');
-    }
-
-    /**
-     * Relación con pedidos
-     */
-    public function orders()
-    {
-        return $this->hasMany(Order::class, 'n_identificacion_cliente', 'n_identificacion');
+        return $this->hasMany(\App\Models\admin\CartItem::class, 'n_identificacion_cliente', 'n_identificacion');
     }
 
     /**
@@ -70,7 +62,15 @@ class Client extends Model
      */
     public function favorites()
     {
-        return $this->hasMany(Favorite::class, 'n_identificacion_cliente', 'n_identificacion');
+        return $this->hasMany(\App\Models\client\Favorite::class, 'n_identificacion_cliente', 'n_identificacion');
+    }
+
+    /**
+     * Relación con pedidos
+     */
+    public function orders()
+    {
+        return $this->hasMany(\App\Models\admin\Order::class, 'n_identificacion_cliente', 'n_identificacion');
     }
 
     /**
@@ -78,6 +78,6 @@ class Client extends Model
      */
     public function notifications()
     {
-        return $this->hasMany(ClientNotification::class, 'n_identificacion_cliente', 'n_identificacion');
+        return $this->hasMany(\App\Models\client\ClientNotification::class, 'n_identificacion_cliente', 'n_identificacion');
     }
 }

@@ -2,47 +2,67 @@
 
 namespace App\Http\Controllers\Client\Auth;
 
-use App\Models\client\Client;
+use App\Http\Controllers\Controller;
+use App\Models\admin\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
-class ClientRegisterController extends \App\Http\Controllers\Controller
+class ClientRegisterController extends Controller
 {
-    public function showRegistrationForm()
-    {
-        $ciudades = \App\Models\admin\City::all();
-        return view('client.auth.register', compact('ciudades'));
-    }
+/**
+* Mostrar formulario de registro
+*/
+public function showRegistrationForm()
+{
+$ciudades = \App\Models\admin\City::where('estado', 1)->get();
+return view('client.auth.register', compact('ciudades'));
+}
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'nombres' => 'required|string|max:50',
-            'apellidos' => 'required|string|max:50',
-            'correoE' => 'required|email|unique:clientes,correoE',
-            'password' => 'required|min:6|confirmed',
-            'n_telefono' => 'required|digits:10',
-            'sexo' => 'required|in:M,F,Otro',
-            'Direccion_recidencia' => 'required',
-            'ciudad' => 'required|int|exists:ciudades,id_ciudad'
-        ]);
+/**
+* Guardar nuevo cliente
+*/
+public function store(Request $request)
+{
+$validated = $request->validate([
+'nombres' => 'required|string|max:50',
+'apellidos' => 'required|string|max:50',
+'tipo_identificacion' => ['required', Rule::in(['Cedula de ciudadania (CC)', 'Tarjeta de identidad (TI)', 'NIT',
+'Pasaporte (CE)'])],
+'n_identificacion' => 'required|string|max:10|unique:clientes,n_identificacion',
+'estado_cliente' => 'required|integer|in:0,1',
+'tipo_cliente' => ['required', Rule::in(['Oro', 'Plata', 'Bronce', 'Hierro'])],
+'n_telefono' => 'required|string|max:10|min:7',
+'Direccion_recidencia' => 'required|string|max:255',
+'correoE' => 'required|email|max:150|unique:clientes,correoE',
+'sexo' => ['required', Rule::in(['Masculino', 'Femenino', 'Otro'])],
+'estatura_m' => 'nullable|numeric|between:0.5,2.5',
+'password' => 'required|min:8|confirmed',
+'ciudad' => 'required|int|exists:ciudades,id_ciudad',
+'email_verified_at' => 'nullable|date'
+]);
 
-        Client::create([
-            'nombres' => $request->input('nombres'),
-            'apellidos' => $request->input('apellidos'),
-            'tipo_identificacion' => 'CC',
-            'n_identificacion' => uniqid(),
-            'correoE' => $request->input('correoE'),
-            'password' => Hash::make($request->input('password')),
-            'sexo' => $request->input('sexo'),
-            'n_telefono' => $request->input('n_telefono'),
-            'Direccion_recidencia' => $request->input('Direccion_recidencia'),
-            'ciudad' => $request->input('ciudad'),
-            'estado_cliente' => 'Activo',
-            'tipo_cliente' => 'Regular'
-        ]);
+$cliente = Client::create([
+'nombres' => $validated['nombres'],
+'apellidos' => $validated['apellidos'],
+'tipo_identificacion' => $validated['tipo_identificacion'],
+'n_identificacion' => $validated['n_identificacion'],
+'estado_cliente' => 1, // Por defecto activo
+'tipo_cliente' => 'Hierro', // Por defecto nivel inicial
+'n_telefono' => $validated['n_telefono'],
+'Direccion_recidencia' => $validated['Direccion_recidencia'],
+'correoE' => $validated['correoE'],
+'sexo' => $validated['sexo'],
+'estatura(m)' => $validated['estatura_m'] ?? null,
+'fecha_registro' => now(),
+'password' => Hash::make($validated['password']),
+'ciudad' => $validated['ciudad'],
+'id_administrador' => null, // Se asigna cuando lo registra un admin
+'email_verified_at' => null // Confirmación por correo
+]);
 
-        return redirect()->route('client.login')->with('success', 'Registro exitoso. Por favor inicia sesión.');
-    }
+session(['client' => $cliente]);
+
+return redirect()->route('home.index')->with('success', 'Registro completado correctamente');
+}
 }

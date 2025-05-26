@@ -87,8 +87,6 @@ Route::get('/categoria/{id_categoria}', [HomeController::class, 'productosPorCat
 // Route::post('/enviar-correo', [ContactosController::class, 'enviarCorreo'])->name('contact.send');
 
 // Registro del cliente (formulario)
-Route::get('/cliente/registro', [\App\Http\Controllers\Client\Auth\ClientRegisterController::class, 'showRegistrationForm'])->name('client.register.form');
-Route::post('/cliente/registro', [\App\Http\Controllers\Client\Auth\ClientRegisterController::class, 'store'])->name('client.register');
 
 // Ruta pública – Formulario de recuperar contraseña
 
@@ -131,8 +129,22 @@ Route::get('/cliente/login', [\App\Http\Controllers\Client\Auth\ClientLoginContr
 Route::post('/cliente/login', [\App\Http\Controllers\Client\Auth\ClientLoginController::class, 'login']);
 Route::post('/cliente/logout', [\App\Http\Controllers\Client\Auth\ClientLoginController::class, 'logout'])->name('client.logout');
 
-Route::get('/cliente/registro', [\App\Http\Controllers\Client\Auth\ClientRegisterController::class, 'showRegistrationForm'])->name('client.register.form');
-Route::post('/cliente/registro', [\App\Http\Controllers\Client\Auth\ClientRegisterController::class, 'store'])->name('client.register');
+// Registro de cliente
+Route::get('/cliente/registro', [\App\Http\Controllers\Client\Auth\ClientRegisterController::class, 'showRegistrationForm'])
+    ->name('client.register.form');
+
+Route::post('/cliente/registro', [\App\Http\Controllers\Client\Auth\ClientRegisterController::class, 'store'])
+    ->name('client.register');
+
+// Inicio de sesión del cliente
+Route::get('/cliente/login', [\App\Http\Controllers\Client\Auth\ClientLoginController::class, 'showLoginForm'])
+    ->name('client.login');
+
+Route::post('/cliente/login', [\App\Http\Controllers\Client\Auth\ClientLoginController::class, 'login'])
+    ->name('client.login.post');
+
+Route::post('/cliente/logout', [\App\Http\Controllers\Client\Auth\ClientLoginController::class, 'logout'])
+    ->name('client.logout');
 
 // Rutas públicas – Administrador
 Route::get('/admin/login', [\App\Http\Controllers\Admin\Auth\AdminLoginController::class, 'showLoginForm'])->name('admin.login');

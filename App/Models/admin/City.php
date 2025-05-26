@@ -7,28 +7,28 @@ use Illuminate\Database\Eloquent\Model;
 
 class City extends Model
 {
-    use HasFactory;
+use HasFactory;
 
-    protected $table = 'ciudades';
-    protected $primaryKey = 'id_ciudad';
-    public $incrementing = false;
-    protected $keyType = 'int';
-    public $timestamps = false;
+protected $table = 'ciudades';
+protected $primaryKey = 'id_ciudad';
 
-    protected $fillable = ['nombre_ciudad', 'id_departamento'];
+public $timestamps = false;
 
-    public function department()
-    {
-        return $this->belongsTo(\App\Models\admin\Department::class, 'id_departamento', 'id_departamento');
-    }
+protected $fillable = [
+'nombre_ciudad',
+'id_departamento',
+'estado'
+];
 
-    public function clients()
-    {
-        return $this->hasMany(\App\Models\client\Client::class, 'ciudad', 'id_ciudad');
-    }
+// Relación con departamento
+public function department()
+{
+return $this->belongsTo(\App\Models\admin\Department::class, 'id_departamento', 'id_departamento');
+}
 
-    public function orders()
-    {
-        return $this->hasMany(\App\Models\admin\Order::class, 'ciudad_envio', 'id_ciudad');
-    }
+// Relación con clientes
+public function clients()
+{
+return $this->hasMany(\App\Models\admin\Client::class, 'ciudad', 'id_ciudad');
+}
 }
