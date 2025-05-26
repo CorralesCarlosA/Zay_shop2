@@ -25,6 +25,19 @@
                             <input type="text" name="nombreProducto" id="nombreProducto" class="form-control" required
                                 autofocus>
                         </div>
+                        <!-- Campo de marca -->
+                        <div class="mb-3">
+                            <label for="id_marca" class="form-label">Marca</label>
+                            <select name="id_marca" id="id_marca" class="form-select">
+                                <option value="">Selecciona una marca</option>
+                                @foreach ($marcas as $marca)
+                                <option value="{{ $marca->id_marca }}"
+                                    {{ old('id_marca') == $marca->id_marca ? 'selected' : '' }}>
+                                    {{ $marca->nombre_marca }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
 
                         <!-- Descripción -->
                         <div class="mb-3">

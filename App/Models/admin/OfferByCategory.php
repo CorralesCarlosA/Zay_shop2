@@ -1,5 +1,3 @@
-// app/Models/admin/OfferByCategory.php
-
 <?php
 
 namespace App\Models\admin;

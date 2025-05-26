@@ -32,6 +32,7 @@ class Kernel extends LaravelKernel
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
@@ -56,7 +57,7 @@ class Kernel extends LaravelKernel
         'client.guest' => \App\Http\Middleware\RedirectIfClientIsAuthenticated::class,
 
         // Opcional: si usas verificación de correo
-        // 'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
+        'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
 
         // Opcional: si usas paquete Spatie para roles y permisos
         // 'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,

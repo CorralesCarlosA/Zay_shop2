@@ -1,47 +1,39 @@
-@extends('admin.layouts.app')
+@extends('layouts.admin')
 
-@section('title', 'Acceso Administrador')
-@section('breadcrumbs', [])
+@section('title', 'Inicio de Sesión - Admin')
 
 @section('content')
-<div class="container-fluid">
-    <div class="row justify-content-center align-items-center min-vh-100">
-        <div class="col-md-6">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white text-center">
-                    <h4>Iniciar Sesión como Administrador</h4>
-                </div>
-                <div class="card-body">
+<div class="d-flex align-items-center justify-content-center min-vh-100 bg-light">
+    <div class="col-md-5 col-lg-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-dark text-white text-center">
+                <h4>Mi Tienda - Admin</h4>
+                <p class="text-white mb-0">Panel de administración</p>
+            </div>
+            <div class="card-body p-4">
 
-                    @if(session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
-                    @endif
+                @if(session('error'))
+                <div class="alert alert-danger">{{ session('error') }}</div>
+                @endif
 
-                    <form method="POST" action="{{ route('admin.login') }}">
-                        @csrf
+                <form method="POST" action="{{ route('admin.login') }}">
+                    @csrf
 
-                        <!-- Correo -->
-                        <div class="mb-3">
-                            <label for="correoE" class="form-label">Correo Electrónico</label>
-                            <input type="email" name="correoE" id="correoE" class="form-control" required autofocus>
-                        </div>
+                    <div class="mb-3">
+                        <label for="correoE" class="form-label">Correo Electrónico</label>
+                        <input type="email" name="correoE" id="correoE" class="form-control"
+                            placeholder="ejemplo@dominio.com" required>
+                    </div>
 
-                        <!-- Contraseña -->
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Contraseña</label>
-                            <input type="password" name="password" id="password" class="form-control" required>
-                        </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <input type="password" name="password" id="password" class="form-control" required>
+                    </div>
 
-                        <!-- Recordarme -->
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" name="remember" id="remember" class="form-check-input">
-                            <label for="remember" class="form-check-label">Mantener sesión iniciada</label>
-                        </div>
-
-                        <!-- Botón de inicio -->
-                        <button type="submit" class="btn btn-primary w-100">Entrar</button>
-                    </form>
-                </div>
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-success">Iniciar Sesión</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

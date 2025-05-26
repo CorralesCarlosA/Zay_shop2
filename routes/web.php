@@ -14,7 +14,6 @@ use App\Http\Controllers\admin\SaleController;
 use App\Http\Controllers\admin\DepartmentController;
 use App\Http\Controllers\admin\CityController;
 use App\Http\Controllers\admin\ProductStatusController;
-use App\Http\Controllers\admin\ClassProductController;
 use App\Http\Controllers\admin\ColorController;
 use App\Http\Controllers\admin\GenderProductController;
 use App\Http\Controllers\admin\SizeController;
@@ -29,6 +28,7 @@ use App\Http\Controllers\admin\InvoiceController;
 use App\Http\Controllers\admin\MessageController;
 use App\Http\Controllers\admin\HistoryActionController;
 use App\Http\Controllers\admin\NotificationController;
+use App\Http\Controllers\admin\BrandController;
 
 use App\Http\Controllers\Webhook\PayUWebhookController;
 use App\Http\Controllers\Webhook\MercadoPagoWebhookController;
@@ -57,7 +57,64 @@ use App\Http\Controllers\HomeController;
 */
 // routes/web.php
 
+// ======================
+// === RUTAS PÚBLICAS ===
+// ======================
+
+// Página principal
+Route::get('/', [HomeController::class, 'index'])->name('home.index');
+
+// Productos públicos
+Route::get('/productos', [ProductController::class, 'indexPublico'])->name('productos.publico.index');
+Route::get('/producto/{idProducto}', [ProductController::class, 'showPublico'])->name('productos.publico.show');
+
+// Ofertas públicas
+Route::get('/ofertas', [OfferController::class, 'index'])->name('client.ofertas.index');
+Route::get('/ofertas/categoria/{id_oferta_categoria}', [OfferController::class, 'showCategoria'])->name('client.ofertas.categoria.show');
+
+// Búsqueda pública de productos
+Route::get('/buscar', [HomeController::class, 'buscar'])->name('home.buscar');
+
+// Filtro por marca
+Route::get('/marca/{id_marca}', [HomeController::class, 'productosPorMarca'])->name('home.marca');
+
+// Filtro por categoría
+Route::get('/categoria/{id_categoria}', [HomeController::class, 'productosPorCategoria'])->name('home.categoria');
+
+// Contacto público (formulario de contacto)
+// Route::post('/enviar-correo', [ContactosController::class, 'enviarCorreo'])->name('contact.send');
+
+// Registro del cliente (formulario)
+Route::get('/cliente/registro', [\App\Http\Controllers\Client\Auth\ClientRegisterController::class, 'showRegistrationForm'])->name('client.register.form');
+Route::post('/cliente/registro', [\App\Http\Controllers\Client\Auth\ClientRegisterController::class, 'store'])->name('client.register');
+
+// Ruta pública – Recuperar contraseña (cliente)
+Route::get('/cliente/recuperar-clave', [\App\Http\Controllers\Client\Auth\PasswordResetController::class, 'showEmailForm'])
+    ->name('client.password.email');
+
+Route::post('/cliente/recuperar-clave', [\App\Http\Controllers\Client\Auth\PasswordResetController::class, 'sendResetLink'])
+    ->name('client.password.send');
+
+Route::get('/cliente/resetear-clave/{token}', [\App\Http\Controllers\Client\Auth\PasswordResetController::class, 'showResetForm'])
+    ->name('client.password.reset');
+
+Route::post('/cliente/resetear-clave', [\App\Http\Controllers\Client\Auth\PasswordResetController::class, 'resetPassword'])
+    ->name('client.password.update');
+
+// Login del cliente
+Route::get('/cliente/login', [\App\Http\Controllers\Client\Auth\ClientLoginController::class, 'showLoginForm'])->name('client.login');
+Route::post('/cliente/login', [\App\Http\Controllers\Client\Auth\ClientLoginController::class, 'login']);
+Route::post('/cliente/logout', [\App\Http\Controllers\Client\Auth\ClientLoginController::class, 'logout'])->name('client.logout');
+
+// Webhooks de pagos (públicos)
+Route::post('/webhook/payu', [PayUWebhookController::class, 'handle'])->name('webhook.payu');
+Route::post('/webhook/mercadopago', [MercadoPagoWebhookController::class, 'handle'])->name('webhook.mercadopago');
+Route::post('/webhook/paypal', [PayPalWebhookController::class, 'handle'])->name('webhook.paypal');
+
 // Página de inicio pública
+
+
+
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 
 // Listado de productos público (AJAX)
@@ -161,6 +218,26 @@ Route::prefix('cliente')->middleware('auth.client')->group(function () {
 });
 // Rutas protegidas - Administrador autenticado
 Route::prefix('admin')->middleware('auth.admin')->group(function () {
+
+    
+// Filtro por marca en web pública
+Route::get('/marca/{id_marca}', [HomeController::class, 'productosPorMarca'])->name('home.marca');
+
+// CRUD de marcas (admin)
+Route::prefix('admin')->middleware('auth.admin')->group(function () {
+    Route::prefix('marcas')->group(function () {
+        Route::get('/', [BrandController::class, 'index'])->name('admin.marcas.index');
+        Route::get('/nueva', [BrandController::class, 'create'])->name('admin.marcas.create');
+        Route::post('/', [BrandController::class, 'store'])->name('admin.marcas.store');
+        Route::get('/{id_marca}', [BrandController::class, 'show'])->name('admin.marcas.show');
+        Route::get('/{id_marca}/editar', [BrandController::class, 'edit'])->name('admin.marcas.edit');
+        Route::put('/{id_marca}', [BrandController::class, 'update'])->name('admin.marcas.update');
+        Route::delete('/{id_marca}', [BrandController::class, 'destroy'])->name('admin.marcas.destroy');
+    });
+});
+
+
+    
     // Facturas
 
     Route::get('/facturas/{id_venta}', [InvoiceController::class, 'generate'])->name('admin.facturas.generate');

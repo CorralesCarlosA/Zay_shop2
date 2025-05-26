@@ -1,5 +1,3 @@
-// app/Http/Controllers/admin/ProductOfferController.php
-
 <?php
 
 namespace App\Http\Controllers\admin;

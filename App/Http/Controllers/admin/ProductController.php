@@ -1,5 +1,3 @@
-// app/Http/Controllers/admin/ProductController.php
-
 <?php
 
 namespace App\Http\Controllers\admin;
@@ -13,6 +11,8 @@ use App\Models\admin\GenderProduct;
 use App\Models\admin\ClassProduct;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Models\admin\Brand;
+
 
 class ProductController extends \App\Http\Controllers\Controller
 {
@@ -21,44 +21,48 @@ class ProductController extends \App\Http\Controllers\Controller
      */
     public function index(Request $request)
     {
-        $query = Product::with(['category', 'productStatus']);
-
+        $query = Product::with(['category', 'brand']);
+    
         if ($request->has('categoria') && $request->input('categoria')) {
             $query->where('id_categoria', $request->input('categoria'));
         }
-
-        if ($request->has('estado') && $request->input('estado')) {
-            $query->where('idEstadoProducto', $request->input('estado'));
+    
+        if ($request->has('marca') && $request->input('marca')) {
+            $query->where('id_marca', $request->input('marca'));
         }
-
-        $productos = $query->get();
+    
+        $productos = $query->paginate(15);
         $categorias = Category::all();
-        $estados = ProductStatus::all();
-
-        return view('admin.productos.index', compact('productos', 'categorias', 'estados'));
+        $marcas = Brand::all();
+    
+        return view('admin.productos.index', compact('productos', 'categorias', 'marcas'));
     }
-
     /**
      * Formulario para crear nuevo producto
      */
-    public function create()
-    {
-        $categorias = Category::all();
-        $colores = Color::all();
-        $tallas = Size::all();
-        $estados = ProductStatus::all();
-        $generos = GenderProduct::all();
-        $clases = ClassProduct::all();
+// app/Http/Controllers/admin/ProductController.php
 
-        return view('admin.productes.create', compact('categorias', 'colores', 'tallas', 'estados', 'generos', 'clases'));
-    }
+public function create()
+{
+    $categorias = Category::all();
+    $colores = Color::all();
+    $tallas = Size::all();
+    $estados = ProductStatus::all();
+    $generos = GenderProduct::all();
+    $clases = ClassProduct::all();
+    $marcas = Brand::all(); // ✅ Cargar marcas
+
+    return view('admin.productos.create', compact(
+        'categorias', 'colores', 'tallas', 'estados', 'generos', 'clases', 'marcas'
+    ));
+}
 
     /**
      * Guardar nuevo producto
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'nombreProducto' => 'required|string|max:100|unique:productos,nombreProducto',
             'descripcionProducto' => 'nullable|string',
             'precioProducto' => 'required|numeric|min:0.01',
@@ -67,8 +71,9 @@ class ProductController extends \App\Http\Controllers\Controller
             'idSexoProducto' => 'required|int|exists:sexoproducto,idSexoProducto',
             'idColor' => 'required|int|exists:colorproducto,idColor',
             'idEstadoProducto' => 'required|int|exists:estadoproducto,idEstadoProducto',
+            'codigoIdentificador' => 'required|string|unique:productos,codigoIdentificador',
             'id_categoria' => 'nullable|int|exists:categorias_productos,id_categoria',
-            'codigoIdentificador' => 'required|string|unique:productos,codigoIdentificador'
+            'id_marca' => 'nullable|int|exists:marca_producto,id_marca', // ✅ Nuevo campo
         ]);
 
         $producto = Product::create([
@@ -103,16 +108,27 @@ class ProductController extends \App\Http\Controllers\Controller
      */
     public function edit(int $idProducto)
     {
-        $producto = Product::with(['category', 'color', 'size', 'productStatus', 'genderProduct', 'classProduct'])->findOrFail($idProducto);
-
+        $producto = Product::with([
+            'category',
+            'color',
+            'size',
+            'productStatus',
+            'genderProduct',
+            'classProduct',
+            'brand' // ✅ Carga la marca si existe
+        ])->findOrFail($idProducto);
+    
         $categorias = Category::all();
         $colores = Color::all();
         $tallas = Size::all();
         $estados = ProductStatus::all();
         $generos = GenderProduct::all();
         $clases = ClassProduct::all();
-
-        return view('admin.productos.edit', compact('producto', 'categorias', 'colores', 'tallas', 'estados', 'generos', 'clases'));
+        $marcas = Brand::all(); // ✅ Cargar marcas
+    
+        return view('admin.productos.edit', compact(
+            'producto', 'categorias', 'colores', 'tallas', 'estados', 'generos', 'clases', 'marcas'
+        ));
     }
 
     /**
@@ -145,7 +161,10 @@ class ProductController extends \App\Http\Controllers\Controller
             'idColor' => $request->input('idColor'),
             'idEstadoProducto' => $request->input('idEstadoProducto'),
             'codigoIdentificador' => $request->input('codigoIdentificador'),
-            'id_categoria' => $request->input('id_categoria')
+            'id_categoria' => $request->input('id_categoria'),
+            'id_marca' => $request->input('id_marca'), 
+            'calificacion' => $request->input('calificacion'),
+            'comentarios' => $request->input('comentarios')
         ])->save();
 
         return back()->with('success', 'Producto actualizado correctamente');
@@ -165,4 +184,13 @@ class ProductController extends \App\Http\Controllers\Controller
         $producto->delete();
         return back()->with('success', 'Producto eliminado correctamente');
     }
+
+    public function showPublico(int $idProducto)
+{
+    $producto = Product::with(['images', 'category', 'brand'])->findOrFail($idProducto);
+    return view('admin.productos.showPublico', compact('producto'));
+}
+
+
+    
 }

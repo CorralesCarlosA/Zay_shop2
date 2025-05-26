@@ -1,3 +1,5 @@
+use   `aaa`;
+
 -- phpMyAdmin SQL Dump
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
@@ -206,15 +208,13 @@ CREATE TABLE `clientes` (
 
 INSERT INTO `clientes` (`nombres`, `apellidos`, `tipo_identificacion`, `n_identificacion`, `estado_cliente`, `tipo_cliente`, `n_telefono`, `Direccion_recidencia`, `correoE`, `sexo`, `estatura(m)`, `fecha_registro`, `password`, `ciudad`, `id_administrador`, `id_clientes`, `email_verified_at`) VALUES
 ('Pedro', 'López', 'Cedula de ciudadania (CC)', '8765432109', 1, 'Hierro', '3124444444', 'Av 5 #15-25', 'pedro@example.com', 'Masculino', NULL, '2025-05-14 22:08:14', '', 2, 2, 2, NULL),
-('Ana', 'Rodríguez', 'Cedula de ciudadania (CC)', '9876543210', 1, 'Hierro', '3105555555', 'Cra 10 #20-30', 'ana@example.com', 'Femenino', NULL, '2025-05-14 22:08:14', '', 1, 1, 1, NULL);
-
+('Ana', 'Rodríguez', 'Cedula de ciudadania (CC)', '9876543210', 1, 'Hierro', '3105555555', 'Cra 10 #20-30', 'ana@example.com', 'Femenino', NULL, '2025-05-14 22:08:14', '', 1, 1, 1, NULL);colores_producto
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `colorproducto`
---
-
-CREATE TABLE `colorproducto` (
+--colores_producto
+CREATE TABLE `colores_producto` (
   `idColor` int(11) NOT NULL,
   `nombreColor` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

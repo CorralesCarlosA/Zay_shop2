@@ -7,7 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 class ClientesModel extends Model
 {
     protected $table = 'clientes';
-    protected $fillable = ['nombre', 'correo', 'clave', 'token', 'verify'];
+    protected $fillable = [
+        'n_identificacion',
+        'nombres',
+        'apellidos',
+        'correoE',
+        'password',
+        'sexo',
+        'ciudad',
+        'estatura(m)',
+        'telefono',
+        'Direccion_recidencia',
+        'id_administrador',
+    ];
 
     // Obtener todas las categorías activas
     public static function getCategorias()
