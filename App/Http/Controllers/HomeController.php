@@ -24,7 +24,7 @@ class HomeController
             ->take(4)
             ->get();
 
-        return view('welcome', compact('productos', 'destacados'));
+            return view('welcome', compact('productos')); 
     }
 
 
