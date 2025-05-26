@@ -9,15 +9,14 @@
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-white text-center">
                     <h4>Recuperar Contraseña</h4>
-                    <p class="text-muted">Ingresa tu correo electrónico</p>
                 </div>
                 <div class="card-body p-4">
 
-                    @if(session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
+                    @if(session('error'))
+                    <div class="alert alert-danger">{{ session('error') }}</div>
                     @endif
 
-                    <form method="POST" action="{{ route('client.password.email') }}">
+                    <form method="POST" action="{{ route('client.password.send') }}">
                         @csrf
 
                         <div class="mb-3">
@@ -26,7 +25,7 @@
                         </div>
 
                         <div class="d-grid mt-4">
-                            <button type="submit" class="btn btn-primary">Enviar Enlace</button>
+                            <button type="submit" class="btn btn-primary">Enviar Instrucciones</button>
                         </div>
 
                         <div class="mt-3 text-center">

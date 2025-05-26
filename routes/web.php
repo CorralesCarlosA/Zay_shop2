@@ -88,22 +88,23 @@ Route::get('/categoria/{id_categoria}', [HomeController::class, 'productosPorCat
 Route::get('/cliente/registro', [\App\Http\Controllers\Client\Auth\ClientRegisterController::class, 'showRegistrationForm'])->name('client.register.form');
 Route::post('/cliente/registro', [\App\Http\Controllers\Client\Auth\ClientRegisterController::class, 'store'])->name('client.register');
 
-// Ruta pública – Recuperar contraseña (cliente)
-Route::get('/cliente/recuperar-clave', [\App\Http\Controllers\Client\Auth\PasswordResetController::class, 'showEmailForm'])
+// Ruta pública – Formulario de recuperar contraseña
+
+Route::get('/cliente/recuperar-clave', [PasswordResetController::class, 'showEmailForm'])
     ->name('client.password.email');
 
-Route::post('/cliente/recuperar-clave', [\App\Http\Controllers\Client\Auth\PasswordResetController::class, 'sendResetLink'])
+Route::post('/cliente/recuperar-clave', [PasswordResetController::class, 'sendResetLink'])
     ->name('client.password.send');
 
-Route::get('/cliente/resetear-clave/{token}', [\App\Http\Controllers\Client\Auth\PasswordResetController::class, 'showResetForm'])
+Route::get('/cliente/resetear-clave/{token}', [PasswordResetController::class, 'showResetForm'])
     ->name('client.password.reset');
 
-Route::post('/cliente/resetear-clave', [\App\Http\Controllers\Client\Auth\PasswordResetController::class, 'resetPassword'])
+Route::post('/cliente/resetear-clave', [PasswordResetController::class, 'resetPassword'])
     ->name('client.password.update');
-
-// Login del cliente
-Route::get('/cliente/login', [\App\Http\Controllers\Client\Auth\ClientLoginController::class, 'showLoginForm'])->name('client.login');
-Route::post('/cliente/login', [\App\Http\Controllers\Client\Auth\ClientLoginController::class, 'login']);
+    
+    // Login del cliente
+    Route::get('/cliente/login', [\App\Http\Controllers\Client\Auth\ClientLoginController::class, 'showLoginForm'])->name('client.login');
+    Route::post('/cliente/login', [\App\Http\Controllers\Client\Auth\ClientLoginController::class, 'login']);
 Route::post('/cliente/logout', [\App\Http\Controllers\Client\Auth\ClientLoginController::class, 'logout'])->name('client.logout');
 
 // Webhooks de pagos (públicos)

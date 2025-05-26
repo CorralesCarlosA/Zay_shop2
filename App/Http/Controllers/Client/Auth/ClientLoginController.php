@@ -5,10 +5,10 @@ use Illuminate\Support\Facades\Session;
 
 class ClientLoginController extends \App\Http\Controllers\Controller
 {
-public function showLoginForm()
-{
-return view('client.auth.login');
-}
+    public function showLoginForm(Request $request)
+    {
+        return view('client.auth.login');
+    }
 
 public function login(Request $request)
 {

@@ -9,7 +9,7 @@
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-white text-center">
                     <h4>Iniciar Sesión</h4>
-                    <p class="text-muted">Bienvenido de nuevo al sistema de clientes</p>
+                    <p class="text-muted">Bienvenido de nuevo al sistema</p>
                 </div>
                 <div class="card-body p-4">
 
@@ -20,9 +20,15 @@
                     <form method="POST" action="{{ route('client.login') }}">
                         @csrf
 
+                        <!-- Campo oculto para token (opcional) -->
+                        @if ($token ?? false)
+                        <input type="hidden" name="token" value="{{ $token }}">
+                        @endif
+
                         <div class="mb-3">
                             <label for="correoE" class="form-label">Correo Electrónico</label>
-                            <input type="email" name="correoE" id="correoE" class="form-control" required autofocus>
+                            <input type="email" name="correoE" id="correoE" class="form-control"
+                                value="{{ old('correoE') ?? $email ?? '' }}" required autofocus>
                         </div>
 
                         <div class="mb-3">
@@ -30,16 +36,15 @@
                             <input type="password" name="password" id="password" class="form-control" required>
                         </div>
 
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-success">Iniciar Sesión</button>
                         </div>
 
                         <div class="mt-3 d-flex justify-content-between">
                             <a href="{{ route('client.register.form') }}" class="text-decoration-none">¿No tienes
                                 cuenta? Regístrate</a>
-                            <a
-                                href="{{ route('client.password.reset', ['token' => $token, 'email' => $cliente->correoE]) }}">
-                                Restablecer Contraseña
+                            <a href="{{ route('client.password.email') }}" class="text-decoration-none">
+                                ¿Olvidaste tu contraseña?
                             </a>
                         </div>
                     </form>
