@@ -2,7 +2,7 @@
 
 <?php
 
-namespace App\Http\Controllers\client;
+namespace App\Http\Controllers\admin;
 
 use App\Models\client\Client;
 use Illuminate\Http\Request;

@@ -90,6 +90,7 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
             'Symfony\\Component\\HttpKernel\\' => 29,
             'Symfony\\Component\\HttpFoundation\\' => 33,
             'Symfony\\Component\\Finder\\' => 25,
+            'Symfony\\Component\\Filesystem\\' => 29,
             'Symfony\\Component\\EventDispatcher\\' => 34,
             'Symfony\\Component\\ErrorHandler\\' => 31,
             'Symfony\\Component\\CssSelector\\' => 30,
@@ -328,6 +329,10 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         'Symfony\\Component\\Finder\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/finder',
+        ),
+        'Symfony\\Component\\Filesystem\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/filesystem',
         ),
         'Symfony\\Component\\EventDispatcher\\' => 
         array (
@@ -629,7 +634,6 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         'App\\Http\\Controllers\\ControllerUser' => __DIR__ . '/../..' . '/app/Http/Controllers/ControllerUser.php',
         'App\\Http\\Controllers\\HomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/HomeController.php',
         'App\\Http\\Controllers\\NavController' => __DIR__ . '/../..' . '/app/Http/Controllers/NavController.php',
-        'App\\Http\\Controllers\\ProductController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProductController.php',
         'App\\Http\\Controllers\\ShopController' => __DIR__ . '/../..' . '/app/Http/Controllers/ShopController.php',
         'App\\Http\\Controllers\\Webhook\\MercadoPagoWebhookController' => __DIR__ . '/../..' . '/app/Http/Controllers/Webhook/MercadoPagoWebhookController.php',
         'App\\Http\\Controllers\\Webhook\\PayPalWebhookController' => __DIR__ . '/../..' . '/app/Http/Controllers/Webhook/PayPalWebhookController.php',
@@ -669,6 +673,7 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         'App\\Http\\Controllers\\admin\\RuleController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/RuleController.php',
         'App\\Http\\Controllers\\admin\\SaleController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/SaleController.php',
         'App\\Http\\Controllers\\admin\\SizeController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/SizeController.php',
+        'App\\Http\\Controllers\\practicaController' => __DIR__ . '/../..' . '/app/Http/Controllers/practicaController.php',
         'App\\Http\\Controllers\\visualizadorModelos' => __DIR__ . '/../..' . '/app/Http/Controllers/visualizadorModelos.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\AuthenticateAdmin' => __DIR__ . '/../..' . '/app/Http/Middleware/AuthenticateAdmin.php',
@@ -736,7 +741,6 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         'App\\Models\\admin\\Rule' => __DIR__ . '/../..' . '/app/Models/admin/Rule.php',
         'App\\Models\\admin\\Sale' => __DIR__ . '/../..' . '/app/Models/admin/Sale.php',
         'App\\Models\\admin\\SaleDetail' => __DIR__ . '/../..' . '/app/Models/admin/SaleDetail.php',
-        'App\\Models\\admin\\Session' => __DIR__ . '/../..' . '/app/Models/admin/Session.php',
         'App\\Models\\admin\\Size' => __DIR__ . '/../..' . '/app/Models/admin/Size.php',
         'App\\Models\\admin\\UsuariosModel' => __DIR__ . '/../..' . '/app/Models/admin/UsuariosModel.php',
         'App\\Models\\client\\Cartltem' => __DIR__ . '/../..' . '/app/Models/client/Cartltem.php',
@@ -6871,6 +6875,14 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         'Symfony\\Component\\EventDispatcher\\EventSubscriberInterface' => __DIR__ . '/..' . '/symfony/event-dispatcher/EventSubscriberInterface.php',
         'Symfony\\Component\\EventDispatcher\\GenericEvent' => __DIR__ . '/..' . '/symfony/event-dispatcher/GenericEvent.php',
         'Symfony\\Component\\EventDispatcher\\ImmutableEventDispatcher' => __DIR__ . '/..' . '/symfony/event-dispatcher/ImmutableEventDispatcher.php',
+        'Symfony\\Component\\Filesystem\\Exception\\ExceptionInterface' => __DIR__ . '/..' . '/symfony/filesystem/Exception/ExceptionInterface.php',
+        'Symfony\\Component\\Filesystem\\Exception\\FileNotFoundException' => __DIR__ . '/..' . '/symfony/filesystem/Exception/FileNotFoundException.php',
+        'Symfony\\Component\\Filesystem\\Exception\\IOException' => __DIR__ . '/..' . '/symfony/filesystem/Exception/IOException.php',
+        'Symfony\\Component\\Filesystem\\Exception\\IOExceptionInterface' => __DIR__ . '/..' . '/symfony/filesystem/Exception/IOExceptionInterface.php',
+        'Symfony\\Component\\Filesystem\\Exception\\InvalidArgumentException' => __DIR__ . '/..' . '/symfony/filesystem/Exception/InvalidArgumentException.php',
+        'Symfony\\Component\\Filesystem\\Exception\\RuntimeException' => __DIR__ . '/..' . '/symfony/filesystem/Exception/RuntimeException.php',
+        'Symfony\\Component\\Filesystem\\Filesystem' => __DIR__ . '/..' . '/symfony/filesystem/Filesystem.php',
+        'Symfony\\Component\\Filesystem\\Path' => __DIR__ . '/..' . '/symfony/filesystem/Path.php',
         'Symfony\\Component\\Finder\\Comparator\\Comparator' => __DIR__ . '/..' . '/symfony/finder/Comparator/Comparator.php',
         'Symfony\\Component\\Finder\\Comparator\\DateComparator' => __DIR__ . '/..' . '/symfony/finder/Comparator/DateComparator.php',
         'Symfony\\Component\\Finder\\Comparator\\NumberComparator' => __DIR__ . '/..' . '/symfony/finder/Comparator/NumberComparator.php',
