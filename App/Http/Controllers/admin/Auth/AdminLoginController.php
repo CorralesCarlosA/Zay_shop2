@@ -15,24 +15,38 @@ class AdminLoginController extends \App\Http\Controllers\Controller
     }
 
     public function login(Request $request)
-    {
-        $validated = $request->validate([
-            'correoE' => 'required|email',
-            'password' => 'required'
+{
+    $credentials = $request->validate([
+        'email' => 'required|email',
+        'password' => 'required|min:8',
+    ]);
+
+    $admin = Administrator::where('correoE', $credentials['email'])->first();
+
+    if ($admin && Hash::check($credentials['password'], $admin->password)) {
+        // Regenerar completamente la sesión
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        
+        $request->session()->put('admin', [
+            'id' => $admin->id_administrador,
+            'email' => $admin->correoE,
+            'ip' => $request->ip(),
+            'user_agent' => $request->header('User-Agent'),
+            'last_activity' => now()
         ]);
-
-        $admin = Administrator::where('correoE', $request->input('correoE'))->first();
-
-        if ($admin && Hash::check($request->input('password'), $admin->password)) {
-            Session::put('admin', $admin);
-            return redirect()->route('admin.dashboard');
-        }
-
-        return back()->withErrors(['error' => 'Credenciales inválidas']);
+        
+        return redirect()->intended(route('admin.dashboard'))
+               ->with('success', 'Bienvenido al panel de administración');
     }
 
+    return back()->withErrors([
+        'email' => 'Credenciales incorrectas',
+    ])->onlyInput('email');
+}
     public function logout(Request $request)
     {
+        
         Session::forget('admin');
         return redirect()->route('admin.login');
     }

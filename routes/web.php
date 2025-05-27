@@ -1,3 +1,5 @@
+<!-- rutas antes de las modificaciones -->
+
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\admin\AdminLoginController;
@@ -147,15 +149,12 @@ Route::post('/cliente/logout', [\App\Http\Controllers\Client\Auth\ClientLoginCon
     ->name('client.logout');
 
 // Rutas públicas – Administrador
-Route::get('/admin/login', [\App\Http\Controllers\Admin\Auth\AdminLoginController::class, 'showLoginForm'])->name('admin.login');
-Route::post('/admin/login', [\App\Http\Controllers\Admin\Auth\AdminLoginController::class, 'login']);
-Route::post('/admin/logout', [\App\Http\Controllers\Admin\Auth\AdminLoginController::class, 'logout'])->name('admin.logout');
+Route::get('admin/login', [\App\Http\Controllers\Admin\Auth\AdminLoginController::class, 'showLoginForm'])->name('admin.login');
+Route::post('admin/login', [\App\Http\Controllers\Admin\Auth\AdminLoginController::class, 'login']);
+Route::post('admin/logout', [\App\Http\Controllers\Admin\Auth\AdminLoginController::class, 'logout'])->name('admin.logout');
 
 Route::prefix('admin')->middleware('auth.admin')->group(function () {
 
-    // Registro de administradores (solo accesible por SuperAdmin)
-    Route::get('/administradores/nuevo', [\App\Http\Controllers\Admin\Auth\AdminRegisterController::class, 'showRegistrationForm'])->name('admin.administradores.create');
-    Route::post('/administradores', [\App\Http\Controllers\Admin\Auth\AdminRegisterController::class, 'store'])->name('admin.administradores.store');
 });
 
 // routes/web.php
@@ -188,7 +187,7 @@ Route::prefix('cliente')->middleware('auth.client')->group(function () {
     Route::post('/resenas/guardar', [ReviewController::class, 'store'])->name('client.productos.resenas.store');
 
 
-    Route::get('/dashboard', [ClientController::class, 'dashboard'])->name('client.dashboard');
+    // Route::get('/dashboard', [ClientController::class, 'dashboard'])->name('client.dashboard');
     Route::get('/perfil', [ClientController::class, 'perfil'])->name('client.perfil.index');
     Route::get('/perfil/editar', [ClientController::class, 'editPerfil'])->name('client.perfil.edit');
     Route::put('/perfil', [ClientController::class, 'updatePerfil'])->name('client.perfil.update');
@@ -235,21 +234,29 @@ Route::prefix('cliente')->middleware('auth.client')->group(function () {
 Route::prefix('admin')->middleware('auth.admin')->group(function () {
 
     
+        // Registro de administradores (solo accesible por SuperAdmin)
+        Route::get('/administradores/nuevo', [\App\Http\Controllers\Admin\Auth\AdminRegisterController::class, 'showRegistrationForm'])->name('admin.administradores.create');
+        Route::post('/administradores', [\App\Http\Controllers\Admin\Auth\AdminRegisterController::class, 'store'])->name('admin.administradores.store');
+
+        
 // Filtro por marca en web pública
-Route::get('/marca/{id_marca}', [HomeController::class, 'productosPorMarca'])->name('home.marca');
+    Route::get('/marca/{id_marca}', [HomeController::class, 'productosPorMarca'])->name('home.marca');
 
 // CRUD de marcas (admin)
-Route::prefix('admin')->middleware('auth.admin')->group(function () {
-    Route::prefix('marcas')->group(function () {
-        Route::get('/', [BrandController::class, 'index'])->name('admin.marcas.index');
-        Route::get('/nueva', [BrandController::class, 'create'])->name('admin.marcas.create');
-        Route::post('/', [BrandController::class, 'store'])->name('admin.marcas.store');
-        Route::get('/{id_marca}', [BrandController::class, 'show'])->name('admin.marcas.show');
-        Route::get('/{id_marca}/editar', [BrandController::class, 'edit'])->name('admin.marcas.edit');
-        Route::put('/{id_marca}', [BrandController::class, 'update'])->name('admin.marcas.update');
-        Route::delete('/{id_marca}', [BrandController::class, 'destroy'])->name('admin.marcas.destroy');
-    });
-});
+
+        Route::prefix('marcas')->group(function () {
+            Route::get('/', [BrandController::class, 'index'])->name('admin.marcas.index');
+            Route::get('/nueva', [BrandController::class, 'create'])->name('admin.marcas.create');
+            Route::post('/', [BrandController::class, 'store'])->name('admin.marcas.store');
+            Route::get('/{id_marca}', [BrandController::class, 'show'])->name('admin.marcas.show');
+            Route::get('/{id_marca}/editar', [BrandController::class, 'edit'])->name('admin.marcas.edit');
+            Route::put('/{id_marca}', [BrandController::class, 'update'])->name('admin.marcas.update');
+            Route::delete('/{id_marca}', [BrandController::class, 'destroy'])->name('admin.marcas.destroy');
+        });
+
+    // dashboard admin
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+
 
 
     
@@ -284,11 +291,6 @@ Route::prefix('admin')->middleware('auth.admin')->group(function () {
     Route::get('/reseñas/{id_reseña}/editar', [ReviewController::class, 'edit'])->name('admin.reseñas.edit');
     Route::put('/reseñas/{id_reseña}', [ReviewController::class, 'update'])->name('admin.reseñas.update');
     Route::delete('/reseñas/{id_reseña}', [ReviewController::class, 'destroy'])->name('admin.reseñas.destroy');
-
-    // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-
 
     // Productos
     Route::prefix('productos')->group(function () {
@@ -432,6 +434,7 @@ Route::prefix('admin')->middleware('auth.admin')->group(function () {
         Route::put('/{idEstadoOferta}', [ProductStatusController::class, 'update'])->name('admin.productos.estado.update');
         Route::delete('/{idEstadoOferta}', [ProductStatusController::class, 'destroy'])->name('admin.productos.estado.destroy');
     });
+    
 
     // Tipos de oferta
     Route::prefix('ofertas/tipos')->group(function () {
@@ -539,14 +542,29 @@ Route::prefix('admin')->middleware('auth.admin')->group(function () {
         Route::get('/{id_rol_admin}/editar', [AdminRoleController::class, 'edit'])->name('admin.roles.edit');
         Route::put('/{id_rol_admin}', [AdminRoleController::class, 'update'])->name('admin.roles.update');
         Route::delete('/{id_rol_admin}', [AdminRoleController::class, 'destroy'])->name('admin.roles.destroy');
-    });
+
+        // metodos de pago
+        
+
+});
+
+
+});
+
+Route::prefix('admin/metodos_pago')->middleware('auth.admin')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'index'])->name('admin.metodos_pago.index');
+    Route::get('/nuevo', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'create'])->name('admin.metodos_pago.create');
+    Route::post('/', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'store'])->name('admin.metodos_pago.store');
+    Route::get('/{id_metodo_pago}', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'show'])->name('admin.metodos_pago.show');
+    Route::get('/{id_metodo_pago}/editar', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'edit'])->name('admin.metodos_pago.edit');
+    Route::put('/{id_metodo_pago}', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'update'])->name('admin.metodos_pago.update');
+    Route::delete('/{id_metodo_pago}', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'destroy'])->name('admin.metodos_pago.destroy');
 });
 
 // ======================
 // === RUTAS ANTIGUAS Y NO USADAS ===
 // Las dejamos al final para evitar conflictos
 // ======================
-
 // Rutas de modelos de prueba
 Route::get('/foradmin', [\App\Http\Controllers\visualizadorModelos::class, 'modelAdmin'])->name('foradmin');
 Route::get('/forclient', [\App\Http\Controllers\visualizadorModelos::class, 'modelClient'])->name('forclient');

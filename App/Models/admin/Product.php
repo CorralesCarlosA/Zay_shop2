@@ -53,7 +53,10 @@ class Product extends Model
     {
         return $this->belongsToMany(Size::class, 'tallas_producto', 'idProducto', 'id_talla');
     }
-
+    public function inventario()
+    {
+        return $this->hasOne(\App\Models\admin\Inventory::class, 'idProducto', 'idProducto');
+    }
 
     // Relación con categoría
     public function category()
