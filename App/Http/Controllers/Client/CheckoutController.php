@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\client;
+namespace App\Http\Controllers\Client;
 
 use App\Models\admin\Product;
 use App\Models\admin\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use App\Models\client\Sale;
+use App\Models\Client\Sale as Sale;
 
 class CheckoutController extends \App\Http\Controllers\Controller
 {

@@ -1,10 +1,23 @@
 @extends('admin.layouts.app')
 
 @section('title', 'Panel de Administración')
-@section('breadcrumbs', [
-['name' => 'Inicio', 'url' => route('admin.dashboard')]
-])
 
+@section('breadcrumbs')
+@php
+    $breadcrumbs = [
+        ['name' => 'Inicio', 'url' => route('admin.dashboard')]
+    ];
+@endphp
+@endsection
+
+@section('content')
+<!-- El resto de tu contenido HTML aquí -->
+<div class="container">
+    <!-- Tu contenido del dashboard -->
+</div>
+@endsection
+
+@section('content')
 @section('content')
 <div class="container-fluid py-4">
     <div class="row g-4">
@@ -13,7 +26,7 @@
         <div class="col-md-3">
             <div class="card shadow-sm border-0 bg-primary text-white">
                 <div class="card-body">
-                    <h6 class="card-subtitle">Productos</h6>
+                    <h6 class="card-subtitle">Productos Activos</h6>
                     <h2 class="card-title mt-2">{{ $totalProductos ?? 0 }}</h2>
                 </div>
             </div>
@@ -85,7 +98,7 @@
                         Inventario</a>
                 </div>
                 <div class="card-body p-0">
-                    @if ($productosSinStock->isNotEmpty())
+                    @if (!empty($productosSinStock) && $productosSinStock->isNotEmpty())
                     <table class="table table-hover mb-0">
                         <thead class="table-light">
                             <tr>
@@ -122,7 +135,7 @@
                     <a href="{{ route('admin.clientes.index') }}" class="btn btn-sm btn-outline-secondary">Ver Todos</a>
                 </div>
                 <div class="card-body p-0">
-                    @if ($clientesRecientes->isNotEmpty())
+                    @if (!empty($clientesRecientes) && $clientesRecientes->isNotEmpty())
                     <table class="table table-hover mb-0">
                         <thead class="table-light">
                             <tr>
@@ -153,47 +166,11 @@
 </div>
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js "></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ asset('js/admin-chart.js') }}"></script>
 <script>
-const ctx = document.getElementById('ventasChart').getContext('2d');
-const ventasData = [{
-    {
-        $ventasMensuales - > implode(',') ?? '0,0,0,0,0,0'
-    }
-}];
-
-const labels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'];
-
-new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: labels,
-        datasets: [{
-            label: 'Ventas del Mes',
-            data: ventasData,
-            borderColor: '#28a745',
-            backgroundColor: 'rgba(40, 167, 69, 0.1)',
-            fill: true,
-            tension: 0.4,
-            pointRadius: 0
-        }]
-    },
-    options: {
-        responsive: true,
-        plugins: {
-            legend: {
-                display: false
-            }
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: {
-                    callback: value => '$' + value.toLocaleString()
-                }
-            }
-        }
-    }
-});
+    // Pasar los datos directamente desde PHP
+    const ventasData = JSON.parse('{!! json_encode($ventasMensuales->isEmpty() ? [0,0,0,0,0,0] : $ventasMensuales->pluck("total")->toArray()) !!}');
+    initVentasChart(ventasData);
 </script>
 @endpush

@@ -20,11 +20,14 @@
                         style="object-fit: cover; transition: transform 0.5s ease;">
                 </div>
                 <div class="card-body d-flex flex-column" style="background-color: #f8f9fa;">
-                    <h5 style="color: #000000; min-height: 3rem;">{{ Str::limit($producto->nombreProducto, 30) }}</h5>
+                    <h5 style="color: #000000; min-height: 3rem;">
+                        {{ Str::limit($producto->nombreProducto, 30) }}
+                    </h5>
                     <p class="text-muted mb-2" style="font-size: 0.9rem;">
                         {{ optional($producto->category)->nombre_categoria ?? 'Sin categoría' }}
                     </p>
-                    <h6 style="color: #d4af37; font-weight: bold;">$ {{ number_format($producto->precioProducto, 2) }}
+                    <h6 style="color: #d4af37; font-weight: bold;">
+                        $ {{ number_format($producto->precioProducto, 2) }}
                     </h6>
                     <a href="{{ route('productos.publico.show', $producto->idProducto) }}"
                         class="btn mt-auto align-self-start"
@@ -47,29 +50,4 @@
         {{ $productos->links('pagination::bootstrap-5') }}
     </div>
 </div>
-
-<style>
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-}
-
-.card:hover img {
-    transform: scale(1.05);
-}
-
-.page-item.active .page-link {
-    background-color: #28a745;
-    border-color: #28a745;
-    color: #d4af37 !important;
-}
-
-.page-link {
-    color: #28a745;
-}
-
-.page-link:hover {
-    color: #1e7e34;
-}
-</style>
 @endsection

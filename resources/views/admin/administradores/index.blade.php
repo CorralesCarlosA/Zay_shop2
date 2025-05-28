@@ -1,12 +1,21 @@
-<!-- admin/administradores/index.blade.php -->
-
 @extends('admin.layouts.app')
 
 @section('title', 'Administradores')
-@section('breadcrumbs', [
-['name' => 'Inicio', 'url' => route('admin.dashboard')],
-['name' => 'Administradores']
-])
+
+@section('breadcrumbs')
+@php
+    $breadcrumbs = [
+        ['name' => 'Inicio', 'url' => route('admin.dashboard')]
+    ];
+@endphp
+@endsection
+
+@section('content')
+<!-- El resto de tu contenido HTML aquí -->
+<div class="container">
+    <!-- Tu contenido del dashboard -->
+</div>
+@endsection
 
 @section('content')
 <div class="container-fluid">

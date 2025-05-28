@@ -1,5 +1,3 @@
-<!-- rutas antes de las modificaciones -->
-
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\admin\AdminLoginController;
@@ -35,7 +33,7 @@ use App\Http\Controllers\admin\BrandController;
 use App\Http\Controllers\Webhook\PayUWebhookController;
 use App\Http\Controllers\Webhook\MercadoPagoWebhookController;
 use App\Http\Controllers\Webhook\PayPalWebhookController;
-use App\Http\Controllers\admin\DashboardController;
+use App\Http\Controllers\admin\DashboardController as DashboardControlleradmin;
 
 use App\Http\Controllers\client\ClientController;
 use App\Http\Controllers\client\CheckoutController;
@@ -65,30 +63,30 @@ use App\Http\Controllers\HomeController;
 // === RUTAS PÚBLICAS ===
 // ======================
 
-// Página principal
+// Página principal – Home
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 
+// Búsqueda de productos – también pública
+Route::get('/buscar', [HomeController::class, 'buscar']);
+
+// Listado público de productos – AJAX
+Route::get('/productos', [\App\Http\Controllers\ProductController::class, 'indexPublico'])->name('productos.publico.index');
+
+// Detalle de producto – pública
+Route::get('/producto/{idProducto}', [\App\Http\Controllers\ProductController::class, 'showPublico'])->name('productos.publico.show');
+
+// Filtrar por marca – pública
+Route::get('/marca/{id_marca}', [HomeController::class, 'productosPorMarca'])->name('home.marca');
+
+// Filtrar por categoría – pública
+Route::get('/categoria/{id_categoria}', [HomeController::class, 'productosPorCategoria'])->name('home.categoria');
+
+
 // Productos públicos
-Route::get('/productos', [ProductController::class, 'indexPublico'])->name('productos.publico.index');
-Route::get('/producto/{idProducto}', [ProductController::class, 'showPublico'])->name('productos.publico.show');
 
 // Ofertas públicas
 Route::get('/ofertas', [OfferController::class, 'index'])->name('client.ofertas.index');
 Route::get('/ofertas/categoria/{id_oferta_categoria}', [OfferController::class, 'showCategoria'])->name('client.ofertas.categoria.show');
-
-// Búsqueda pública de productos
-Route::get('/buscar', [HomeController::class, 'buscar'])->name('home.buscar');
-
-// Filtro por marca
-Route::get('/marca/{id_marca}', [HomeController::class, 'productosPorMarca'])->name('home.marca');
-
-// Filtro por categoría
-Route::get('/categoria/{id_categoria}', [HomeController::class, 'productosPorCategoria'])->name('home.categoria');
-
-// Contacto público (formulario de contacto)
-// Route::post('/enviar-correo', [ContactosController::class, 'enviarCorreo'])->name('contact.send');
-
-// Registro del cliente (formulario)
 
 // Ruta pública – Formulario de recuperar contraseña
 
@@ -127,10 +125,17 @@ Route::get('/productos', [ProductController::class, 'indexPublico'])->name('prod
 Route::get('/producto/{idProducto}', [ProductController::class, 'showPublico'])->name('productos.publico.show');
 
 // Rutas públicas – Cliente
-Route::get('/cliente/login', [\App\Http\Controllers\Client\Auth\ClientLoginController::class, 'showLoginForm'])->name('client.login');
-Route::post('/cliente/login', [\App\Http\Controllers\Client\Auth\ClientLoginController::class, 'login']);
-Route::post('/cliente/logout', [\App\Http\Controllers\Client\Auth\ClientLoginController::class, 'logout'])->name('client.logout');
+// Ruta pública - Login del cliente
+Route::get('/cliente/login', [\App\Http\Controllers\Client\Auth\ClientLoginController::class, 'showLoginForm'])
+    ->name('client.login');
 
+Route::post('/cliente/login', [\App\Http\Controllers\Client\Auth\ClientLoginController::class, 'login'])
+    ->name('client.login.post');
+
+Route::post('/cliente/logout', [\App\Http\Controllers\Client\Auth\ClientLoginController::class, 'logout'])
+->name('client.logout');
+
+    
 // Registro de cliente
 Route::get('/cliente/registro', [\App\Http\Controllers\Client\Auth\ClientRegisterController::class, 'showRegistrationForm'])
     ->name('client.register.form');
@@ -139,29 +144,6 @@ Route::post('/cliente/registro', [\App\Http\Controllers\Client\Auth\ClientRegist
     ->name('client.register');
 
 // Inicio de sesión del cliente
-Route::get('/cliente/login', [\App\Http\Controllers\Client\Auth\ClientLoginController::class, 'showLoginForm'])
-    ->name('client.login');
-
-Route::post('/cliente/login', [\App\Http\Controllers\Client\Auth\ClientLoginController::class, 'login'])
-    ->name('client.login.post');
-
-Route::post('/cliente/logout', [\App\Http\Controllers\Client\Auth\ClientLoginController::class, 'logout'])
-    ->name('client.logout');
-
-// Rutas públicas – Administrador
-Route::get('admin/login', [\App\Http\Controllers\Admin\Auth\AdminLoginController::class, 'showLoginForm'])->name('admin.login');
-Route::post('admin/login', [\App\Http\Controllers\Admin\Auth\AdminLoginController::class, 'login']);
-Route::post('admin/logout', [\App\Http\Controllers\Admin\Auth\AdminLoginController::class, 'logout'])->name('admin.logout');
-
-Route::prefix('admin')->middleware('auth.admin')->group(function () {
-
-});
-
-// routes/web.php
-
-
-Route::get('/', [HomeController::class, 'index'])->name('home.index');
-
 
 // procesamientos de pagos
 
@@ -171,7 +153,7 @@ Route::prefix('cliente')->middleware('auth.client')->group(function () {
     Route::get('/checkout/{method}', [CheckoutController::class, 'confirm'])->name('client.checkout.confirm');
 });
 
-// Webhooks
+// '
 Route::prefix('webhook')->group(function () {
     Route::post('/payu', [PayUWebhookController::class, 'handle'])->name('webhook.payu');
     Route::post('/mercadopago', [MercadoPagoWebhookController::class, 'handle'])->name('webhook.mercadopago');
@@ -183,57 +165,71 @@ Route::prefix('webhook')->group(function () {
 Route::prefix('cliente')->middleware('auth.client')->group(function () {
     // Dashboard y perfil
 
+
     // Reseñas
-    Route::post('/resenas/guardar', [ReviewController::class, 'store'])->name('client.productos.resenas.store');
+    Route::post('/resenas/guardar', [ ReviewController::class, 'store' ])->name('client.productos.resenas.store');
+
+    // Route::get('/dashboard', [\App\Http\Controllers\Client\DashboardController::class, 'index'])->name('client.dashboard');
+
 
 
     // Route::get('/dashboard', [ClientController::class, 'dashboard'])->name('client.dashboard');
-    Route::get('/perfil', [ClientController::class, 'perfil'])->name('client.perfil.index');
-    Route::get('/perfil/editar', [ClientController::class, 'editPerfil'])->name('client.perfil.edit');
-    Route::put('/perfil', [ClientController::class, 'updatePerfil'])->name('client.perfil.update');
+    Route::prefix('perfil')->group(function () {
+        //     Route::get('/', [\App\Http\Controllers\Client\ProfileController::class, 'index'])->name('client.perfil.index');
+        //     Route::get('/editar', [\App\Http\Controllers\Client\ProfileController::class, 'edit'])->name('client.perfil.edit');
+        //     Route::put('/editar', [\App\Http\Controllers\Client\ProfileController::class, 'update'])->name('client.perfil.update');
+        // });
+        // // Productos
+        Route::get('/productos', [ ClientController::class, 'indexProductos' ])->name('client.productos.index');
+        Route::get('/productos/{idProducto}', [ ClientController::class, 'showProducto' ])->name('client.productos.show');
 
-    // Productos
-    Route::get('/productos', [ClientController::class, 'indexProductos'])->name('client.productos.index');
-    Route::get('/productos/{idProducto}', [ClientController::class, 'showProducto'])->name('client.productos.show');
+        // Carrito
+        Route::get('/carrito', [ CheckoutController::class, 'indexCarrito' ])->name('client.carrito.index');
+        Route::post('/carrito/agregar/{idProducto}', [ CheckoutController::class, 'addToCart' ])->name('client.carrito.add');
+        Route::delete('/carrito/eliminar/{id_carrito}', [ CheckoutController::class, 'removeFromCart' ])->name('client.carrito.remove');
 
-    // Carrito
-    Route::get('/carrito', [CheckoutController::class, 'indexCarrito'])->name('client.carrito.index');
-    Route::post('/carrito/agregar/{idProducto}', [CheckoutController::class, 'addToCart'])->name('client.carrito.add');
-    Route::delete('/carrito/eliminar/{id_carrito}', [CheckoutController::class, 'removeFromCart'])->name('client.carrito.remove');
+        // Favoritos
+        Route::get('/favoritos', [ ClientFavoriteController::class, 'index' ])->name('client.favoritos.index');
+        Route::post('/favoritos/agregar', [ ClientFavoriteController::class, 'store' ])->name('client.favoritos.store');
+        Route::delete('/favoritos/{id_favorito}', [ ClientFavoriteController::class, 'destroy' ])->name('client.favoritos.destroy');
 
-    // Favoritos
-    Route::get('/favoritos', [ClientFavoriteController::class, 'index'])->name('client.favoritos.index');
-    Route::post('/favoritos/agregar', [ClientFavoriteController::class, 'store'])->name('client.favoritos.store');
-    Route::delete('/favoritos/{id_favorito}', [ClientFavoriteController::class, 'destroy'])->name('client.favoritos.destroy');
+        // Pedidos del cliente
+        Route::prefix('mis-pedidos')->group(function () {
+            Route::get('/', [ ClientOrderController::class, 'index' ])->name('client.pedidos.index');
+            Route::get('/{id_pedido}', [ ClientOrderController::class, 'show' ])->name('client.pedidos.show');
+        });
+        // Mensajes de soporte
+        Route::get('/mensajes', [ ClientMessageController::class, 'index' ])->name('client.mensajes.index');
+        Route::get('/mensajes/nuevo', [ ClientMessageController::class, 'create' ])->name('client.mensajes.create');
+        Route::post('/mensajes', [ ClientMessageController::class, 'store' ])->name('client.mensajes.store');
+        Route::get('/mensajes/{id_mensaje}', [ ClientMessageController::class, 'show' ])->name('client.mensajes.show');
 
-    // Pedidos
-    Route::get('/mis-pedidos', [ClientOrderController::class, 'index'])->name('client.pedidos.index');
-    Route::get('/mis-pedidos/{id_pedido}', [ClientOrderController::class, 'show'])->name('client.pedidos.show');
-    Route::put('/mis-pedidos/{id_pedido}/cancelar', [ClientOrderController::class, 'cancelPedido'])->name('client.pedidos.cancelar');
+        // Devoluciones
+        Route::prefix('devoluciones')->group(function () {
+            Route::get('/', [ ClientReturnController::class, 'index' ])->name('client.devoluciones.index');
+            Route::get('/nueva', [ ClientReturnController::class, 'create' ])->name('client.devoluciones.create');
+            Route::post('/', [ ClientReturnController::class, 'store' ])->name('client.devoluciones.store');
+            Route::get('/{id_devolucion}', [ ClientReturnController::class, 'show' ])->name('client.devoluciones.show');
+            Route::delete('/{id_devolucion}', [ ClientReturnController::class, 'destroy' ])->name('client.devoluciones.destroy');
+        });
 
-    // Mensajes de soporte
-    Route::get('/mensajes', [ClientMessageController::class, 'index'])->name('client.mensajes.index');
-    Route::get('/mensajes/nuevo', [ClientMessageController::class, 'create'])->name('client.mensajes.create');
-    Route::post('/mensajes', [ClientMessageController::class, 'store'])->name('client.mensajes.store');
-    Route::get('/mensajes/{id_mensaje}', [ClientMessageController::class, 'show'])->name('client.mensajes.show');
-
-    // Devoluciones
-    Route::prefix('devoluciones')->group(function () {
-        Route::get('/', [ClientReturnController::class, 'index'])->name('client.devoluciones.index');
-        Route::get('/nueva', [ClientReturnController::class, 'create'])->name('client.devoluciones.create');
-        Route::post('/', [ClientReturnController::class, 'store'])->name('client.devoluciones.store');
-        Route::get('/{id_devolucion}', [ClientReturnController::class, 'show'])->name('client.devoluciones.show');
-        Route::delete('/{id_devolucion}', [ClientReturnController::class, 'destroy'])->name('client.devoluciones.destroy');
+        // Ofertas
+        Route::get('/ofertas', [ OfferController::class, 'index' ])->name('client.ofertas.index');
+        Route::get('/ofertas/categoria/{id_oferta_categoria}', [ OfferController::class, 'showCategoria' ])->name('client.ofertas.categoria.show');
     });
-
-    // Ofertas
-    Route::get('/ofertas', [OfferController::class, 'index'])->name('client.ofertas.index');
-    Route::get('/ofertas/categoria/{id_oferta_categoria}', [OfferController::class, 'showCategoria'])->name('client.ofertas.categoria.show');
 });
-// Rutas protegidas - Administrador autenticado
-Route::prefix('admin')->middleware('auth.admin')->group(function () {
 
-    
+// Rutas públicas – Administrador
+Route::get('admin/login', [\App\Http\Controllers\Admin\Auth\AdminLoginController::class, 'showLoginForm'])->name('admin.login');
+Route::post('admin/login', [\App\Http\Controllers\Admin\Auth\AdminLoginController::class, 'login'])-> name('admin.login.post');
+Route::post('admin/logout', [\App\Http\Controllers\Admin\Auth\AdminLoginController::class, 'logout'])->name('admin.logout');
+
+// Rutas protegidas - Administrador autenticado
+Route::prefix('admin')->middleware(\App\Http\Middleware\AuthenticateAdmin::class)->group(function () {
+        // dashboard admin
+        Route::get('/dashboard', [DashboardControlleradmin::class, 'index'])->name('admin.dashboard');
+
+
         // Registro de administradores (solo accesible por SuperAdmin)
         Route::get('/administradores/nuevo', [\App\Http\Controllers\Admin\Auth\AdminRegisterController::class, 'showRegistrationForm'])->name('admin.administradores.create');
         Route::post('/administradores', [\App\Http\Controllers\Admin\Auth\AdminRegisterController::class, 'store'])->name('admin.administradores.store');
@@ -254,8 +250,7 @@ Route::prefix('admin')->middleware('auth.admin')->group(function () {
             Route::delete('/{id_marca}', [BrandController::class, 'destroy'])->name('admin.marcas.destroy');
         });
 
-    // dashboard admin
-        Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+
 
 
 
@@ -350,15 +345,7 @@ Route::prefix('admin')->middleware('auth.admin')->group(function () {
             Route::delete('/{id_cupon_usado}', [CouponUsedController::class, 'destroy'])->name('admin.cupones.usados.destroy');
         });
 
-        Route::prefix('pedidos')->group(function () {
-            Route::get('/', [AdminOrderController::class, 'index'])->name('admin.pedidos.index');
-            Route::get('/nuevo', [AdminOrderController::class, 'create'])->name('admin.pedidos.create');
-            Route::post('/', [AdminOrderController::class, 'store'])->name('admin.pedidos.store');
-            Route::get('/{id_pedido}', [AdminOrderController::class, 'show'])->name('admin.pedidos.show');
-            Route::get('/{id_pedido}/editar', [AdminOrderController::class, 'edit'])->name('admin.pedidos.edit');
-            Route::put('/{id_pedido}', [AdminOrderController::class, 'update'])->name('admin.pedidos.update');
-            Route::delete('/{id_pedido}', [AdminOrderController::class, 'destroy'])->name('admin.pedidos.destroy');
-        });
+     
 
         Route::prefix('mensajes-soporte')->group(function () {
             Route::get('/', [MessageController::class, 'index'])->name('admin.mensajes.index');
@@ -522,6 +509,16 @@ Route::prefix('admin')->middleware('auth.admin')->group(function () {
         Route::delete('/{id_devolucion}', [ReturnProductController::class, 'destroy'])->name('admin.devoluciones.destroy');
     });
 
+    Route::prefix('pedidos')->group(function () {
+        Route::get('/', [AdminOrderController::class, 'index'])->name('admin.pedidos.index');
+        Route::get('/nuevo', [AdminOrderController::class, 'create'])->name('admin.pedidos.create');
+        Route::post('/', [AdminOrderController::class, 'store'])->name('admin.pedidos.store');
+        Route::get('/{id_pedido}', [AdminOrderController::class, 'show'])->name('admin.pedidos.show');
+        Route::get('/{id_pedido}/editar', [AdminOrderController::class, 'edit'])->name('admin.pedidos.edit');
+        Route::put('/{id_pedido}', [AdminOrderController::class, 'update'])->name('admin.pedidos.update');
+        Route::delete('/{id_pedido}', [AdminOrderController::class, 'destroy'])->name('admin.pedidos.destroy');
+    });
+
     // Administradores
     Route::prefix('administradores')->group(function () {
         Route::get('/', [AdministratorController::class, 'index'])->name('admin.administradores.index');
@@ -560,28 +557,29 @@ Route::prefix('admin/metodos_pago')->middleware('auth.admin')->group(function ()
     Route::put('/{id_metodo_pago}', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'update'])->name('admin.metodos_pago.update');
     Route::delete('/{id_metodo_pago}', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'destroy'])->name('admin.metodos_pago.destroy');
 });
-
-// ======================
+?>
+<!--    // ======================`
 // === RUTAS ANTIGUAS Y NO USADAS ===
 // Las dejamos al final para evitar conflictos
 // ======================
 // Rutas de modelos de prueba
-Route::get('/foradmin', [\App\Http\Controllers\visualizadorModelos::class, 'modelAdmin'])->name('foradmin');
-Route::get('/forclient', [\App\Http\Controllers\visualizadorModelos::class, 'modelClient'])->name('forclient');
+
 
 // Rutas adicionales de ejemplo (no utilizadas actualmente)
 // Route::get('/productonly', [\App\Http\Controllers\NavController::class, 'productonly'])->name('productonly');
 // Route::get('/perfil', [\App\Http\Controllers\NavController::class, 'perfil'])->name('perfil');
 // Route::get('/administrador', [\App\Http\Controllers\NavController::class, 'administrador'])->name('administrador');
-// Route::get('/usuarios', [\App\Http\Controllers\admin\AdministratorController::class, 'usuariosad'])->name('admin.usuarios');
-// Route::get('/administracion', [\App\Http\Controllers\AdminController::class, 'administracion'])->name('admin.administracion');
+// Route::get('/usuarios', [\App\Http\Controllers\admin\AdministratorController::class,
+'usuariosad'])->name('admin.usuarios');
+// Route::get('/administracion', [\App\Http\Controllers\AdminController::class,
+'administracion'])->name('admin.administracion');
 
 // Rutas de pedidos antiguas (ejemplo)
 
 
 // Rutas de productos antiguas (de prueba)
 // Route::prefix('productos')->group(function () {
-//     Route::get('/', [\App\Http\Controllers\Admin\ProductosController::class, 'index'])->name('admin.productos');
+// Route::get('/', [\App\Http\Controllers\Admin\ProductosController::class, 'index'])->name('admin.productos');
 // }
 // );
 
@@ -598,17 +596,26 @@ Route::get('/forclient', [\App\Http\Controllers\visualizadorModelos::class, 'mod
 Route::get('/sesion', [\App\Http\Controllers\ControllerUser::class, 'sesion'])->name('client.sesion');
 Route::get('/login', [\App\Http\Controllers\Client\AuthController::class, 'login'])->name('client.login');
 Route::get('/registro', [\App\Http\Controllers\Client\AuthController::class, 'registro'])->name('client.registro');
-Route::get('/recuperar-clave', [\App\Http\Controllers\Client\AuthController::class, 'recuperarClave'])->name('client.recuperar.clave');
-Route::get('/actualizarInformacion', [\App\Http\Controllers\Client\UserController::class, 'actualizarInformacion'])->name('client.actualizar.informacion');
+Route::get('/recuperar-clave', [\App\Http\Controllers\Client\AuthController::class,
+'recuperarClave'])->name('client.recuperar.clave');
+Route::get('/actualizarInformacion', [\App\Http\Controllers\Client\UserController::class,
+'actualizarInformacion'])->name('client.actualizar.informacion');
 Route::get('/mostrar', [\App\Http\Controllers\NavController::class, 'mostrar'])->name('mostrar');
-Route::get('/actualizar-informacion', [\App\Http\Controllers\admin\AdminController::class, 'actualizarInformacion'])->name('admin.actualizar.informacion');
-Route::get('/actualizar-informacion', [\App\Http\Controllers\admin\AdminController::class, 'actualizarInformacion'])->name('admin.actualizar.informacion');
+Route::get('/actualizar-informacion', [\App\Http\Controllers\admin\AdminController::class,
+'actualizarInformacion'])->name('admin.actualizar.informacion');
+Route::get('/actualizar-informacion', [\App\Http\Controllers\admin\AdminController::class,
+'actualizarInformacion'])->name('admin.actualizar.informacion');
 Route::get('/categorias', [\App\Http\Controllers\NavController::class, 'categorias'])->name('admin.categorias');
 Route::get('/ventas', [\App\Http\Controllers\admin\AdminController::class, 'ventas'])->name('admin.ventas');
-Route::get('/ventas/nueva', [\App\Http\Controllers\admin\AdminController::class, 'ventasCreate'])->name('admin.ventas.create');
+Route::get('/ventas/nueva', [\App\Http\Controllers\admin\AdminController::class,
+'ventasCreate'])->name('admin.ventas.create');
 Route::post('/ventas', [\App\Http\Controllers\admin\AdminController::class, 'ventasStore'])->name('admin.ventas.store');
-Route::get('/ventas/{id_venta}', [\App\Http\Controllers\admin\AdminController::class, 'ventasShow'])->name('admin.ventas.show');
-Route::get('/ventas/{id_venta}/editar', [\App\Http\Controllers\admin\AdminController::class, 'ventasEdit'])->name('admin.ventas.edit');
-Route::put('/ventas/{id_venta}', [\App\Http\Controllers\admin\AdminController::class, 'ventasUpdate'])->name('admin.ventas.update');
-Route::delete('/ventas/{id_venta}', [\App\Http\Controllers\admin\AdminController::class, 'ventasDestroy'])->name('admin.ventas.destroy');
-*/
+Route::get('/ventas/{id_venta}', [\App\Http\Controllers\admin\AdminController::class,
+'ventasShow'])->name('admin.ventas.show');
+Route::get('/ventas/{id_venta}/editar', [\App\Http\Controllers\admin\AdminController::class,
+'ventasEdit'])->name('admin.ventas.edit');
+Route::put('/ventas/{id_venta}', [\App\Http\Controllers\admin\AdminController::class,
+'ventasUpdate'])->name('admin.ventas.update');
+Route::delete('/ventas/{id_venta}', [\App\Http\Controllers\admin\AdminController::class,
+'ventasDestroy'])->name('admin.ventas.destroy');
+*/ -->

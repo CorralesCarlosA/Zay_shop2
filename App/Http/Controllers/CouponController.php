@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Models\admin\Coupon;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class CouponController extends \App\Http\Controllers\Controller
 {

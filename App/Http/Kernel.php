@@ -48,7 +48,8 @@ class Kernel extends LaravelKernel
      */
     protected $routeMiddleware = [
         // Middlewares personalizados (tu sistema manual de autenticación)
-        'auth.admin' => \App\Http\Middleware\AuthenticateAdmin::class,
+'auth.admin' => \App\Http\Middleware\AuthenticateAdmin::class,
+
         'auth.client' => \App\Http\Middleware\AuthenticateClient::class,
 
 

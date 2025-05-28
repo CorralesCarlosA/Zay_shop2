@@ -1,5 +1,3 @@
-// app/Http/Controllers/admin/OrderController.php
-
 <?php
 
 namespace App\Http\Controllers\admin;

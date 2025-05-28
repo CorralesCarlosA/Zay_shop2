@@ -2,21 +2,14 @@
 
 namespace App\Models\admin;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use App\Models\admin\AdminRole;
-
-// use Laravel\Sanctum\HasApiTokens;  no se esta usando, se deja comentado por si se llega a necesitar
 
 class Administrator extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    protected $guard = 'administradores';
 
     protected $table = 'administradores';
     protected $primaryKey = 'id_administrador';
-    public $incrementing = false;
-    protected $keyType = 'int';
     public $timestamps = false;
 
     protected $fillable = [
@@ -24,48 +17,16 @@ class Administrator extends Authenticatable
         'apellidos',
         'correoE',
         'password',
-        'estado_administrador',
-        'id_rol_admin',
-        'n_identificacion'
+        'estado_administrador'
     ];
 
-
-    public function hasPermissionTo(string $permission): bool
+    public function getAuthPassword()
     {
-        return in_array($permission, json_decode($this->role->permisos ?? '[]', true));
+        return $this->password;
     }
 
-    protected $hidden = ['password'];
-
-    // Relaciones
-    public function role()
+    public function getAuthIdentifierName()
     {
-        return $this->belongsTo(AdminRole::class, 'id_rol_admin', 'id_rol_admin');
-    }
-
-
-    public function products()
-    {
-        return $this->hasMany(\App\Models\admin\Product::class, 'id_administrador', 'id_administrador');
-    }
-
-    public function messages()
-    {
-        return $this->hasMany(\App\Models\admin\Message::class, 'id_administrador', 'id_administrador');
-    }
-
-    public function sales()
-    {
-        return $this->hasMany(\App\Models\admin\Sale::class, 'id_administrador', 'id_administrador');
-    }
-
-    public function returns()
-    {
-        return $this->hasMany(\App\Models\admin\ReturnProduct::class, 'id_administrador', 'id_administrador');
-    }
-
-    public function notifications()
-    {
-        return $this->hasMany(\App\Models\admin\Notification::class, 'id_administrador', 'id_administrador');
+        return 'correoE'; // Campo usado para login
     }
 }

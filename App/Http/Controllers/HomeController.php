@@ -24,19 +24,18 @@ class HomeController
             ->take(4)
             ->get();
 
-            return view('welcome', compact('productos')); 
+            return view('welcome', compact('productos', 'destacados'));
     }
 
+    public function productosPorMarca($id_marca)
+    {
+        $productos = Product::where([
+            ['idEstadoProducto', 1],
+            ['id_marca', $id_marca]
+        ])->with(['category', 'brand'])->paginate(12);
 
-public function productosPorMarca($id_marca)
-{
-    $productos = Product::where([
-        ['idEstadoProducto', 1],
-        ['id_marca', $id_marca]
-    ])->with(['category', 'brand'])->paginate(12);
-
-    return view('welcome', compact('productos'));
-}
+        return view('welcome', compact('productos'));
+    }
 
     /**
      * Mostrar productos por categoría

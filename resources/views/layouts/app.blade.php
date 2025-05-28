@@ -100,12 +100,12 @@
                 </ul>
 
                 <ul class="navbar-nav ms-auto">
-                    @auth('client')
+                    @auth('clientes')
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false" style="color: #000000;">
                             <i class="bi bi-person-fill" style="color: #d4af37;"></i>
-                            {{ Auth::guard('client')->user()->nombres }}
+                            {{ Auth::guard('clientes')->user()->nombres }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" href="#"><i class="bi bi-person"></i> Perfil</a></li>

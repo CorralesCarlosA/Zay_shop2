@@ -12,7 +12,7 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons @1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
-    <!-- Estilos personalizados (opcional) -->
+    <!-- Estilos personalizados -->
     @stack('styles')
 </head>
 
@@ -27,15 +27,40 @@
             </button>
 
             <div class="collapse navbar-collapse justify-content-end" id="navbarAdminMenu">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin.dashboard') }}"><i
-                                class="bi bi-speedometer2 me-1"></i> Dashboard</a>
+                <ul class="navbar-nav 
+                
+
+                
+                    <li class=" nav-item me-3">
+                    <a class="nav-link" href="{{ route('admin.dashboard') }}">
+                        <i class="bi bi-speedometer2 me-1"></i> Dashboard
+                    </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin.logout') }}"><i
-                                class="bi bi-box-arrow-right me-1"></i> Salir</a>
+
+                    <!-- Nombre del administrador logueado -->
+                    @auth('administradores')
+                    <li class="nav-item dropdown me-3">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            <i class="bi bi-person-circle me-1"></i>
+                            {{ auth('administradores')->user()->nombres }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{{ route('admin.perfil.index') }}"><i
+                                        class="bi bi-person me-1"></i> Mi Perfil</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <form action="{{ route('admin.logout') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item"><i
+                                            class="bi bi-box-arrow-right me-1"></i> Cerrar Sesión</button>
+                                </form>
+                            </li>
+                        </ul>
                     </li>
+                    @endauth
                 </ul>
             </div>
         </div>

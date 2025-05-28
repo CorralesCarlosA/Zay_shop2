@@ -1,19 +1,20 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
-@section('title', 'Recuperar Contraseña')
+@section('title', 'Recuperar Contraseña - Administrador')
 
 @section('content')
-<div class="container py-5">
+<div class="container-fluid py-4">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-white text-center">
                     <h4>Recuperar Contraseña</h4>
+                    <p class="text-muted">Ingresa tu correo electrónico</p>
                 </div>
                 <div class="card-body p-4">
 
-                    @if(session('error'))
-                    <div class="alert alert-danger">{{ session('error') }}</div>
+                    @if(session('status'))
+                    <div class="alert alert-success">{{ session('status') }}</div>
                     @endif
 
                     <form method="POST" action="{{ route('client.password.send') }}">
@@ -28,8 +29,8 @@
                             <button type="submit" class="btn btn-primary">Enviar Instrucciones</button>
                         </div>
 
-                        <div class="mt-3 text-center">
-                            <a href="{{ route('client.login') }}" class="text-decoration-none">Volver al inicio de
+                        <div class="mt-3 d-flex justify-content-between">
+                            <a href="{{ route('admin.login') }}" class="text-decoration-none">Volver al inicio de
                                 sesión</a>
                         </div>
                     </form>

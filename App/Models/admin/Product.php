@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\admin\FavoriteClient as Favorite;
 use App\Models\admin\ImageProduct;
+use Illuminate\Database\Eloquent\Builder;
 
 class Product extends Model
 {
@@ -47,18 +48,43 @@ class Product extends Model
             'id_talla'
         );
     }
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('idEstadoProducto', 1); // Asumiendo que 1 es el estado "activo"
+    }
+    public function scopePending(Builder $query): Builder
+{
+    return $query->where('idEstadoProducto', 2); // Asumiendo que 2 es "pendiente"
+}
+
+public function scopeRecent(Builder $query, $days = 30): Builder
+{
+    return $query->where('fechaIngreso', '>=', now()->subDays($days));
+}
+
+    /**
+     * Scope para productos sin stock
+     */
+    public function scopeOutOfStock(Builder $query): Builder
+    {
+        return $query->whereHas('inventory', function($q) {
+            $q->where('stock_actual', '<=', 0);
+        });
+    }
 
 
     public function sizes()
     {
         return $this->belongsToMany(Size::class, 'tallas_producto', 'idProducto', 'id_talla');
     }
-    public function inventario()
+    public function inventory()
     {
         return $this->hasOne(\App\Models\admin\Inventory::class, 'idProducto', 'idProducto');
     }
 
+
     // Relación con categoría
+  
     public function category()
     {
         return $this->belongsTo(\App\Models\admin\Category::class, 'id_categoria', 'id_categoria');

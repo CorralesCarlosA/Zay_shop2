@@ -26,7 +26,7 @@
                 <li><a href="{{ route('admin.productos.estado.index') }}"
                         class="nav-link btn btn-sm btn-secondary w-100 text-start">Estados de Producto</a></li>
                 <li><a href="{{ route('admin.ofertas.tipo.index') }}"
-                        class="nav-link btn btn-sm btn-secondary w-100 text-start">Tipos de Oferta</a></li>
+                        class="nav-link btn btn-sm btn-secondary w-100  text-start">Tipos de Oferta</a></li>
                 <li><a href="{{ route('admin.ofertas.estado.index') }}"
                         class="nav-link btn btn-sm btn-secondary w-100 text-start">Estados de Oferta</a></li>
                 <li><a href="{{ route('admin.productos.color.index') }}"
