@@ -1,176 +1,51 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Panel de Administración')
-
-@section('breadcrumbs')
-@php
-    $breadcrumbs = [
-        ['name' => 'Inicio', 'url' => route('admin.dashboard')]
-    ];
-@endphp
-@endsection
+@section('title', 'Dashboard')
+@section('header', 'Panel de Control')
 
 @section('content')
-<!-- El resto de tu contenido HTML aquí -->
-<div class="container">
-    <!-- Tu contenido del dashboard -->
-</div>
-@endsection
-
-@section('content')
-@section('content')
-<div class="container-fluid py-4">
-    <div class="row g-4">
-
-        <!-- Tarjetas de resumen -->
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 bg-primary text-white">
-                <div class="card-body">
-                    <h6 class="card-subtitle">Productos Activos</h6>
-                    <h2 class="card-title mt-2">{{ $totalProductos ?? 0 }}</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 bg-success text-white">
-                <div class="card-body">
-                    <h6 class="card-subtitle">Ventas Totales</h6>
-                    <h2 class="card-title mt-2">${{ number_format($totalVentas ?? 0, 2) }}</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 bg-info text-white">
-                <div class="card-body">
-                    <h6 class="card-subtitle">Ventas Hoy</h6>
-                    <h2 class="card-title mt-2">${{ number_format($ventasHoy ?? 0, 2) }}</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 bg-warning text-white">
-                <div class="card-body">
-                    <h6 class="card-subtitle">Pedidos Pendientes</h6>
-                    <h2 class="card-title mt-2">{{ $pedidosPendientes ?? 0 }}</h2>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Gráfica de ventas -->
+<div class="container-fluid">
+    <!-- Stats Cards -->
+    @include('admin.partials.stats-cards')
+    
+    <!-- Pasar datos a JavaScript -->
+    <div id="chart-data" 
+         data-meses='@json($mesesLabels)'
+         data-ventas='@json($ventasChartData)'
+         style="display:none;"></div>
+    
+    <!-- Gráficos principales -->
     <div class="row mt-4">
         <div class="col-md-8">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h5>Ventas Mensuales</h5>
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Ventas Mensuales</h5>
                 </div>
-                <div class="card-body p-0">
-                    <canvas id="ventasChart" height="100"></canvas>
+                <div class="card-body">
+                    <canvas id="salesChart" height="300"></canvas>
                 </div>
             </div>
         </div>
-
-        <!-- Últimos pedidos -->
+        
         <div class="col-md-4">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h5>Últimos Pedidos</h5>
-                    <a href="{{ route('admin.pedidos.index') }}" class="btn btn-sm btn-outline-primary">Ver Todos</a>
-                </div>
-                <div class="card-body p-0">
-                    @include('admin.partials.last_orders_table')
-                </div>
-            </div>
+            @include('admin.partials.recent-orders')
         </div>
     </div>
-
-    <!-- Productos sin stock -->
+    
+    <!-- Secciones adicionales -->
     <div class="row mt-4">
         <div class="col-md-6">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h5>Productos sin Stock</h5>
-                    <a href="{{ route('admin.productos.index') }}" class="btn btn-sm btn-outline-danger">Ir a
-                        Inventario</a>
-                </div>
-                <div class="card-body p-0">
-                    @if (!empty($productosSinStock) && $productosSinStock->isNotEmpty())
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th>ID</th>
-                                <th>Producto</th>
-                                <th>Categoría</th>
-                                <th>Stock</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($productosSinStock as $producto)
-                            <tr>
-                                <td>{{ $producto->idProducto }}</td>
-                                <td>{{ Str::limit($producto->nombreProducto, 30) }}</td>
-                                <td>{{ optional($producto->category)->nombre_categoria ?? 'Sin categoría' }}</td>
-                                <td><span class="badge bg-danger">Stock:
-                                        {{ optional($producto->inventario)->stock_actual ?? 0 }}</span></td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    @else
-                    <p class="text-muted text-center my-4">No hay productos sin stock.</p>
-                    @endif
-                </div>
-            </div>
+            @include('admin.partials.out-of-stock')
         </div>
-
-        <!-- Clientes recientes -->
         <div class="col-md-6">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h5>Clientes Recientes</h5>
-                    <a href="{{ route('admin.clientes.index') }}" class="btn btn-sm btn-outline-secondary">Ver Todos</a>
-                </div>
-                <div class="card-body p-0">
-                    @if (!empty($clientesRecientes) && $clientesRecientes->isNotEmpty())
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th>ID</th>
-                                <th>Nombre</th>
-                                <th>Correo</th>
-                                <th>Fecha Registro</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($clientesRecientes as $cliente)
-                            <tr>
-                                <td>{{ $cliente->n_identificacion }}</td>
-                                <td>{{ $cliente->nombres }} {{ $cliente->apellidos }}</td>
-                                <td>{{ $cliente->correoE }}</td>
-                                <td>{{ \Carbon\Carbon::parse($cliente->fecha_registro)->format('d/m/Y') }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    @else
-                    <p class="text-muted text-center my-4">No hay clientes nuevos hoy.</p>
-                    @endif
-                </div>
-            </div>
+            @include('admin.partials.recent-customers')
         </div>
     </div>
 </div>
 
+<!-- Importar dependencias y script externo -->
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="{{ asset('js/admin-chart.js') }}"></script>
-<script>
-    // Pasar los datos directamente desde PHP
-    const ventasData = JSON.parse('{!! json_encode($ventasMensuales->isEmpty() ? [0,0,0,0,0,0] : $ventasMensuales->pluck("total")->toArray()) !!}');
-    initVentasChart(ventasData);
-</script>
+<script src="{{ asset('js/admin/sales-chart.js') }}"></script>
 @endpush
+@endsection

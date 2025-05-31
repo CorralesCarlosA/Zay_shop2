@@ -9,7 +9,7 @@ use App\Http\Controllers\admin\OfferByCategoryController;
 use App\Http\Controllers\admin\InventoryController;
 use App\Http\Controllers\admin\CouponController;
 use App\Http\Controllers\admin\CouponUsedController;
-use App\Http\Controllers\admin\OrderController as AdminOrderController;
+use App\Http\Controllers\admin\OrderController ;
 use App\Http\Controllers\admin\SaleController;
 use App\Http\Controllers\admin\DepartmentController;
 use App\Http\Controllers\admin\CityController;
@@ -29,11 +29,12 @@ use App\Http\Controllers\admin\MessageController;
 use App\Http\Controllers\admin\HistoryActionController;
 use App\Http\Controllers\admin\NotificationController;
 use App\Http\Controllers\admin\BrandController;
+use App\Http\Controllers\admin\facturaController;
 
 use App\Http\Controllers\Webhook\PayUWebhookController;
 use App\Http\Controllers\Webhook\MercadoPagoWebhookController;
 use App\Http\Controllers\Webhook\PayPalWebhookController;
-use App\Http\Controllers\admin\DashboardController as DashboardControlleradmin;
+use App\Http\Controllers\admin\DashboardController;
 
 use App\Http\Controllers\client\ClientController;
 use App\Http\Controllers\client\CheckoutController;
@@ -142,16 +143,44 @@ Route::get('/cliente/registro', [\App\Http\Controllers\Client\Auth\ClientRegiste
 
 Route::post('/cliente/registro', [\App\Http\Controllers\Client\Auth\ClientRegisterController::class, 'store'])
     ->name('client.register');
+// Archivo: routes/web.php
+Route::prefix('admin')->middleware(['auth'])->group(function () {
+    // ... otras rutas admin ...
+    
+    // Rutas para clientes
+    Route::prefix('clientes')->group(function() {
+        Route::get('/', [ClientController::class, 'index'])->name('admin.clientes.index');
+        Route::get('/crear', [ClientController::class, 'create'])->name('admin.clientes.create');
+        Route::post('/', [ClientController::class, 'store'])->name('admin.clientes.store');
+        Route::get('/{cliente}', [ClientController::class, 'show'])->name('admin.clientes.show');
+        Route::get('/{cliente}/editar', [ClientController::class, 'edit'])->name('admin.clientes.edit');
+        Route::put('/{cliente}', [ClientController::class, 'update'])->name('admin.clientes.update');
+        Route::delete('/{cliente}', [ClientController::class, 'destroy'])->name('admin.clientes.destroy');
 
-// Inicio de sesión del cliente
 
-// procesamientos de pagos
+    });
+    
+    // ... otras rutas ...
+});
+
+
+    Route::prefix('admin')->middleware(['auth.admin'])->group(function() {
+    // ... otras rutas admin ...
+    
+    // Rutas de perfil del administrador
+    Route::prefix('perfil')->group(function() {
+        Route::get('/', [\App\Http\Controllers\admin\ProfileController::class, 'index'])->name('admin.perfil.index');
+        Route::get('/editar', [\App\Http\Controllers\admin\ProfileController::class, 'edit'])->name('admin.perfil.edit');
+        Route::put('/actualizar', [\App\Http\Controllers\admin\ProfileController::class, 'update'])->name('admin.perfil.update');
+    });
+});
 
 Route::prefix('cliente')->middleware('auth.client')->group(function () {
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('client.checkout.index');
     Route::post('/checkout/metodo-pago', [CheckoutController::class, 'selectPayment'])->name('client.checkout.payment');
     Route::get('/checkout/{method}', [CheckoutController::class, 'confirm'])->name('client.checkout.confirm');
 });
+
 
 // '
 Route::prefix('webhook')->group(function () {
@@ -175,10 +204,10 @@ Route::prefix('cliente')->middleware('auth.client')->group(function () {
 
     // Route::get('/dashboard', [ClientController::class, 'dashboard'])->name('client.dashboard');
     Route::prefix('perfil')->group(function () {
-        //     Route::get('/', [\App\Http\Controllers\Client\ProfileController::class, 'index'])->name('client.perfil.index');
-        //     Route::get('/editar', [\App\Http\Controllers\Client\ProfileController::class, 'edit'])->name('client.perfil.edit');
-        //     Route::put('/editar', [\App\Http\Controllers\Client\ProfileController::class, 'update'])->name('client.perfil.update');
-        // });
+            Route::get('/', [\App\Http\Controllers\Client\ProfileController::class, 'index'])->name('client.perfil.index');
+            Route::get('/editar', [\App\Http\Controllers\Client\ProfileController::class, 'edit'])->name('client.perfil.edit');
+            Route::put('/editar', [\App\Http\Controllers\Client\ProfileController::class, 'update'])->name('client.perfil.update');
+        
         // // Productos
         Route::get('/productos', [ ClientController::class, 'indexProductos' ])->name('client.productos.index');
         Route::get('/productos/{idProducto}', [ ClientController::class, 'showProducto' ])->name('client.productos.show');
@@ -227,8 +256,7 @@ Route::post('admin/logout', [\App\Http\Controllers\Admin\Auth\AdminLoginControll
 // Rutas protegidas - Administrador autenticado
 Route::prefix('admin')->middleware(\App\Http\Middleware\AuthenticateAdmin::class)->group(function () {
         // dashboard admin
-        Route::get('/dashboard', [DashboardControlleradmin::class, 'index'])->name('admin.dashboard');
-
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
         // Registro de administradores (solo accesible por SuperAdmin)
         Route::get('/administradores/nuevo', [\App\Http\Controllers\Admin\Auth\AdminRegisterController::class, 'showRegistrationForm'])->name('admin.administradores.create');
@@ -256,17 +284,21 @@ Route::prefix('admin')->middleware(\App\Http\Middleware\AuthenticateAdmin::class
 
     
     // Facturas
+    Route::prefix('facturas')->group(function () {
 
-    Route::get('/facturas/{id_venta}', [InvoiceController::class, 'generate'])->name('admin.facturas.generate');
-    Route::get('/facturas/{id_venta}/ver', [InvoiceController::class, 'show'])->name('admin.facturas.show');
-    Route::post('/facturas/webhook', [InvoiceController::class, 'generateFromWebhook'])->name('admin.facturas.webhook');
-    Route::get('/facturas/{id_venta}/enviar', [InvoiceController::class, 'sendToClient'])->name('admin.facturas.send');
-    Route::get('/facturas', [InvoiceController::class, 'index'])->name('admin.facturas.index');
-    Route::get('/facturas/manual', [InvoiceController::class, 'createManual'])->name('admin.facturas.create.manual');
-    Route::post('/facturas/manual', [InvoiceController::class, 'storeManual'])->name('admin.facturas.manual.store');
-    Route::get('/facturas/{id_factura}', [InvoiceController::class, 'show'])->name('admin.facturas.show');
-    Route::put('/facturas/anular/{id_factura}', [InvoiceController::class, 'anular'])->name('admin.facturas.anular');
-    Route::get('/facturas/{id_factura}/imprimir', [InvoiceController::class, 'print'])->name('admin.facturas.print');
+        Route::get('/facturas/{id_venta}', [ InvoiceController::class, 'generate' ])->name('admin.facturas.generate');
+        Route::get('/facturas/{id_venta}/ver', [ InvoiceController::class, 'show' ])->name('admin.facturas.show');
+        Route::post('/facturas/webhook', [ InvoiceController::class, 'generateFromWebhook' ])->name('admin.facturas.webhook');
+        Route::get('/facturas/{id_venta}/enviar', [ InvoiceController::class, 'sendToClient' ])->name('admin.facturas.send');
+        Route::get('/facturas', [ InvoiceController::class, 'index' ])->name('admin.facturas.index');
+        Route::get('/facturas/manual', [ InvoiceController::class, 'createManual' ])->name('admin.facturas.create.manual');
+        Route::post('/facturas/manual', [ InvoiceController::class, 'storeManual' ])->name('admin.facturas.manual.store');
+        Route::get('/facturas/{id_factura}', [ InvoiceController::class, 'show' ])->name('admin.facturas.show');
+        Route::put('/facturas/anular/{id_factura}', [ InvoiceController::class, 'anular' ])->name('admin.facturas.anular');
+        Route::get('/facturas/{id_factura}/imprimir', [ InvoiceController::class, 'print' ])->name('admin.facturas.print');
+        Route::post('/generate/pedido/{pedido}', action: [ FacturaController::class, 'generateFromOrder' ])->name('admin.facturas.generate.pedido');
+
+    });
 
     // Reportes
     Route::prefix('reportes')->group(function () {
@@ -502,6 +534,7 @@ Route::prefix('admin')->middleware(\App\Http\Middleware\AuthenticateAdmin::class
         Route::delete('/{id_favorito}', [FavoriteController::class, 'destroy'])->name('admin.favoritos.destroy');
     });
 
+
     // Devoluciones desde el admin
     Route::prefix('devoluciones')->group(function () {
         Route::get('/', [ReturnProductController::class, 'index'])->name('admin.devoluciones.index');
@@ -509,15 +542,15 @@ Route::prefix('admin')->middleware(\App\Http\Middleware\AuthenticateAdmin::class
         Route::delete('/{id_devolucion}', [ReturnProductController::class, 'destroy'])->name('admin.devoluciones.destroy');
     });
 
-    Route::prefix('pedidos')->group(function () {
-        Route::get('/', [AdminOrderController::class, 'index'])->name('admin.pedidos.index');
-        Route::get('/nuevo', [AdminOrderController::class, 'create'])->name('admin.pedidos.create');
-        Route::post('/', [AdminOrderController::class, 'store'])->name('admin.pedidos.store');
-        Route::get('/{id_pedido}', [AdminOrderController::class, 'show'])->name('admin.pedidos.show');
-        Route::get('/{id_pedido}/editar', [AdminOrderController::class, 'edit'])->name('admin.pedidos.edit');
-        Route::put('/{id_pedido}', [AdminOrderController::class, 'update'])->name('admin.pedidos.update');
-        Route::delete('/{id_pedido}', [AdminOrderController::class, 'destroy'])->name('admin.pedidos.destroy');
-    });
+Route::prefix('pedidos')->group(function () {
+    Route::get('/', [OrderController::class, 'index'])->name('admin.pedidos.index');
+    Route::get('/crear', [OrderController::class, 'create'])->name('admin.pedidos.create');
+    Route::post('/', [OrderController::class, 'store'])->name('admin.pedidos.store');
+    Route::get('/{pedido}', [OrderController::class, 'show'])->name('admin.pedidos.show');
+    Route::get('/{pedido}/editar', [OrderController::class, 'edit'])->name('admin.pedidos.edit');
+    Route::put('/{pedido}', [OrderController::class, 'update'])->name('admin.pedidos.update');
+    Route::delete('/{pedido}', [OrderController::class, 'destroy'])->name('admin.pedidos.destroy');
+});
 
     // Administradores
     Route::prefix('administradores')->group(function () {
@@ -558,64 +591,3 @@ Route::prefix('admin/metodos_pago')->middleware('auth.admin')->group(function ()
     Route::delete('/{id_metodo_pago}', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'destroy'])->name('admin.metodos_pago.destroy');
 });
 ?>
-<!--    // ======================`
-// === RUTAS ANTIGUAS Y NO USADAS ===
-// Las dejamos al final para evitar conflictos
-// ======================
-// Rutas de modelos de prueba
-
-
-// Rutas adicionales de ejemplo (no utilizadas actualmente)
-// Route::get('/productonly', [\App\Http\Controllers\NavController::class, 'productonly'])->name('productonly');
-// Route::get('/perfil', [\App\Http\Controllers\NavController::class, 'perfil'])->name('perfil');
-// Route::get('/administrador', [\App\Http\Controllers\NavController::class, 'administrador'])->name('administrador');
-// Route::get('/usuarios', [\App\Http\Controllers\admin\AdministratorController::class,
-'usuariosad'])->name('admin.usuarios');
-// Route::get('/administracion', [\App\Http\Controllers\AdminController::class,
-'administracion'])->name('admin.administracion');
-
-// Rutas de pedidos antiguas (ejemplo)
-
-
-// Rutas de productos antiguas (de prueba)
-// Route::prefix('productos')->group(function () {
-// Route::get('/', [\App\Http\Controllers\Admin\ProductosController::class, 'index'])->name('admin.productos');
-// }
-// );
-
-// Rutas de contactos
-
-// Rutas de usuarios antiguas
-
-// ======================
-// === RUTAS COMENTADAS O DEPRECATED ===
-// ======================
-
-// Ejemplo de rutas comentadas (simulaciones o pruebas)
-/*
-Route::get('/sesion', [\App\Http\Controllers\ControllerUser::class, 'sesion'])->name('client.sesion');
-Route::get('/login', [\App\Http\Controllers\Client\AuthController::class, 'login'])->name('client.login');
-Route::get('/registro', [\App\Http\Controllers\Client\AuthController::class, 'registro'])->name('client.registro');
-Route::get('/recuperar-clave', [\App\Http\Controllers\Client\AuthController::class,
-'recuperarClave'])->name('client.recuperar.clave');
-Route::get('/actualizarInformacion', [\App\Http\Controllers\Client\UserController::class,
-'actualizarInformacion'])->name('client.actualizar.informacion');
-Route::get('/mostrar', [\App\Http\Controllers\NavController::class, 'mostrar'])->name('mostrar');
-Route::get('/actualizar-informacion', [\App\Http\Controllers\admin\AdminController::class,
-'actualizarInformacion'])->name('admin.actualizar.informacion');
-Route::get('/actualizar-informacion', [\App\Http\Controllers\admin\AdminController::class,
-'actualizarInformacion'])->name('admin.actualizar.informacion');
-Route::get('/categorias', [\App\Http\Controllers\NavController::class, 'categorias'])->name('admin.categorias');
-Route::get('/ventas', [\App\Http\Controllers\admin\AdminController::class, 'ventas'])->name('admin.ventas');
-Route::get('/ventas/nueva', [\App\Http\Controllers\admin\AdminController::class,
-'ventasCreate'])->name('admin.ventas.create');
-Route::post('/ventas', [\App\Http\Controllers\admin\AdminController::class, 'ventasStore'])->name('admin.ventas.store');
-Route::get('/ventas/{id_venta}', [\App\Http\Controllers\admin\AdminController::class,
-'ventasShow'])->name('admin.ventas.show');
-Route::get('/ventas/{id_venta}/editar', [\App\Http\Controllers\admin\AdminController::class,
-'ventasEdit'])->name('admin.ventas.edit');
-Route::put('/ventas/{id_venta}', [\App\Http\Controllers\admin\AdminController::class,
-'ventasUpdate'])->name('admin.ventas.update');
-Route::delete('/ventas/{id_venta}', [\App\Http\Controllers\admin\AdminController::class,
-'ventasDestroy'])->name('admin.ventas.destroy');
-*/ -->

@@ -1,0 +1,58 @@
+/* Estilos generales */
+.admin-body {
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+/* Sidebar */
+.admin-sidebar {
+    width: 250px;
+    min-height: 100vh;
+    transition: all 0.3s;
+}
+
+.sidebar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.8);
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin-bottom: 4px;
+}
+
+.sidebar-nav .nav-link:hover {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-nav .nav-link.active {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Navbar */
+.admin-navbar {
+    padding: 0.5rem 1rem;
+}
+
+/* Contenido principal */
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    transition: all 0.3s;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .admin-sidebar {
+        margin-left: -250px;
+        position: fixed;
+        z-index: 1000;
+    }
+    
+    .admin-sidebar.show {
+        margin-left: 0;
+    }
+    
+    .main-content {
+        margin-left: 0;
+    }
+}

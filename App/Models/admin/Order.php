@@ -11,8 +11,14 @@ class Order extends Model
 
     protected $table = 'pedidos';
     protected $primaryKey = 'id_pedido';
-
-    protected $fillable = [
+    public $timestamps = false;
+    protected $dates = [ 'fecha_pedido' ];
+    protected $casts = [ 
+        'fecha_pedido' => 'datetime',
+        'recoleccion_en_local' => 'boolean',
+        'factura_generada' => 'boolean'
+    ];
+    protected $fillable = [ 
         'n_identificacion_cliente',
         'fecha_pedido',
         'estado_pedido',
@@ -24,33 +30,65 @@ class Order extends Model
         'factura_generada'
     ];
 
-    // Relación con cliente
-    public function client()
-    {
-        return $this->belongsTo(\App\Models\client\Client::class, 'n_identificacion_cliente', 'n_identificacion');
-    }
 
-    // Relación con detalles del pedido
-    public function details()
-    {
-        return $this->hasMany(\App\Models\admin\OrderDetail::class, 'id_pedido', 'id_pedido')
-            ->with(['product.color', 'product.size']);
-    }
+    // Relación con cliente
 
     public function paymentMethod()
     {
         return $this->belongsTo(\App\Models\admin\PaymentMethod::class, 'metodo_pago', 'metodo_pago');
     }
+    public function client()
+    {
+        return $this->belongsTo(\App\Models\client\Client::class, 'n_identificacion_cliente', 'n_identificacion');
+    }
 
-    // Relación con ciudad
-    public function city()
+    public function cliente()
+    {
+        return $this->client();
+    }
+
+    // Relación con la ciudad
+    public function shippingCity()
     {
         return $this->belongsTo(\App\Models\admin\City::class, 'ciudad_envio', 'id_ciudad');
     }
 
-    // Verificar si puede ser eliminado
-    public function canBeDeleted(): bool
+    public function City()
     {
-        return !in_array($this->estado_pedido, ['Enviado', 'Entregado']);
+        return $this->shippingCity();
+    }
+    public function ciudad()
+    {
+        return $this->city();
+    }
+
+    public function items()
+    {
+        return $this->hasMany(\App\Models\admin\OrderDetail::class, 'id_pedido');
+    }
+    // Relación con los detalles del pedido
+    public function detalles()
+    {
+        return $this->hasMany(\App\Models\admin\OrderDetail::class, 'id_pedido', 'id_pedido');
+    }
+    public function details()
+    {
+        return $this->detalles();
+    }
+
+    // Método para verificar si se puede eliminar
+    public function canBeDeleted()
+    {
+        return !in_array($this->estado_pedido, [ 'Enviado', 'Entregado' ]);
+    }
+    public function estadoColor()
+    {
+        return match ($this->estado_pedido) {
+            'En proceso' => 'primary',
+            'Enviado' => 'info',
+            'Entregado' => 'success',
+            'Cancelado' => 'danger',
+            default => 'secondary'
+        };
     }
 }

@@ -29,7 +29,7 @@ class OrderDetail extends Model
         return $this->belongsTo(\App\Models\admin\Order::class, 'id_pedido', 'id_pedido');
     }
 
-    public function product()
+   public function producto()
     {
         return $this->belongsTo(\App\Models\admin\Product::class, 'idProducto', 'idProducto');
     }

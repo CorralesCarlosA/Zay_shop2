@@ -77,7 +77,7 @@ public function scopeRecent(Builder $query, $days = 30): Builder
     {
         return $this->belongsToMany(Size::class, 'tallas_producto', 'idProducto', 'id_talla');
     }
-    public function inventory()
+    public function inventario()
     {
         return $this->hasOne(\App\Models\admin\Inventory::class, 'idProducto', 'idProducto');
     }

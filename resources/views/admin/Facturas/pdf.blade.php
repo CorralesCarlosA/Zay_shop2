@@ -1,111 +1,56 @@
-<!-- resources/views/admin/facturas/pdf.blade.php -->
-
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8">
-    <title>Factura #{{ $factura->id_factura }}</title>
+    <title>Factura #{{ $pedido->id_pedido }}</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th,
-        td {
-            border: 1px solid #000;
-            padding: 8px;
-            text-align: left;
-        }
-
-        .text-right {
-            text-align: right;
-        }
-
-        .header {
-            text-align: center;
-        }
+        body { font-family: Arial, sans-serif; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .info { margin-bottom: 30px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .total { text-align: right; font-weight: bold; margin-top: 20px; }
     </style>
 </head>
-
 <body>
     <div class="header">
-        <h3>ZayShop - Factura #{{ $factura->id_factura }}</h3>
-        <p><strong>Fecha:</strong> {{ $factura->fecha_factura }}</p>
+        <h1>Factura #{{ $pedido->id_pedido }}</h1>
+        <p>Fecha: {{ now()->format('d/m/Y') }}</p>
     </div>
 
-    <!-- Datos del cliente -->
-    <p><strong>Cliente:</strong> {{ $factura->nombre_cliente }} {{ $factura->apellido_cliente }}</p>
-    @if ($factura->n_identificacion_cliente)
-    <p><strong>ID:</strong> {{ $factura->n_identificacion_cliente }}</p>
-    @endif
-    @if ($factura->correo_cliente)
-    <p><strong>Correo:</strong> {{ $factura->correo_cliente }}</p>
-    @endif
-    @if ($factura->telefono_cliente)
-    <p><strong>Teléfono:</strong> {{ $factura->telefono_cliente }}</p>
-    @endif
-    @if ($factura->direccion_cliente)
-    <p><strong>Dirección:</strong> {{ $factura->direccion_cliente }}</p>
-    @endif
+    <div class="info">
+        <h3>Datos del Cliente</h3>
+        <p><strong>Nombre:</strong> {{ optional($pedido->cliente)->nombres }} {{ optional($pedido->cliente)->apellidos }}</p>
+        <p><strong>Identificación:</strong> {{ $pedido->n_identificacion_cliente }}</p>
+        <p><strong>Dirección:</strong> {{ $pedido->direccion_envio }}</p>
+    </div>
 
-    <!-- Datos del administrador -->
-    @if ($factura->admin)
-    <p><strong>Generado por:</strong> {{ $factura->admin->nombres }} {{ $factura->admin->apellidos }}</p>
-    <p><strong>ID Admin:</strong> {{ $factura->admin->n_identificacion }}</p>
-    @endif
-
-    <!-- Detalles de productos -->
+    <h3>Detalles del Pedido</h3>
     <table>
         <thead>
             <tr>
                 <th>Producto</th>
-                <th>Talla</th>
-                <th>Color</th>
-                <th>Precio</th>
+                <th>Precio Unitario</th>
                 <th>Cantidad</th>
                 <th>Subtotal</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($factura->pedido?->details as $detalle)
+            @foreach($pedido->details as $detalle)
             <tr>
                 <td>{{ optional($detalle->product)->nombreProducto }}</td>
-                <td>{{ optional($detalle->size)->nombre_talla ?? 'Única' }}</td>
-                <td>{{ optional($detalle->color)->nombreColor ?? 'Sin color' }}</td>
-                <td class="text-right">${{ number_format($detalle->precio_unitario, 2) }}</td>
-                <td class="text-right">{{ $detalle->cantidad_pedido }}</td>
-                <td class="text-right">${{ number_format($detalle->subtotal, 2) }}</td>
-            </tr>
-            @endforeach
-
-            @foreach ($factura->venta?->details as $detalleVenta)
-            <tr>
-                <td>{{ optional($detalleVenta->product)->nombreProducto }}</td>
-                <td>{{ optional($detalleVenta->size)->nombre_talla ?? 'Única' }}</td>
-                <td>{{ optional($detalleVenta->color)->nombreColor ?? 'Sin color' }}</td>
-                <td class="text-right">${{ number_format($detalleVenta->precio_unitario, 2) }}</td>
-                <td class="text-right">{{ $detalleVenta->cantidad_vendida }}</td>
-                <td class="text-right">${{ number_format($detalleVenta->subtotal, 2) }}</td>
+                <td>${{ number_format($detalle->precio_unitario, 2) }}</td>
+                <td>{{ $detalle->cantidad_pedido }}</td>
+                <td>${{ number_format($detalle->subtotal, 2) }}</td>
             </tr>
             @endforeach
         </tbody>
-        <tfoot>
-            <tr>
-                <th colspan="5" class="text-right">Total</th>
-                <th class="text-right">${{ number_format($factura->total, 2) }}</th>
-            </tr>
-        </tfoot>
     </table>
 
-    <p style="margin-top: 40px;">Gracias por su compra</p>
+    <div class="total">
+        <p><strong>Total: ${{ number_format($pedido->total_pedido, 2) }}</strong></p>
+        <p><strong>Método de Pago:</strong> {{ $pedido->metodo_pago }}</p>
+    </div>
 </body>
-
 </html>

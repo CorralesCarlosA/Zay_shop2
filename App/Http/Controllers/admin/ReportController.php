@@ -45,28 +45,32 @@ class ReportController extends \App\Http\Controllers\Controller
         $promedioMensual = Sale::where('fecha_venta', '<', now()->startOfMonth())
             ->avg('total_venta');
 
-        // Ventas anuales por mes
-        $ventasAnuales = Sale::select(
-            DB::raw("MONTHNAME(fecha_venta) as mes"),
-            DB::raw("SUM(total_venta) as total")
-        )
-            ->whereYear('fecha_venta', now()->year)
-            ->groupBy(DB::raw("MONTH(fecha_venta)"))
-            ->pluck('total', 'mes')->toArray();
+  $ventasAnuales = Sale::select(
+        DB::raw("MONTH(fecha_venta) as mes_numero"),
+        DB::raw("MONTHNAME(fecha_venta) as mes_nombre"),
+        DB::raw("SUM(total_venta) as total")
+    )
+    ->whereYear('fecha_venta', now()->year)
+    ->groupBy('mes_numero', 'mes_nombre') // Agrupamos por ambos
+    ->orderBy('mes_numero')
+    ->get()
+    ->pluck('total', 'mes_nombre')
+    ->toArray();
 
         // Promedio diario histórico
         $promedioDiario = Sale::avg('total_venta');
 
         return view('admin.reportes.ventas.index', compact(
-            'ventasPorDia',
-            'ventasAnuales',
-            'ventasMesActual',
-            'ventasMesAnterior',
-            'promedioMensual',
-            'promedioDiario',
-            'totalVentas',
-            'fechaInicio',
-            'fechaFin'
+             'ventasPorDia',    
+        'ventasAnuales', 
+        'ventasMesActual', 
+        'ventasMesAnterior', 
+        'promedioMensual', 
+        'promedioDiario',  
+        'totalVentas',     
+        'fechaInicio',     
+        'fechaFin' 
+            
         ));
     }
 

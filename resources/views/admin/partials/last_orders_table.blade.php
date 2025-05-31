@@ -1,33 +1,31 @@
-@if ($pedidosRecientes->isNotEmpty())
+@if(isset($pedidosRecientes) && $pedidosRecientes->isNotEmpty())
 <table class="table table-hover mb-0">
     <thead class="table-light">
         <tr>
             <th>ID Pedido</th>
             <th>Cliente</th>
             <th>Total</th>
+            <th>Fecha</th>
             <th>Estado</th>
             <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
-        @foreach ($pedidosRecientes as $pedido)
-        <tr>
-            <td>#{{ $pedido->id_venta }}</td>
-            <td>{{ optional($pedido->client)->nombres ?? 'Desconocido' }}</td>
-            <td>${{ number_format($pedido->total_venta, 2) }}</td>
-            <td>
-                <span class="badge bg-{{ $pedido->estado_venta === 'Pendiente' ? 'warning' : 'success' }}">
-                    {{ $pedido->estado_venta }}
-                </span>
-            </td>
-            <td>
-                <a href="{{ route('admin.pedidos.show', $pedido->id_venta) }}"
-                    class="btn btn-sm btn-outline-primary">Ver</a>
-            </td>
-        </tr>
-        @endforeach
+       @foreach ($pedidosRecientes as $pedido)
+<tr>
+    <td>{{ $pedido->id_pedido }}</td>
+    <td>
+        {{ $pedido->cliente->nombres ?? 'N/A' }} 
+        {{ $pedido->cliente->apellidos ?? '' }}
+    </td>
+    <td>${{ number_format($pedido->total_pedido, 2) }}</td>
+    <!-- ... otras columnas -->
+</tr>
+@endforeach
     </tbody>
 </table>
 @else
-<p class="text-muted text-center my-4">No hay pedidos recientes.</p>
+<div class="alert alert-info mb-0">
+    No hay pedidos recientes para mostrar.
+</div>
 @endif

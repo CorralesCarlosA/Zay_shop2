@@ -17,7 +17,12 @@ class Administrator extends Authenticatable
         'apellidos',
         'correoE',
         'password',
-        'estado_administrador'
+        'estado_administrador',
+        'avatar'
+    ];
+        protected $hidden = [
+        'password',
+        'remember_token',
     ];
 
     public function getAuthPassword()

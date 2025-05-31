@@ -1,10 +1,21 @@
 @extends('admin.layouts.app')
 
 @section('title', 'Pedidos - Panel Admin')
-@section('breadcrumbs', [
-['name' => 'Inicio', 'url' => route('admin.dashboard')],
-['name' => 'Pedidos']
-])
+
+@section('title', 'Pedidos - Panel Admin')
+
+<div class="container-fluid">
+    @if(session('download_url'))
+        <div class="alert alert-success">
+            <a href="{{ session('download_url') }}" class="btn btn-primary">Descargar Factura</a>
+        </div>
+    @endif
+    
+    <div class="card shadow">
+        <!-- ... resto del código ... -->
+    </div>
+</div>
+
 
 @section('content')
 <div class="container-fluid">
@@ -81,38 +92,31 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($pedidos as $pedido)
-            <tr>
-                <td>{{ $pedido->id_pedido }}</td>
-                <td>{{ optional($pedido->client)->nombres ?? 'Desconocido' }}</td>
-                <td>{{ $pedido->fecha_pedido }}</td>
-                <td>
-                    <span class="badge bg-{{ match($pedido->estado_pedido) {
-                            'En proceso' => 'primary',
-                            'Listo para recogida' => 'warning',
-                            'Enviado' => 'info',
-                            'Entregado' => 'success',
-                            default => 'danger'
-                        } }}">
-                        {{ $pedido->estado_pedido }}
-                    </span>
-                </td>
-                <td>{{ $pedido->direccion_envio }}</td>
-                <td>{{ optional($pedido->city)->nombre_ciudad ?? 'Sin ciudad' }}</td>
-                <td>${{ number_format($pedido->total_pedido, 2) }}</td>
-                <td>
-                    <a href="{{ route('admin.pedidos.show', $pedido->id_pedido) }}" class="btn btn-sm btn-info">Ver</a>
-                    <a href="{{ route('admin.pedidos.edit', $pedido->id_pedido) }}"
-                        class="btn btn-sm btn-warning">Editar</a>
-                    <form action="{{ route('admin.pedidos.destroy', $pedido->id_pedido) }}" method="POST"
-                        style="display:inline;" onsubmit="return confirm('¿Eliminar este pedido?');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
-                    </form>
-                </td>
-            </tr>
-            @endforeach
+    @foreach($pedidos as $pedido)
+<tr>
+    <td>{{ $pedido->id_pedido }}</td>
+    <td>{{ $pedido->client->nombres ?? 'N/A' }}</td>
+    <td>{{ $pedido->fecha_pedido->format('d/m/Y H:i') }}</td>
+    <td>${{ number_format($pedido->total_pedido, 2) }}</td>
+    <td>
+        <span class="badge bg-{{ $pedido->estadoColor() }}">
+            {{ $pedido->estado_pedido }}
+        </span>
+    </td>
+    <td>
+        @if($pedido->factura_generada)
+            <span class="badge bg-success">Facturado</span>
+        @else
+            <span class="badge bg-warning">Pendiente</span>
+        @endif
+    </td>
+    <td>
+        <a href="{{ route('admin.pedidos.show', $pedido->id_pedido) }}" class="btn btn-sm btn-info">Ver</a>
+        <a href="{{ route('admin.pedidos.edit', $pedido->id_pedido) }}" class="btn btn-sm btn-primary">Editar</a>
+    </td>
+</tr>
+@endforeach
+
         </tbody>
     </table>
 </div>

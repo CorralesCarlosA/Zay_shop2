@@ -10,6 +10,8 @@ use App\Models\client\Client;
 use App\Models\admin\Administrator;
 use App\Models\admin\City;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
+
 
 class SaleController extends Controller
 {
@@ -33,15 +35,17 @@ class SaleController extends Controller
             });
 
         // Ventas anuales agrupadas por mes
-        $ventasAnuales = Sale::selectRaw('MONTHNAME(fecha_venta) as mes, SUM(total_venta) as total')
-            ->whereYear('fecha_venta', now()->year)
-            ->where('estado_venta', 'Completada')
-            ->groupBy('mes')
-            ->orderByRaw('MIN(fecha_venta)')
-            ->get()
-            ->keyBy('mes')
-            ->mapWithKeys(fn($item) => [$item['mes'] => (float) $item['total']]);
-
+       $ventasAnuales = Sale::select(
+        DB::raw("MONTH(fecha_venta) as mes_numero"),
+        DB::raw("MONTHNAME(fecha_venta) as mes_nombre"),
+        DB::raw("SUM(total_venta) as total")
+    )
+    ->whereYear('fecha_venta', now()->year)
+    ->where('estado_venta', 'Completada')
+    ->groupBy('mes_numero', 'mes_nombre')
+    ->orderBy('mes_numero')
+    ->get()
+    ->pluck('total', 'mes_nombre');
         // Ventas mes actual vs mes anterior
         $ventasMesActual = Sale::whereMonth('fecha_venta', now())
             ->whereYear('fecha_venta', now()->year)
@@ -62,12 +66,12 @@ class SaleController extends Controller
 
         // Pasar variables a la vista
         return view('admin.reportes.ventas.index', compact(
-            'ventasPorDia',
-            'ventasAnuales',
-            'ventasMesActual',
-            'ventasMesAnterior',
-            'promedioMensual',
-            'promedioDiario'
+             'ventasPorDia',    
+        'ventasAnuales',   
+        'ventasMesActual', 
+        'ventasMesAnterior', 
+        'promedioMensual', 
+        'promedioDiario'
         ));
     }
 

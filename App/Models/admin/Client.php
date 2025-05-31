@@ -10,6 +10,7 @@ class Client extends Authenticatable
     protected $table = 'clientes';
     protected $primaryKey = 'n_identificacion';
     public $incrementing = false;
+     protected $keyType = 'string';
     public $timestamps = false;
 
     protected $fillable = [
@@ -21,6 +22,11 @@ class Client extends Authenticatable
     protected $hidden = [
         'password'
     ];
+
+        public function pedidos()
+    {
+        return $this->hasMany(Order::class, 'n_identificacion_cliente', 'n_identificacion');
+    }
 
     public function getAuthPassword()
     {
