@@ -1,0 +1,19 @@
+footer{
+    background-color: #2C4926 !important;
+    color: #000000 !important;
+    padding: 2rem 0 !important;
+    margin-top: 3rem !important;
+}
+
+h5{
+    color: #d4af37 !important;
+}
+
+p,a,li{
+    color: #D9D9D9 !important;
+}
+
+a:hover{
+    color: #d4af37;
+
+}

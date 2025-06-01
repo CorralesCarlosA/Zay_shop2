@@ -98,7 +98,7 @@
     .input-icon {
         position: absolute;
         left: 15px;
-        top: 50%;
+        top: 70%;
         transform: translateY(-50%);
         color: var(--verde-oscuro);
         font-size: 1.2rem;
@@ -134,7 +134,7 @@
     .toggle-password {
         position: absolute;
         right: 15px;
-        top: 50%;
+        top: 70%;
         transform: translateY(-50%);
         cursor: pointer;
         color: var(--gris);

@@ -6,7 +6,7 @@
 <div class="container py-5" style="background-color: #ffffff;">
     <!-- Hero Section -->
     <div class="text-center mb-5">
-        <img src="/img/zay-logo.png" alt="ZAY Logo" style="max-height: 120px; margin-bottom: 2rem;">
+        <img src="/img/zay-logo.png" alt="ZAY Logo" style="max-height: 300px; margin-bottom: 2rem;">
         <h1 class="display-4 fw-bold" style="color: #000000;">VELOCIDAD · DINAMISMO · EXCELENCIA</h1>
         <p class="lead" style="color: #000000;">Inspirados en Hermes, el dios mensajero y protector de los atletas</p>
     </div>
