@@ -24,7 +24,7 @@ class ClientRegisterController extends Controller
             'nombres' => 'required|string|max:50',
             'apellidos' => 'required|string|max:50',
             'tipo_identificacion' => ['required', Rule::in(['Cedula de ciudadania (CC)', 'Tarjeta de identidad (TI)', 'NIT', 'Pasaporte (CE)'])],
-            'n_identificacion' => 'required|string|max:10|unique:clientes,n_identificacion',
+            'n_identificacion' => 'required|string|max:10|unique:clientesn_identificacion',
             'n_telefono' => 'required|string|max:10|min:7',
             'Direccion_recidencia' => 'required|string|max:255',
             'correoE' => 'required|email|max:150|unique:clientes,correoE',

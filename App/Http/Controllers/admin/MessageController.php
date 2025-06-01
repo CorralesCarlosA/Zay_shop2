@@ -38,7 +38,7 @@ class MessageController extends \App\Http\Controllers\Controller
     {
         // Validación avanzada
         $validator = Validator::make($request->all(), [
-            'n_identificacion_cliente' => 'required|string|max:10|exists:clientes,n_identificacion',
+            'n_identificacion_cliente' => 'required|string|max:10|exists:clientesn_identificacion',
             'asunto' => 'required|string|max:100',
             'mensaje' => 'required|string',
             'estado_mensaje' => ['required', Rule::in(['Abierto', 'Respondido', 'Cerrado'])],
@@ -105,7 +105,7 @@ class MessageController extends \App\Http\Controllers\Controller
         $message = Message::findOrFail($id_mensaje);
 
         $validator = Validator::make($request->all(), [
-            'n_identificacion_cliente' => 'required|string|max:10|exists:clientes,n_identificacion',
+            'n_identificacion_cliente' => 'required|string|max:10|exists:clientesn_identificacion',
             'asunto' => 'required|string|max:100',
             'mensaje' => 'required|string',
             'estado_mensaje' => ['required', Rule::in(['Abierto', 'Respondido', 'Cerrado'])],

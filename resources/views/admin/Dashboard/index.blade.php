@@ -38,7 +38,9 @@
             @include('admin.partials.out-of-stock')
         </div>
         <div class="col-md-6">
-            @include('admin.partials.recent-customers')
+@include('admin.partials.recent-customers', [
+    'recentCustomers' => $recentCustomers ?? collect()
+])
         </div>
     </div>
 </div>

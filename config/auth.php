@@ -18,6 +18,7 @@ return [
     'provider' => 'administradores'
 ],
 
+
 // Guard para cliente – Bien usado
 'clientes' => [
 'driver' => 'session',
@@ -40,6 +41,8 @@ return [
     'driver' => 'eloquent',
     'model' => App\Models\admin\Administrator::class,
 ],
+
+
 
 ],
 

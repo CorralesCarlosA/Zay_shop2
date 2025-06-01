@@ -3,11 +3,12 @@
 @extends('admin.layouts.app')
 
 @section('title', 'Clientes - Panel Admin')
-@section('breadcrumbs', [
-['name' => 'Inicio', 'url' => route('admin.dashboard')],
-['name' => 'Clientes']
-])
-
+@section('breadcrumbs')
+    <li class="breadcrumb-item">
+        <a href="{{ route('admin.dashboard') }}">Inicio</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">Clientes</li>
+@endsection
 @section('content')
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">

@@ -40,7 +40,7 @@ class ReturnProductController extends \App\Http\Controllers\Controller
     {
         // Validación avanzada
         $validator = Validator::make($request->all(), [
-            'n_identificacion_cliente' => 'required|string|max:10|exists:clientes,n_identificacion',
+            'n_identificacion_cliente' => 'required|string|max:10|exists:clientesn_identificacion',
             'motivo_devolucion' => 'nullable|string',
             'estado_devolucion' => ['required', Rule::in(['Pendiente', 'Aprobada', 'Rechazada', 'Completada'])],
             'fecha_solicitud' => 'nullable|date',
@@ -109,7 +109,7 @@ class ReturnProductController extends \App\Http\Controllers\Controller
         $return = ReturnProduct::findOrFail($id_devolucion);
 
         $validator = Validator::make($request->all(), [
-            'n_identificacion_cliente' => 'required|string|max:10|exists:clientes,n_identificacion',
+            'n_identificacion_cliente' => 'required|string|max:10|exists:clientesn_identificacion',
             'motivo_devolucion' => 'nullable|string',
             'estado_devolucion' => ['required', Rule::in(['Pendiente', 'Aprobada', 'Rechazada', 'Completada'])],
             'fecha_solicitud' => 'required|date',

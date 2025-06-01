@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 28-05-2025 a las 06:19:15
+-- Tiempo de generación: 01-06-2025 a las 01:16:25
 -- Versión del servidor: 11.8.0-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -189,6 +189,7 @@ CREATE TABLE `clientes` (
   `tipo_identificacion` enum('Cedula de ciudadania (CC)','Tarjeta de identidad (TI)','NIT','') NOT NULL DEFAULT 'Cedula de ciudadania (CC)' COMMENT 'Selección del tipo de identificación de su documento nacional: CC, TI, CE, NIT, etc.',
   `n_identificacion` varchar(10) NOT NULL COMMENT 'Número de cédula, NIT o documento oficial',
   `estado_cliente` tinyint(1) NOT NULL DEFAULT 1 COMMENT '1 = activo, 0 = inactivo',
+  `foto_perfil_id` int(11) DEFAULT NULL,
   `tipo_cliente` enum('Oro','Plata','Bronce','Hierro') NOT NULL DEFAULT 'Hierro',
   `n_telefono` varchar(10) NOT NULL COMMENT 'Número telefónico de contacto con código de país',
   `Direccion_recidencia` varchar(255) NOT NULL COMMENT 'Dirección de residencia del cliente',
@@ -196,20 +197,22 @@ CREATE TABLE `clientes` (
   `sexo` enum('Masculino','Femenino','Otro','') NOT NULL COMMENT 'Sexo o género del cliente',
   `estatura(m)` decimal(3,2) DEFAULT NULL COMMENT 'Estatura en metros, ejemplo: 1.75',
   `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp() COMMENT 'Fecha de registro del cliente',
+  `fecha_nacimiento` date DEFAULT NULL COMMENT 'Fecha de nacimiento del cliente',
   `password` varchar(255) NOT NULL COMMENT 'Contraseña encriptada con hash',
   `ciudad` int(11) NOT NULL COMMENT 'ID de la ciudad del cliente',
   `id_administrador` int(11) DEFAULT NULL COMMENT 'ID del administrador que registró/modificó al cliente',
   `id_clientes` int(11) NOT NULL,
-  `email_verified_at` datetime DEFAULT NULL COMMENT 'Fecha de verificación de correo'
+  `email_verified_at` datetime DEFAULT NULL COMMENT 'Fecha de verificación de correo',
+  `deleted_at` timestamp NULL DEFAULT NULL COMMENT 'Fecha de eliminación lógica'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `clientes`
 --
 
-INSERT INTO `clientes` (`nombres`, `apellidos`, `tipo_identificacion`, `n_identificacion`, `estado_cliente`, `tipo_cliente`, `n_telefono`, `Direccion_recidencia`, `correoE`, `sexo`, `estatura(m)`, `fecha_registro`, `password`, `ciudad`, `id_administrador`, `id_clientes`, `email_verified_at`) VALUES
-('Pedro', 'López', 'Cedula de ciudadania (CC)', '8765432109', 1, 'Hierro', '3124444444', 'Av 5 #15-25', 'pedro@example.com', 'Masculino', NULL, '2025-05-14 22:08:14', '', 2, 2, 2, NULL),
-('Ana', 'Rodríguez', 'Cedula de ciudadania (CC)', '9876543210', 1, 'Hierro', '3105555555', 'Cra 10 #20-30', 'ana@example.com', 'Femenino', NULL, '2025-05-14 22:08:14', '', 1, 1, 1, NULL);
+INSERT INTO `clientes` (`nombres`, `apellidos`, `tipo_identificacion`, `n_identificacion`, `estado_cliente`, `foto_perfil_id`, `tipo_cliente`, `n_telefono`, `Direccion_recidencia`, `correoE`, `sexo`, `estatura(m)`, `fecha_registro`, `fecha_nacimiento`, `password`, `ciudad`, `id_administrador`, `id_clientes`, `email_verified_at`, `deleted_at`) VALUES
+('Pedro', 'López', 'Cedula de ciudadania (CC)', '8765432109', 1, NULL, 'Hierro', '3124444444', 'Av 5 #15-25', 'pedro@example.com', 'Masculino', NULL, '2025-05-14 22:08:14', NULL, '', 2, 2, 2, NULL, NULL),
+('Ana', 'Rodríguez', 'Cedula de ciudadania (CC)', '9876543210', 1, NULL, 'Hierro', '3105555555', 'Cra 10 #20-30', 'ana@example.com', 'Femenino', NULL, '2025-05-14 22:08:14', NULL, '', 1, 1, 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -472,6 +475,20 @@ CREATE TABLE `favoritos_clientes` (
   `n_identificacion_cliente` varchar(10) NOT NULL,
   `idProducto` int(11) NOT NULL,
   `fecha_agregado` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `foto_perfil_cliente`
+--
+
+CREATE TABLE `foto_perfil_cliente` (
+  `id_foto_perfil` int(11) NOT NULL,
+  `url_imagen` varchar(255) NOT NULL COMMENT 'Ruta o nombre de la imagen de perfil',
+  `n_identificacion_cliente` varchar(10) NOT NULL COMMENT 'Cliente al que pertenece la imagen',
+  `fecha_subida` datetime NOT NULL DEFAULT current_timestamp(),
+  `principal` tinyint(1) NOT NULL DEFAULT 1 COMMENT '1 = Imagen actual, 0 = Anterior o eliminada'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -764,16 +781,18 @@ CREATE TABLE `pedidos` (
   `total_pedido` decimal(10,2) NOT NULL,
   `metodo_pago` enum('Efectivo','Tarjeta','Transferencia','PayPal','Contraentrega') NOT NULL DEFAULT 'Efectivo',
   `recoleccion_en_local` tinyint(1) NOT NULL DEFAULT 0,
-  `factura_generada` tinyint(1) NOT NULL DEFAULT 0
+  `factura_generada` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `pedidos`
 --
 
-INSERT INTO `pedidos` (`id_pedido`, `n_identificacion_cliente`, `fecha_pedido`, `estado_pedido`, `direccion_envio`, `ciudad_envio`, `total_pedido`, `metodo_pago`, `recoleccion_en_local`, `factura_generada`) VALUES
-(1, '9876543210', '2025-05-14 17:08:14', 'En proceso', 'Cra 10 #20-30', 1, 30.00, 'Efectivo', 0, 0),
-(2, '9876543210', '2025-05-14 17:27:54', 'En proceso', 'Cra 10 #20-30', 1, 30.00, 'Efectivo', 0, 0);
+INSERT INTO `pedidos` (`id_pedido`, `n_identificacion_cliente`, `fecha_pedido`, `estado_pedido`, `direccion_envio`, `ciudad_envio`, `total_pedido`, `metodo_pago`, `recoleccion_en_local`, `factura_generada`, `created_at`, `updated_at`) VALUES
+(1, '9876543210', '2025-05-14 17:08:14', 'En proceso', 'Cra 10 #20-30', 1, 30.00, 'Efectivo', 0, 0, '2025-05-30 16:37:48', '2025-05-30 16:37:48'),
+(2, '9876543210', '2025-05-14 17:27:54', 'En proceso', 'Cra 10 #20-30', 1, 30.00, 'Efectivo', 0, 0, '2025-05-30 16:37:48', '2025-05-30 16:37:48');
 
 -- --------------------------------------------------------
 
@@ -865,15 +884,10 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('5gQua8i78zjSOVtOLkBJwPm0PiWi2ciUYE05voSm', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 OPR/118.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiQmpjVlNPWW9lbnJ5Y1ZCWUlGOVpNYm4xOU95U3JwR0tBQUdVMWxwaiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9kYXNoYm9hcmQiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1748324735),
-('7HzSLSVQKUAgV8YVw8pcrrET9iHJu2g5owRuDZvx', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiQThyN1FHb0JUUEFodkNWZmFpMGVUbGVhYXBtcU5EanhFTWNFRnRWQiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzg6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9jbGllbnRlL3JlZ2lzdHJvIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1748376552),
-('DrQfikuskyDymAkx8FdMqnW6NbMgc4jLM3EgmbDp', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoibW1GeGthYlBjTnAzdUtLNDdndW1JT3VqRklCeUtQQmUxeEZETHhlOSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1748364799),
-('iHQ3NRHwaDG2Weh3qn37xchCl3KBNKixxIr6k77s', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiN1RpNTc0ZWJ5ZVBFRnlXV3hKeW9ONmE4SHA5bU9rZ3o3WnM4dzN6YSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzM6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9sb2dpbiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1748354870),
-('jEMHlvv7nRMRtDODVSQG8j7BrIPT4CBbkRhfDwEc', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiZzI1MGt0bHVReTdkeHZidTkxOE1JSU1vNnJrRGo4ckUwQkxlTmZ5cyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzM6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9sb2dpbiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1748326143),
-('Qf61US5hFrfZdkVqiGGg5BdhqCpR8eHadK6AN0te', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiNnNFeERFZEFMRnJtbnFsYXA2eXdNSkxLSDN4dU02clVHQ0hFVUI4YiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzM6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9sb2dpbiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1748322790),
-('RoysM76aPPiEc4mS0HQTSORzR4pWT0JKHxPlFCp4', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiSXlYajFlN21YRnZGV3VaMXl6N3hybFo2N3duQ25CN3dTVTBwUkxNbiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1748370040),
-('XlsmwLMeYaE3rb4Jmc3NKjSsew1Hm5fiz7yntKnk', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiM1V1T2NOYTZHRHA1VnY1aVBzdk1IVEo4ZzE0VHh4eUJXVFFLR3hJYiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9kYXNoYm9hcmQiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1748317419),
-('y5clA2jHOg6s5d3HDEch2ST4LeyR0VXpJ0BstOwI', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiVjlRckVIVk9YeXV1aGlkSnVhQktwTHdPV291UGUxaEt2aU9vRU1GVCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzg6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9jbGllbnRlL3JlZ2lzdHJvIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1748390519);
+('aLoeO3r4YPZ3NPeJHBEgwTBTPxsekpsAADLmxzFV', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiME42bjJoS1hpWndDRXRpNDlNRzg4RTNQdndYYVh2Zm5VYmEzc0RVUCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1748717377),
+('mz06KJGgwfjdn9VmTteOBtro4p4hj7lGS38J6Msu', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiNHg4bWJwY1JRRk9iV2tpV1BTSFhDalJoUVAxN3NmN0dyb2NCeGhnUyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9jbGllbnRlcyI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NjI6ImxvZ2luX2FkbWluaXN0cmFkb3Jlc181OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtzOjE5OiJhZG1pbmlzQGFkbWluaXMuY29tIjt9', 1748659900),
+('Ni4tK9sVJIF2LfKDHBvTXLNz1xQSsFOoJCyw5T6V', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiUUVscVRqYWdyR2VhbkpBNHpNdU1tVW02aUd1RVBjQ1BVQUxSNTB4SCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1748717343),
+('ZQAzuC1kW8APPgd5XmbbmMYXF0mrXve1szOEmjwS', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiMm8wYTdwVER1UElVSElDanQ1QjVPbENEbFFXbDBuRzBPaTBMMEJnbCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzU6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9wZWRpZG9zIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo2MjoibG9naW5fYWRtaW5pc3RyYWRvcmVzXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO3M6MTk6ImFkbWluaXNAYWRtaW5pcy5jb20iO30=', 1748650014);
 
 -- --------------------------------------------------------
 
@@ -1185,6 +1199,13 @@ ALTER TABLE `favoritos_clientes`
   ADD KEY `idProducto` (`idProducto`);
 
 --
+-- Indices de la tabla `foto_perfil_cliente`
+--
+ALTER TABLE `foto_perfil_cliente`
+  ADD PRIMARY KEY (`id_foto_perfil`),
+  ADD KEY `n_identificacion_cliente` (`n_identificacion_cliente`);
+
+--
 -- Indices de la tabla `historial_acciones_clientes`
 --
 ALTER TABLE `historial_acciones_clientes`
@@ -1486,6 +1507,12 @@ ALTER TABLE `favoritos_clientes`
   MODIFY `id_favorito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT de la tabla `foto_perfil_cliente`
+--
+ALTER TABLE `foto_perfil_cliente`
+  MODIFY `id_foto_perfil` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `historial_acciones_clientes`
 --
 ALTER TABLE `historial_acciones_clientes`
@@ -1688,6 +1715,12 @@ ALTER TABLE `devoluciones`
 ALTER TABLE `favoritos_clientes`
   ADD CONSTRAINT `favoritos_clientes_ibfk_1` FOREIGN KEY (`n_identificacion_cliente`) REFERENCES `clientes` (`n_identificacion`),
   ADD CONSTRAINT `favoritos_clientes_ibfk_2` FOREIGN KEY (`idProducto`) REFERENCES `productos` (`idProducto`);
+
+--
+-- Filtros para la tabla `foto_perfil_cliente`
+--
+ALTER TABLE `foto_perfil_cliente`
+  ADD CONSTRAINT `foto_perfil_cliente_ibfk_1` FOREIGN KEY (`n_identificacion_cliente`) REFERENCES `clientes` (`n_identificacion`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `historial_acciones_clientes`

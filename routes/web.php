@@ -30,13 +30,15 @@ use App\Http\Controllers\admin\HistoryActionController;
 use App\Http\Controllers\admin\NotificationController;
 use App\Http\Controllers\admin\BrandController;
 use App\Http\Controllers\admin\facturaController;
+use App\Http\Controllers\admin\ClientController;
+use App\Http\Middleware\AuthenticateAdmin;
+
 
 use App\Http\Controllers\Webhook\PayUWebhookController;
 use App\Http\Controllers\Webhook\MercadoPagoWebhookController;
 use App\Http\Controllers\Webhook\PayPalWebhookController;
 use App\Http\Controllers\admin\DashboardController;
 
-use App\Http\Controllers\client\ClientController;
 use App\Http\Controllers\client\CheckoutController;
 use App\Http\Controllers\client\OrderController as ClientOrderController;
 use App\Http\Controllers\client\MessageController as ClientMessageController;
@@ -63,6 +65,14 @@ use App\Http\Controllers\HomeController;
 // ======================
 // === RUTAS PÚBLICAS ===
 // ======================
+
+// Nosotros
+
+Route::get('/about', function () {
+    return view('about');
+})->name('about');
+
+
 
 // Página principal – Home
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
@@ -144,7 +154,7 @@ Route::get('/cliente/registro', [\App\Http\Controllers\Client\Auth\ClientRegiste
 Route::post('/cliente/registro', [\App\Http\Controllers\Client\Auth\ClientRegisterController::class, 'store'])
     ->name('client.register');
 // Archivo: routes/web.php
-Route::prefix('admin')->middleware(['auth'])->group(function () {
+Route::prefix('admin')->middleware([AuthenticateAdmin::class])->group(function () {
     // ... otras rutas admin ...
     
     // Rutas para clientes
@@ -164,24 +174,38 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
 });
 
 
-    Route::prefix('admin')->middleware(['auth.admin'])->group(function() {
-    // ... otras rutas admin ...
+    Route::prefix('admin')->middleware([AuthenticateAdmin::class])->group(function() {
+    
+        // ...GESTION DE CLIENTES
+        Route::get('clients/trash', [ClientController::class, 'trash'])->name('admin.clients.trash');
+    Route::post('clients/{id}/restore', [ClientController::class, 'restore'])->name('admin.clients.restore');
+    Route::delete('clients/{id}/force-delete', [ClientController::class, 'forceDelete'])->name('admin.clients.forceDelete');
     
     // Rutas de perfil del administrador
-    Route::prefix('perfil')->group(function() {
-        Route::get('/', [\App\Http\Controllers\admin\ProfileController::class, 'index'])->name('admin.perfil.index');
-        Route::get('/editar', [\App\Http\Controllers\admin\ProfileController::class, 'edit'])->name('admin.perfil.edit');
-        Route::put('/actualizar', [\App\Http\Controllers\admin\ProfileController::class, 'update'])->name('admin.perfil.update');
+    Route::prefix('perfil')->group(function () {
+        Route::get('/', [ \App\Http\Controllers\admin\ProfileController::class, 'index' ])->name('admin.perfil.index');
+        Route::get('/editar', [ \App\Http\Controllers\admin\ProfileController::class, 'edit' ])->name('admin.perfil.edit');
+        Route::put('/actualizar', [ \App\Http\Controllers\admin\ProfileController::class, 'update' ])->name('admin.perfil.update');
     });
+
+
+    // Usa 'clientes' para mantener consistencia con las vistas
+    Route::resource('clientes', ClientController::class)->names('admin.clientes');
+
 });
 
-Route::prefix('cliente')->middleware('auth.client')->group(function () {
+Route::prefix('cliente')->middleware(\App\Http\Middleware\AuthenticateClient::class)->group(function () {
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('client.checkout.index');
     Route::post('/checkout/metodo-pago', [CheckoutController::class, 'selectPayment'])->name('client.checkout.payment');
     Route::get('/checkout/{method}', [CheckoutController::class, 'confirm'])->name('client.checkout.confirm');
 });
 
 
+
+    Route::resource('clients', ClientController::class)
+        ->except(['create', 'store'])
+        ->names('admin.clients')
+        ->withTrashed(['show', 'edit', 'update']);
 // '
 Route::prefix('webhook')->group(function () {
     Route::post('/payu', [PayUWebhookController::class, 'handle'])->name('webhook.payu');
@@ -191,7 +215,7 @@ Route::prefix('webhook')->group(function () {
 
 
 // Rutas protegidas - Cliente autenticado
-Route::prefix('cliente')->middleware('auth.client')->group(function () {
+Route::prefix('cliente')->middleware(\App\Http\Middleware\AuthenticateClient::class)->group(function () {
     // Dashboard y perfil
 
 
@@ -254,7 +278,7 @@ Route::post('admin/login', [\App\Http\Controllers\Admin\Auth\AdminLoginControlle
 Route::post('admin/logout', [\App\Http\Controllers\Admin\Auth\AdminLoginController::class, 'logout'])->name('admin.logout');
 
 // Rutas protegidas - Administrador autenticado
-Route::prefix('admin')->middleware(\App\Http\Middleware\AuthenticateAdmin::class)->group(function () {
+Route::prefix(prefix: 'admin')->middleware(AuthenticateAdmin::class)->group(function () {
         // dashboard admin
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
@@ -581,7 +605,7 @@ Route::prefix('pedidos')->group(function () {
 
 });
 
-Route::prefix('admin/metodos_pago')->middleware('auth.admin')->group(function () {
+Route::prefix('admin/metodos_pago')->middleware('auth:administradores')->group(function () {
     Route::get('/', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'index'])->name('admin.metodos_pago.index');
     Route::get('/nuevo', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'create'])->name('admin.metodos_pago.create');
     Route::post('/', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'store'])->name('admin.metodos_pago.store');

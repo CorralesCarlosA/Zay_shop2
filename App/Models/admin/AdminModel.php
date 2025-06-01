@@ -9,7 +9,7 @@ class AdminModel extends Model
     // Obtener usuario por correo
     public static function getUsuario($correo)
     {
-        return \App\Models\admin\UsuariosModel::where('correo', $correo)->first();
+        return \App\Models\admin\Client::where('correoE', $correo)->first();
     }
 
     // Obtener total de pedidos en cierto estado
@@ -37,7 +37,7 @@ class AdminModel extends Model
     // Obtener los productos más vendidos
     public static function topProductos()
     {
-        return \App\Models\admin\DetallePedido::selectRaw('producto, SUM(cantidad) AS total')
+        return \App\Models\admin\SaleDetail::selectRaw('producto, SUM(cantidad) AS total')
             ->groupBy('id_producto')
             ->orderBy('total', 'DESC')
             ->limit(3)

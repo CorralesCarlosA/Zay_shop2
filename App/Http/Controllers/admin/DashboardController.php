@@ -25,6 +25,9 @@ class DashboardController extends Controller
         ->orderBy('fecha_pedido', 'desc')
         ->limit(5)
         ->get();
+            $recentCustomers = Client::latest()
+                            ->take(5)
+                            ->get();
 
         // Obtener datos para la gráfica de ventas (últimos 6 meses)
         $ventasMensuales = Sale::selectRaw('

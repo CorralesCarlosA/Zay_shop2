@@ -6,7 +6,7 @@ use App\Models\admin\CartItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\admin\Product;
-use App\Models\client\Client;
+use App\Models\admin\Client;
 
 class CartItemController extends \App\Http\Controllers\Controller
 {
@@ -38,7 +38,7 @@ class CartItemController extends \App\Http\Controllers\Controller
         $item = CartItem::findOrFail($id_carrito);
 
         $validator = Validator::make($request->all(), [
-            'n_identificacion_cliente' => 'required|string|max:10|exists:clientes,n_identificacion',
+            'n_identificacion_cliente' => 'required|string|max:10|exists:clientesn_identificacion',
             'idProducto' => 'required|exists:productos,idProducto',
             'cantidad' => 'required|integer|min:1',
             'fecha_agregado' => 'nullable|date'

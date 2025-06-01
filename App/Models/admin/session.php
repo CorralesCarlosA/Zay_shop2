@@ -25,6 +25,6 @@ class Session extends Model
     // Relación con cliente (opcional)
     public function client()
     {
-        return $this->belongsTo(\App\Models\client\Client::class, 'user_id', 'n_identificacion');
+        return $this->belongsTo(\App\Models\admin\Client::class, 'user_id', 'n_identificacion');
     }
 }

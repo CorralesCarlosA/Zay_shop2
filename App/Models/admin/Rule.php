@@ -24,6 +24,6 @@ class Rule extends Model
     // Relación con clientes
     public function clients()
     {
-        return $this->hasMany(\App\Models\client\Client::class, 'id_regla', 'id_regla');
+        return $this->hasMany(\App\Models\admin\Client::class, 'id_regla', 'id_regla');
     }
 }

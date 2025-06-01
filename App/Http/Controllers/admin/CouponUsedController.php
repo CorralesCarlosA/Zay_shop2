@@ -48,7 +48,7 @@ class CouponUsedController extends \App\Http\Controllers\Controller
     {
         // Validación avanzada
         $validator = Validator::make($request->all(), [
-            'n_identificacion_cliente' => 'required|string|max:10|exists:clientes,n_identificacion',
+            'n_identificacion_cliente' => 'required|string|max:10|exists:clientesn_identificacion',
             'id_cupon' => 'required|exists:cupones_descuento,id_cupon',
             'fecha_uso' => 'nullable|date'
         ]);
@@ -101,7 +101,7 @@ class CouponUsedController extends \App\Http\Controllers\Controller
         $record = CouponUsed::findOrFail($id_cupon_usado);
 
         $validator = Validator::make($request->all(), [
-            'n_identificacion_cliente' => 'required|string|max:10|exists:clientes,n_identificacion',
+            'n_identificacion_cliente' => 'required|string|max:10|exists:clientesn_identificacion',
             'id_cupon' => 'required|exists:cupones_descuento,id_cupon',
             'fecha_uso' => 'required|date'
         ]);

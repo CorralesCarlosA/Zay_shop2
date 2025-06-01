@@ -1,5 +1,3 @@
-// app/Models/admin/Coupon.php
-
 <?php
 
 namespace App\Models\admin;
@@ -28,7 +26,7 @@ class Coupon extends Model
     // Relación con clientes que usaron este cupón
     public function users()
     {
-        return $this->hasMany(\App\Models\client\Client::class, 'n_identificacion', 'n_identificacion_cliente')
+        return $this->hasMany(\App\Models\admin\Client::class, 'n_identificacion', 'n_identificacion_cliente')
             ->using(\App\Models\admin\CouponUsed::class);
     }
 

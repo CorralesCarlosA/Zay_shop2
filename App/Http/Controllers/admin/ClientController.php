@@ -1,176 +1,100 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\admin\Client;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class ClientController extends Controller
 {
-    /**
-     * Mostrar listado de clientes
-     */
-    public function index()
-    {
-        try {
-            $clientes = Client::with(['pedidos', 'facturas'])
-                            ->orderBy('created_at', 'desc')
-                            ->paginate(15);
-
-            return view('admin.clientes.index', compact('clientes'));
-            
-        } catch (\Exception $e) {
-            return redirect()->back()
-                           ->with('error', 'Error al cargar clientes: '.$e->getMessage());
+    // Listado con filtros avanzados
+    public function index(Request $request)
+{
+        $query = Client::withTrashed();
+        
+        if ($request->filled('search')) {
+            $query->where(function($q) use ($request) {
+                $q->where('nombres', 'like', "%{$request->search}%")
+                  ->orWhere('apellidos', 'like', "%{$request->search}%")
+                  ->orWhere('n_identificacion', 'like', "%{$request->search}%")
+                  ->orWhere('correoE', 'like', "%{$request->search}%");
+            });
         }
-    }
-
-    /**
-     * Mostrar formulario de creación
-     */
-    public function create()
-    {
-        return view('admin.clientes.create');
-    }
-
-    /**
-     * Almacenar nuevo cliente
-     */
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'n_identificacion' => 'required|string|unique:clientes',
-            'tipo_identificacion' => 'required|in:Cédula,Pasaporte,RUC',
-            'nombres' => 'required|string|max:100',
-            'apellidos' => 'required|string|max:100',
-            'telefono' => 'required|string|max:15',
-            'email' => 'required|email|unique:clientes',
-            'direccion' => 'nullable|string|max:255',
-            'ciudad' => 'nullable|string|max:100',
-            'fecha_nacimiento' => 'nullable|date',
-            'genero' => 'nullable|in:Masculino,Femenino,Otro'
-        ]);
-
-        try {
-            $cliente = Client::create($validated);
-            return redirect()->route('admin.clientes.show', $cliente->id)
-                           ->with('success', 'Cliente creado exitosamente');
-                           
-        } catch (\Exception $e) {
-            return back()->withInput()
-                       ->with('error', 'Error al crear cliente: '.$e->getMessage());
+        
+        if ($request->filled('estado')) {
+            $query->where('estado_cliente', $request->estado);
         }
+        
+        $clientes = $query->orderBy('n_identificacion', 'desc')->paginate(20);
+        
+        return view('admin.clientes.index', compact('clientes'));
     }
 
-    /**
-     * Mostrar detalles del cliente
-     */
-    public function show($id)
-    {
-        try {
-            $cliente = Client::with(['pedidos' => function($query) {
-                                $query->orderBy('fecha_pedido', 'desc');
-                             }, 'facturas'])
-                             ->findOrFail($id);
 
-            return view('admin.clientes.show', compact('cliente'));
-            
-        } catch (\Exception $e) {
-            return redirect()->route('admin.clientes.index')
-                           ->with('error', 'Cliente no encontrado');
-        }
-    }
-
-    /**
-     * Mostrar formulario de edición
-     */
+    // Formulario de edición COMPLETO
     public function edit($id)
     {
-        try {
-            $cliente = Client::findOrFail($id);
-            return view('admin.clientes.edit', compact('cliente'));
-            
-        } catch (\Exception $e) {
-            return redirect()->route('admin.clientes.index')
-                           ->with('error', 'Cliente no encontrado');
-        }
+           $client = Client::where('n_identificacion', $id)->firstOrFail(); // ✔️
+
+    
+        $estadosCiviles = ['Soltero', 'Casado', 'Divorciado', 'Viudo'];
+        
+        return view('admin.clients.edit', compact('client', 'paises', 'estadosCiviles'));
     }
 
-    /**
-     * Actualizar cliente
-     */
+    // Actualización de TODOS los campos
     public function update(Request $request, $id)
     {
-        $cliente = Client::findOrFail($id);
-
-        $validated = $request->validate([
-            'n_identificacion' => [
-                'required',
-                'string',
-                Rule::unique('clientes')->ignore($cliente->id)
-            ],
-            'tipo_identificacion' => 'required|in:Cédula,Pasaporte,RUC',
+            $client = Client::where('n_identificacion', $id)->firstOrFail(); 
+        $rules = [
+            'n_identificacion' => 'required|integer|unique:clientsn_identificacion,'.$id.'n_identificacion',
+            'dni' => 'required|string|max:20|unique:clients,dni,'.$id.'n_identificacion',
             'nombres' => 'required|string|max:100',
             'apellidos' => 'required|string|max:100',
-            'telefono' => 'required|string|max:15',
-            'email' => [
-                'required',
-                'email',
-                Rule::unique('clientes')->ignore($cliente->id)
-            ],
-            'direccion' => 'nullable|string|max:255',
-            'ciudad' => 'nullable|string|max:100',
+            'sexo' => 'nullable|in:M,F,Otro',
             'fecha_nacimiento' => 'nullable|date',
-            'genero' => 'nullable|in:Masculino,Femenino,Otro'
-        ]);
-
-        try {
-            $cliente->update($validated);
-            return redirect()->route('admin.clientes.show', $cliente->id)
-                           ->with('success', 'Cliente actualizado exitosamente');
-                           
-        } catch (\Exception $e) {
-            return back()->withInput()
-                       ->with('error', 'Error al actualizar cliente: '.$e->getMessage());
+            'correoE' => 'required|email|unique:clients,email,'.$id.'n_identificacion',
+            'password' => 'nullable|string|min:8|confirmed',
+            // ... validar todos los demás campos
+        ];
+        
+        $data = $request->validate($rules);
+        
+        // Manejo especial de campos
+        if (empty($data['password'])) {
+            unset($data['password']);
+        } else {
+            $data['password'] = bcrypt($data['password']);
         }
+        
+        // Actualización incluso con soft delete
+        $client->update($data);
+        
+        // Restaurar si estaba eliminado
+        if ($client->trashed() && $request->restaurar) {
+            $client->restore();
+        }
+        
+        return redirect()->route('admin.clients.show', $client->n_identificacion)
+            ->with('success', 'Cliente actualizado completamente');
     }
 
-    /**
-     * Eliminar cliente
-     */
+    // Eliminación (soft delete)
     public function destroy($id)
     {
-        try {
-            $cliente = Client::findOrFail($id);
-            
-            // Verificar si tiene pedidos asociados
-            if($cliente->pedidos()->count() > 0) {
-                return back()->with('error', 'No se puede eliminar, el cliente tiene pedidos asociados');
-            }
-            
-            $cliente->delete();
-            return redirect()->route('admin.clientes.index')
-                           ->with('success', 'Cliente eliminado exitosamente');
-                           
-        } catch (\Exception $e) {
-            return back()->with('error', 'Error al eliminar cliente: '.$e->getMessage());
-        }
+        $client = Client::findOrFail($id);
+        $client->delete();
+        
+        return back()->with('success', 'Cliente desactivado (en papelera)');
     }
 
-    /**
-     * Mostrar historial de movimientos
-     */
-    public function movimientos($id)
+    // Eliminación PERMANENTE
+    public function forceDelete($id)
     {
-        try {
-            $cliente = Client::with(['pedidos', 'facturas'])->findOrFail($id);
-            return view('admin.clientes.movimientos', compact('cliente'));
-            
-        } catch (\Exception $e) {
-            return redirect()->route('admin.clientes.index')
-                           ->with('error', 'Error al cargar movimientos: '.$e->getMessage());
-        }
+        $client = Client::withTrashed()->findOrFail($id);
+        $client->forceDelete();
+        
+        return redirect()->route('admin.clients.index')
+            ->with('warning', 'Cliente eliminado permanentemente');
     }
 }

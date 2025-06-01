@@ -1,5 +1,3 @@
-// app/Models/admin/ProductOffer.php
-
 <?php
 
 namespace App\Models\admin;

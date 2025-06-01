@@ -1,12 +1,14 @@
 @extends('admin.layouts.app')
 
 @section('title', 'Crear Nuevo Producto')
-@section('breadcrumbs', [
-['name' => 'Inicio', 'url' => route('admin.dashboard')],
-['name' => 'Productos', 'url' => route('admin.productos.index')],
-['name' => 'Nuevo']
-])
 
+
+@section('breadcrumbs')
+    <li class="breadcrumb-item">
+        <a href="{{ route('admin.dashboard') }}">Inicio</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">Productos</li>
+@endsection
 @section('content')
 <div class="container-fluid">
     <div class="row">

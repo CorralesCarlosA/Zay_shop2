@@ -22,7 +22,7 @@ class Cart extends Model
 
     public function client()
     {
-        return $this->belongsTo(\App\Models\client\Client::class, 'n_identificacion_cliente', 'n_identificacion');
+        return $this->belongsTo(\App\Models\admin\Client::class, 'n_identificacion_cliente', 'n_identificacion');
     }
 
     public function product()

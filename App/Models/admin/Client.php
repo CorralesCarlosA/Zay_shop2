@@ -2,39 +2,58 @@
 namespace App\Models\admin;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Client extends Authenticatable
 {
-    protected $guard = 'clientes'; 
+    use SoftDeletes;
 
+    
     protected $table = 'clientes';
-    protected $primaryKey = 'n_identificacion';
-    public $incrementing = false;
-     protected $keyType = 'string';
-    public $timestamps = false;
+    protected $primaryKey = 'n_identificacion'; // PK personalizada
+   protected $dates = ['deleted_at']; 
 
+       public $timestamps = false;
+
+
+    // Campos editables (incluyendo todos los que mencionas)
     protected $fillable = [
-        'nombres', 'apellidos', 'tipo_identificacion', 'n_identificacion',
-        'estado_cliente', 'tipo_cliente', 'n_telefono', 'Direccion_recidencia',
-        'correoE', 'sexo', 'estatura(m)', 'password', 'ciudad', 'fecha_registro'
+        'n_identificacion', 
+        'dni',
+        'nombres',
+        'apellidos',
+        'sexo',
+        'fecha_nacimiento',
+        'email',
+        'password',
+        'telefono',
+        'direccion',
+        'ciudad',
+        'pais',
+        'codigo_postal',
+        'estado_civil',
+        'profesion',
+        'ingresos_anuales',
+        'estado',
+        'ultimo_acceso',
+        'ip_registro',
+        'foto_perfil',
+        'notas_admin'
     ];
 
-    protected $hidden = [
-        'password'
+    protected $casts = [
+        'fecha_nacimiento' => 'date',
+        'estado' => 'boolean',
+        'deleted_at' => 'datetime',
+          'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
-        public function pedidos()
+    // Relación con ventas (ejemplo)
+    public function ventas() {
+        return $this->hasMany(Sale::class, 'n_identificacion');
+    }  public function getCreatedAtAttribute()
     {
-        return $this->hasMany(Order::class, 'n_identificacion_cliente', 'n_identificacion');
-    }
-
-    public function getAuthPassword()
-    {
-        return $this->password;
-    }
-
-    public function getAuthIdentifierName()
-    {
-        return 'correoE';
+        return $this->attributes['fecha_registro'];
     }
 }

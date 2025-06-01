@@ -1,10 +1,9 @@
-{{-- resources/views/admin/partials/recent-customers.blade.php --}}
 <div class="card shadow-sm">
     <div class="card-header bg-white">
         <h5 class="mb-0">Clientes Recientes</h5>
     </div>
     <div class="card-body">
-        @if(isset($recentCustomers) && count($recentCustomers) > 0)
+        @if($recentCustomers->count() > 0)
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
@@ -37,7 +36,9 @@
                     </tbody>
                 </table>
             </div>
-     <a href="/admin/clientes" class="btn btn-sm btn-outline-primary">
+    <a href="{{ route('admin.clientes.index') }}" class="btn btn-sm btn-outline-primary mt-3">
+                Ver todos los clientes
+            </a> {{-- Cierre de tag añadido --}}
         @else
             <div class="alert alert-info mb-0">
                 No hay clientes recientes
