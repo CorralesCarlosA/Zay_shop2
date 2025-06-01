@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 01-06-2025 a las 01:16:25
+-- Tiempo de generación: 01-06-2025 a las 03:38:28
 -- Versión del servidor: 11.8.0-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -203,16 +203,18 @@ CREATE TABLE `clientes` (
   `id_administrador` int(11) DEFAULT NULL COMMENT 'ID del administrador que registró/modificó al cliente',
   `id_clientes` int(11) NOT NULL,
   `email_verified_at` datetime DEFAULT NULL COMMENT 'Fecha de verificación de correo',
-  `deleted_at` timestamp NULL DEFAULT NULL COMMENT 'Fecha de eliminación lógica'
+  `deleted_at` timestamp NULL DEFAULT NULL COMMENT 'Fecha de eliminación lógica',
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `clientes`
 --
 
-INSERT INTO `clientes` (`nombres`, `apellidos`, `tipo_identificacion`, `n_identificacion`, `estado_cliente`, `foto_perfil_id`, `tipo_cliente`, `n_telefono`, `Direccion_recidencia`, `correoE`, `sexo`, `estatura(m)`, `fecha_registro`, `fecha_nacimiento`, `password`, `ciudad`, `id_administrador`, `id_clientes`, `email_verified_at`, `deleted_at`) VALUES
-('Pedro', 'López', 'Cedula de ciudadania (CC)', '8765432109', 1, NULL, 'Hierro', '3124444444', 'Av 5 #15-25', 'pedro@example.com', 'Masculino', NULL, '2025-05-14 22:08:14', NULL, '', 2, 2, 2, NULL, NULL),
-('Ana', 'Rodríguez', 'Cedula de ciudadania (CC)', '9876543210', 1, NULL, 'Hierro', '3105555555', 'Cra 10 #20-30', 'ana@example.com', 'Femenino', NULL, '2025-05-14 22:08:14', NULL, '', 1, 1, 1, NULL, NULL);
+INSERT INTO `clientes` (`nombres`, `apellidos`, `tipo_identificacion`, `n_identificacion`, `estado_cliente`, `foto_perfil_id`, `tipo_cliente`, `n_telefono`, `Direccion_recidencia`, `correoE`, `sexo`, `estatura(m)`, `fecha_registro`, `fecha_nacimiento`, `password`, `ciudad`, `id_administrador`, `id_clientes`, `email_verified_at`, `deleted_at`, `created_at`, `updated_at`) VALUES
+('Pedro', 'López', 'Cedula de ciudadania (CC)', '8765432109', 1, NULL, 'Hierro', '3124444444', 'Av 5 #15-25', 'pedro@example.com', 'Masculino', NULL, '2025-05-14 22:08:14', NULL, '', 2, 2, 2, NULL, NULL, '2025-05-31 23:42:04', '2025-05-31 23:42:04'),
+('Ana', 'Rodríguez', 'Cedula de ciudadania (CC)', '9876543210', 1, NULL, 'Hierro', '3105555555', 'Cra 10 #20-30', 'ana@example.com', 'Femenino', NULL, '2025-05-14 22:08:14', NULL, '', 1, 1, 1, NULL, NULL, '2025-05-31 23:42:04', '2025-05-31 23:42:04');
 
 -- --------------------------------------------------------
 
@@ -885,6 +887,7 @@ CREATE TABLE `sessions` (
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
 ('aLoeO3r4YPZ3NPeJHBEgwTBTPxsekpsAADLmxzFV', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiME42bjJoS1hpWndDRXRpNDlNRzg4RTNQdndYYVh2Zm5VYmEzc0RVUCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1748717377),
+('i5tCRDf8PD9Q00GUarBwobeQpwHjNtROASY7OjBs', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiTFZMU0VibGpZeDNWWmFBTklmY3QzOVFLWUdmNjUwd05vSkREUk9PaiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9jbGllbnRlcy85ODc2NTQzMjEwIjt9czo2MjoibG9naW5fYWRtaW5pc3RyYWRvcmVzXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO3M6MTk6ImFkbWluaXNAYWRtaW5pcy5jb20iO30=', 1748741571),
 ('mz06KJGgwfjdn9VmTteOBtro4p4hj7lGS38J6Msu', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiNHg4bWJwY1JRRk9iV2tpV1BTSFhDalJoUVAxN3NmN0dyb2NCeGhnUyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9jbGllbnRlcyI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NjI6ImxvZ2luX2FkbWluaXN0cmFkb3Jlc181OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtzOjE5OiJhZG1pbmlzQGFkbWluaXMuY29tIjt9', 1748659900),
 ('Ni4tK9sVJIF2LfKDHBvTXLNz1xQSsFOoJCyw5T6V', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiUUVscVRqYWdyR2VhbkpBNHpNdU1tVW02aUd1RVBjQ1BVQUxSNTB4SCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1748717343),
 ('ZQAzuC1kW8APPgd5XmbbmMYXF0mrXve1szOEmjwS', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiMm8wYTdwVER1UElVSElDanQ1QjVPbENEbFFXbDBuRzBPaTBMMEJnbCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzU6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9wZWRpZG9zIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo2MjoibG9naW5fYWRtaW5pc3RyYWRvcmVzXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO3M6MTk6ImFkbWluaXNAYWRtaW5pcy5jb20iO30=', 1748650014);

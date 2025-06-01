@@ -56,7 +56,7 @@ public function index(Request $request)
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'n_identificacion_cliente' => 'required|string|exists:clientesn_identificacion',
+            'n_identificacion_cliente' => 'required|string|exists:clientes,n_identificacion',
             'direccion_envio' => 'required|string|max:255',
             'ciudad_envio' => 'required|int|exists:ciudades,id_ciudad',
             'producto_id.*' => 'required|int|exists:productos,idProducto',

@@ -48,7 +48,7 @@ class ReviewController extends \App\Http\Controllers\Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'n_identificacion_cliente' => 'required|string|exists:clientesn_identificacion',
+            'n_identificacion_cliente' => 'required|string|exists:clientes,n_identificacion',
             'idProducto' => 'required|int|exists:productos,idProducto',
             'calificacion' => 'required|int|min:1|max:5',
             'comentarios' => 'nullable|string',
@@ -94,7 +94,7 @@ class ReviewController extends \App\Http\Controllers\Controller
         $reseña = Review::findOrFail($id_reseña);
 
         $request->validate([
-            'n_identificacion_cliente' => 'required|string|exists:clientesn_identificacion',
+            'n_identificacion_cliente' => 'required|string|exists:clientes,n_identificacion',
             'idProducto' => 'required|int|exists:productos,idProducto',
             'calificacion' => 'required|int|min:1|max:5',
             'comentarios' => 'nullable|string',

@@ -8,27 +8,34 @@ use Illuminate\Http\Request;
 class ClientController extends Controller
 {
     // Listado con filtros avanzados
-    public function index(Request $request)
+ // En App\Http\Controllers\Admin\ClientController.php
+
+public function index(Request $request)
 {
-        $query = Client::withTrashed();
-        
-        if ($request->filled('search')) {
-            $query->where(function($q) use ($request) {
-                $q->where('nombres', 'like', "%{$request->search}%")
-                  ->orWhere('apellidos', 'like', "%{$request->search}%")
-                  ->orWhere('n_identificacion', 'like', "%{$request->search}%")
-                  ->orWhere('correoE', 'like', "%{$request->search}%");
-            });
-        }
-        
-        if ($request->filled('estado')) {
-            $query->where('estado_cliente', $request->estado);
-        }
-        
-        $clientes = $query->orderBy('n_identificacion', 'desc')->paginate(20);
-        
-        return view('admin.clientes.index', compact('clientes'));
+    $query = Client::withTrashed();
+    
+    if ($request->filled('search')) {
+        $query->where(function($q) use ($request) {
+            $q->where('nombres', 'like', "%{$request->search}%")
+              ->orWhere('apellidos', 'like', "%{$request->search}%")
+              ->orWhere('n_identificacion', 'like', "%{$request->search}%")
+              ->orWhere('correoE', 'like', "%{$request->search}%");
+        });
     }
+    
+    if ($request->filled('estado')) {
+        $query->where('estado_cliente', $request->estado);
+    }
+    
+    $clientes = $query->orderBy('n_identificacion', 'desc')->paginate(20);
+    
+    // Si es una petición AJAX para el modal, retornamos solo el contenido
+    if ($request->ajax()) {
+        return view('admin.clientes.partials.modal_content', compact('clientes'));
+    }
+    
+    return view('admin.clientes.index', compact('clientes'));
+}
 
 
     // Formulario de edición COMPLETO
@@ -78,6 +85,22 @@ class ClientController extends Controller
         return redirect()->route('admin.clients.show', $client->n_identificacion)
             ->with('success', 'Cliente actualizado completamente');
     }
+    public function restore($id)
+{
+    $client = Client::withTrashed()->where('n_identificacion', $id)->firstOrFail();
+    $client->restore();
+    
+    return redirect()->route('admin.clientes.show', $client->n_identificacion)
+        ->with('success', 'Cliente restaurado exitosamente');
+}
+
+    public function show($id)
+{
+    // Buscar el cliente incluyendo los eliminados lógicamente
+    $client = Client::withTrashed()->where('n_identificacion', $id)->firstOrFail();
+    
+    return view('admin.clientes.show', compact('client'));
+}
 
     // Eliminación (soft delete)
     public function destroy($id)

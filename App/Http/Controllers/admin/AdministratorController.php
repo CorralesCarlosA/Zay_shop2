@@ -42,7 +42,7 @@ class AdministratorController extends \App\Http\Controllers\Controller
             'password' => 'required|string|min:8|confirmed',
             'estado_administrador' => 'required|in:1,0',
             'id_rol_admin' => 'required|exists:roles_administradores,id_rol_admin',
-            'n_identificacion' => 'required|string|max:10|unique:administradoresn_identificacion'
+            'n_identificacion' => 'required|string|max:10|unique:administradores,n_identificacion'
         ]);
 
         if ($validator->fails()) {
@@ -102,7 +102,7 @@ class AdministratorController extends \App\Http\Controllers\Controller
             'password' => 'nullable|string|min:8|confirmed',
             'estado_administrador' => 'required|in:1,0',
             'id_rol_admin' => 'required|exists:roles_administradores,id_rol_admin',
-            'n_identificacion' => 'required|string|max:10|unique:administradoresn_identificacion,' . $id_administrador . ',id_administrador'
+            'n_identificacion' => 'required|string|max:10|unique:administradores,n_identificacion,' . $id_administrador . ',id_administrador'
         ]);
 
         if ($validator->fails()) {
