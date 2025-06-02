@@ -51,6 +51,7 @@ public function create()
     $generos = GenderProduct::all();
     $clases = ClassProduct::all();
     $marcas = Brand::all(); // ✅ Cargar marcas
+    
 
     return view('admin.productos.create', compact(
         'categorias', 'colores', 'tallas', 'estados', 'generos', 'clases', 'marcas'
