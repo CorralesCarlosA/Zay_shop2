@@ -15,7 +15,7 @@ class GenderProductController extends \App\Http\Controllers\Controller
     public function index()
     {
         $genders = GenderProduct::all();
-        return view('admin.productos.sexo.index', compact('genders'));
+        return view('admin.productos.genders.index', compact('genders'));
     }
 
     /**

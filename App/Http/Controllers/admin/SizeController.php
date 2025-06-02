@@ -8,10 +8,10 @@ use App\Models\admin\Size;
 
 class SizeController extends Controller
 {
-    public function index()
+   public function index()
     {
         $tallas = Size::all();
-        return view('admin.productos.tallas.index', compact('tallas'));
+        return view('admin.productos.sizes.index', compact('tallas'));
     }
 
     public function create()
@@ -19,17 +19,16 @@ class SizeController extends Controller
         return view('admin.productos.tallas.create');
     }
 
-    public function store(Request $request)
+ public function store(Request $request)
     {
         $request->validate([
-            'nombreTalla' => 'required|string|max:255',
-            'estadoTalla' => 'required|in:0,1'
+            'nombre_talla' => 'required|string|max:20',
+            'descripcion' => 'nullable|string'
         ]);
 
-        Size::create($request->only(['nombreTalla', 'estadoTalla']));
+        Size::create($request->all());
 
-        return redirect()->route('admin.productos.talla.index')
-            ->with('success', 'Talla creada correctamente');
+        return back()->with('success', 'Talla creada correctamente');
     }
 
     public function show(int $id_talla)
@@ -44,21 +43,19 @@ class SizeController extends Controller
         return view('admin.productos.tallas.edit', compact('talla'));
     }
 
-    public function update(Request $request, int $id_talla)
+  public function update(Request $request, $id_talla)
     {
         $request->validate([
-            'nombreTalla' => 'required|string|max:255',
-            'estadoTalla' => 'required|in:0,1'
+            'nombre_talla' => 'required|string|max:20',
+            'descripcion' => 'nullable|string'
         ]);
 
         $talla = Size::findOrFail($id_talla);
-        $talla->update($request->only(['nombreTalla', 'estadoTalla']));
+        $talla->update($request->all());
 
-        return redirect()->route('admin.productos.talla.index')
-            ->with('success', 'Talla actualizada correctamente');
+        return back()->with('success', 'Talla actualizada correctamente');
     }
-
-    public function destroy(int $id_talla)
+     public function destroy($id_talla)
     {
         $talla = Size::findOrFail($id_talla);
         $talla->delete();

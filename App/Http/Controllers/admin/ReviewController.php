@@ -7,9 +7,6 @@ use Illuminate\Http\Request;
 
 class ReviewController extends \App\Http\Controllers\Controller
 {
-    /**
-     * Mostrar todas las reseñas
-     */
     public function index(Request $request)
     {
         $query = Review::with(['product', 'client']);
@@ -28,67 +25,58 @@ class ReviewController extends \App\Http\Controllers\Controller
             $query->where('calificacion', $request->input('calificacion'));
         }
 
-        $reseñas = $query->get();
+        // Filtrar por estado si es necesario
+        if ($request->has('estado')) {
+            $query->where('estado_reseña', $request->input('estado'));
+        }
+
+        $reseñas = $query->paginate(10); // Agregado paginación
         return view('admin.reseñas.index', compact('reseñas'));
     }
 
-    /**
-     * Formulario para nueva reseña (manual)
-     */
     public function create()
     {
-        $clientes = \App\Models\client\Client::all();
+        $clientes = \App\Models\admin\Client::all();
         $productos = \App\Models\admin\Product::all();
         return view('admin.reseñas.create', compact('clientes', 'productos'));
     }
 
-    /**
-     * Guardar nueva reseña manual
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
             'n_identificacion_cliente' => 'required|string|exists:clientes,n_identificacion',
             'idProducto' => 'required|int|exists:productos,idProducto',
             'calificacion' => 'required|int|min:1|max:5',
-            'comentarios' => 'nullable|string',
+            'comentario' => 'nullable|string', // Cambiado a singular
         ]);
 
         Review::create([
             'n_identificacion_cliente' => $request->input('n_identificacion_cliente'),
             'idProducto' => $request->input('idProducto'),
             'calificacion' => $request->input('calificacion'),
-            'comentarios' => $request->input('comentarios'),
+            'comentario' => $request->input('comentario'),
             'fecha_reseña' => now(),
+            'estado_reseña' => 'Aprobada' // Las creadas manualmente se aprueban automáticamente
         ]);
 
         return redirect()->route('admin.reseñas.index')->with('success', 'Reseña creada correctamente');
     }
 
-    /**
-     * Ver detalles de una reseña
-     */
     public function show(int $id_reseña)
     {
         $reseña = Review::with(['product', 'client'])->findOrFail($id_reseña);
         return view('admin.reseñas.show', compact('reseña'));
     }
 
-    /**
-     * Editar una reseña
-     */
     public function edit(int $id_reseña)
     {
         $reseña = Review::findOrFail($id_reseña);
-        $clientes = \App\Models\client\Client::all();
+        $clientes = \App\Models\admin\Client::all();
         $productos = \App\Models\admin\Product::all();
 
         return view('admin.reseñas.edit', compact('reseña', 'clientes', 'productos'));
     }
 
-    /**
-     * Actualizar reseña
-     */
     public function update(Request $request, int $id_reseña)
     {
         $reseña = Review::findOrFail($id_reseña);
@@ -97,27 +85,41 @@ class ReviewController extends \App\Http\Controllers\Controller
             'n_identificacion_cliente' => 'required|string|exists:clientes,n_identificacion',
             'idProducto' => 'required|int|exists:productos,idProducto',
             'calificacion' => 'required|int|min:1|max:5',
-            'comentarios' => 'nullable|string',
+            'comentario' => 'nullable|string', // Cambiado a singular
         ]);
 
-        $reseña->fill([
+        $reseña->update([
             'n_identificacion_cliente' => $request->input('n_identificacion_cliente'),
             'idProducto' => $request->input('idProducto'),
             'calificacion' => $request->input('calificacion'),
-            'comentarios' => $request->input('comentarios')
-        ])->save();
+            'comentario' => $request->input('comentario')
+        ]);
 
         return back()->with('success', 'Reseña actualizada correctamente');
     }
 
-    /**
-     * Eliminar reseña
-     */
     public function destroy(int $id_reseña)
     {
         $reseña = Review::findOrFail($id_reseña);
         $reseña->delete();
 
         return back()->with('success', 'Reseña eliminada correctamente');
+    }
+
+    // Nuevos métodos para aprobar/rechazar
+    public function approve(int $id_reseña)
+    {
+        $reseña = Review::findOrFail($id_reseña);
+        $reseña->update(['estado_reseña' => 'Aprobada']);
+        
+        return back()->with('success', 'Reseña aprobada correctamente');
+    }
+
+    public function reject(int $id_reseña)
+    {
+        $reseña = Review::findOrFail($id_reseña);
+        $reseña->update(['estado_reseña' => 'Rechazada']);
+        
+        return back()->with('success', 'Reseña rechazada correctamente');
     }
 }
