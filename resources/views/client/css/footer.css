@@ -5,15 +5,15 @@ footer{
     margin-top: 3rem !important;
 }
 
-    h5{
-        color: #d4af37 !important;
-    }
+h5{
+    color: #d4af37 !important;
+}
 
-    p,a,li{
-        color: #D9D9D9 !important;
-    }
+p,a,li{
+    color: #D9D9D9 !important;
+}
 
-    a:hover{
-        color: #d4af37;
+a:hover{
+    color: #d4af37;
 
-    }
+}

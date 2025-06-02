@@ -171,7 +171,7 @@ CREATE TABLE `clientes` (
   `Direccion_recidencia` varchar(255) NOT NULL COMMENT 'Dirección de residencia del cliente',
   `correoE` varchar(150) NOT NULL COMMENT 'Correo electrónico de contacto del cliente',
   `sexo` enum('Masculino','Femenino','Otro','') NOT NULL COMMENT 'Sexo o género del cliente',
-  `estatura(m)` decimal(3,2) DEFAULT NULL COMMENT 'Estatura en metros, ejemplo: 1.75',
+  `estatura_m` decimal(3,2) DEFAULT NULL COMMENT 'Estatura en metros, ejemplo: 1.75',
   `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp() COMMENT 'Fecha de registro del cliente',
   `fecha_nacimiento` date DEFAULT NULL COMMENT 'Fecha de nacimiento del cliente',
   `password` varchar(255) NOT NULL COMMENT 'Contraseña encriptada con hash',

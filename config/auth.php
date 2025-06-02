@@ -7,10 +7,14 @@ return [
 ],
 
 'guards' => [
-'web' => [
-'driver' => 'session',
-'provider' => 'users',
-],
+    'web' => [
+        'driver' => 'session',
+        'provider' => 'users',
+    ],
+    'clientes' => [
+        'driver'   => 'session',
+        'provider' => 'clientes',
+    ],
 
 // Guard para administrador
 'administradores' => [
@@ -27,15 +31,14 @@ return [
 ],
 
 'providers' => [
-'users' => [
-'driver' => 'eloquent',
-'model' => App\Models\User::class,
-],
-
-'clientes' => [
-'driver' => 'eloquent',
-'model' => App\Models\admin\Client::class,
-],
+    'users' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\User::class,
+    ],
+        'clientes' => [
+        'driver' => 'eloquent',
+        'model'  => App\Models\admin\Client::class,
+    ],
 
 'administradores' => [
     'driver' => 'eloquent',

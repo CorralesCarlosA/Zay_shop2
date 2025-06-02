@@ -11,11 +11,31 @@ class Client extends Authenticatable
     
     protected $table = 'clientes';
     protected $primaryKey = 'n_identificacion'; // PK personalizada
-   protected $dates = ['deleted_at']; 
+    protected $dates = ['deleted_at']; 
 
        public $timestamps = false;
 
-
+    protected $fillable = [
+        'nombres',
+        'apellidos',
+        'tipo_identificacion',
+        'n_identificacion',
+        'estado_cliente',
+        'foto_perfil_id',
+        'tipo_cliente',
+        'n_telefono',
+        'Direccion_recidencia',
+        'correoE',
+        'sexo',
+        'estatura_m', // Ajustado
+        'fecha_registro',
+        'fecha_nacimiento',
+        'password',
+        'ciudad',
+        'id_administrador',
+        'email_verified_at',
+    ];
+/*
     // Campos editables (incluyendo todos los que mencionas)
     protected $fillable = [
         'n_identificacion', 
@@ -39,7 +59,7 @@ class Client extends Authenticatable
         'ip_registro',
         'foto_perfil',
         'notas_admin'
-    ];
+    ];*/
 
     protected $casts = [
         'fecha_nacimiento' => 'date',

@@ -6,9 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title') | Tienda de Lujo</title>
     <!-- CSS -->
-    <link rel="stylesheet" href="css/header.css" >
-    <link rel="stylesheet" href="css/footer.css" >
-
+  
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Iconos Bootstrap Icons -->
@@ -35,18 +34,18 @@
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    .navbar {
-        background-color: #ffffff;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    .navbar{
+        background-color: #2C4926 !important;
+        overflow: hidden;
     }
 
-    .navbar-brand {
-        color: #28a745 ;
+    .navbar-brand{
+        color: #d4af37 !important;
         font-weight: bold;
     }
 
-    .nav-link {
-        color: #000000 ;
+    .nav-link{
+        color: #D9D9D9 !important;
     }
 
     .nav-link:hover {
@@ -65,11 +64,25 @@
         color: #d4af37;
     }
 
-    footer {
-        background-color: #f8f9fa;
-        color: #000000;
-        padding: 2rem 0;
-        margin-top: 3rem;
+    footer{
+        background-color: #2C4926 !important;
+        color: #000000 !important;
+        padding: 2rem 0 !important;
+        margin-top: 3rem !important;
+    
+    }
+
+        h5{
+        color: #d4af37 !important;
+    }
+
+    .fooli{
+        color: #D9D9D9 !important;
+    }
+
+    a:hover{
+        color: #d4af37;
+
     }
     </style>
 </head>
@@ -153,28 +166,28 @@
             <div class="row">
                 <div class="col-md-4 mb-4 mb-md-0">
                     <h5 style="color: #28a745;">Zay Shop</h5>
-                    <p style="color: #000000;">La excelencia en cada producto.</p>
+                    <p class="fooli" style="color: #000000;">La excelencia en cada producto.</p>
                 </div>
                 <div class="col-md-4 mb-4 mb-md-0">
                     <h5 style="color: #28a745;">Enlaces Rápidos</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#" style="color: #000000; text-decoration: none;">Inicio</a></li>
-                        <li><a href="#" style="color: #000000; text-decoration: none;">Productos</a></li>
-                        <li><a href="#" style="color: #000000; text-decoration: none;">Contacto</a></li>
+                        <li class="fooli"><a class="fooli" href="#" style="color: #000000; text-decoration: none;">Inicio</a></li>
+                        <li class="fooli"><a class="fooli" href="#" style="color: #000000; text-decoration: none;">Productos</a></li>
+                        <li class="fooli"><a class="fooli" href="#" style="color: #000000; text-decoration: none;">Contacto</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
                     <h5 style="color: #28a745;">Contacto</h5>
                     <ul class="list-unstyled">
-                        <li style="color: #000000;"><i class="bi bi-envelope" style="color: #d4af37;"></i>
+                        <li style="color: #D9D9D9;"><i class="bi bi-envelope" style="color: #d4af37;"></i>
                             info@Zayshop.com</li>
-                        <li style="color: #000000;"><i class="bi bi-phone" style="color: #d4af37;"></i> +57 300 0000 00 00
+                        <li style="color: #D9D9D9;"><i class="bi bi-phone" style="color: #d4af37;"></i> +57 300 0000 00 00
                         </li>
                     </ul>
                 </div>
             </div>
             <hr style="border-color: #28a745; opacity: 0.2;">
-            <p class="mb-0" style="color: #000000;">
+            <p class="mb-0v fooli" style="color: #000000;">
                 &copy; {{ date('Y') }} ZayShop. Todos los derechos reservados.
             </p>
         </div>

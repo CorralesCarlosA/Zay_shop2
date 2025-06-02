@@ -16,8 +16,10 @@
                     @if(session('error'))
                     <div class="alert alert-danger">{{ session('error') }}</div>
                     @endif
+                    <div id="responseMessage"></div>
 
-                    <form method="POST" action="{{ route('client.register') }}">
+
+                    <form id="clientRegisterForm" >
                         @csrf
 
                         <div class="row">
@@ -129,9 +131,12 @@
                                     class="text-decoration-none">Inicia Sesión</a></p>
                         </div>
                     </form>
+                    
+
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script type="module" src="{{ asset('js/sesion/registro.js') }}"></script>
 @endsection

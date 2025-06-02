@@ -16,8 +16,9 @@
                     @if(session('error'))
                     <div class="alert alert-danger">{{ session('error') }}</div>
                     @endif
+                    <div id="responseMessage"></div> <!-- Aquí se mostrarán los errores -->
 
-                    <form method="POST" action="{{ route('client.login.post') }}">
+                    <form id="clientLoginForm">
                         @csrf
 
                         <div class="mb-3">
@@ -46,4 +47,5 @@
         </div>
     </div>
 </div>
+<script type="module" src="{{ asset('js/sesion/inicio-sesion.js') }}"></script>
 @endsection
