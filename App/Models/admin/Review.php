@@ -9,16 +9,17 @@ class Review extends Model
 {
     use HasFactory;
 
-    protected $table = 'reseñas_productos';
-    protected $primaryKey = 'id_reseña';
+    protected $table = 'resenas_productos';
+    protected $primaryKey = 'id_resena';
     public $timestamps = false;
 
     protected $fillable = [
         'n_identificacion_cliente',
         'idProducto',
         'calificacion',
-        'comentarios',
-        'fecha_reseña'
+        'comentario',
+        'fecha_resena',
+        'estado_resena'
     ];
 
     // Relación con cliente

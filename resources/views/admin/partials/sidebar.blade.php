@@ -13,14 +13,75 @@
                 </a>
             </li>
             
-            <!-- Productos -->
-            <li class="nav-item mb-2">
-                <a href="{{ route('admin.productos.index') }}" 
-                   class="nav-link {{ request()->routeIs('admin.productos.*') ? 'active' : '' }}">
-                    <i class="fas fa-box me-2"></i> Productos
-                </a>
-            </li>
-            
+<!-- OBCIONES DE LOS PRODUCTOS -->
+
+<li class="nav-item mb-2">
+    <a href="#productosSubMenu" data-bs-toggle="collapse" aria-expanded="false"
+       class="nav-link {{ request()->is('admin/productos*') ? 'active' : '' }}">
+        <i class="fas fa-box me-2"></i> Productos
+    </a>
+
+    <ul class="collapse list-unstyled ps-3" id="productosSubMenu">
+        <li class="mb-2">
+            <a href="{{ route('admin.productos.index') }}"
+               class="nav-link {{ request()->routeIs('admin.productos.index') ? 'active' : '' }}">
+                <i class="fas fa-list me-2"></i> Listado
+            </a>
+        </li>
+             <li class="mb-2">
+            <a href="{{ route('admin.productos.clases.index') }}"
+               class="nav-link {{ request()->routeIs('admin.productos.clases.*') ? 'active' : '' }}">
+                <i class="fas fa-th-large me-2"></i> Clases
+            </a>
+        </li>
+
+<!-- 
+        <li class="mb-2">
+            <a href="{{ route('admin.productos.create') }}"
+               class="nav-link {{ request()->routeIs('admin.productos.create') ? 'active' : '' }}">
+                <i class="fas fa-plus-circle me-2"></i> Nuevo Producto
+            </a>
+        </li> -->
+
+        <li class="mb-2">
+            <a href="{{ route('admin.productos.marcas.index') }}"
+               class="nav-link {{ request()->routeIs('admin.productos.marcas.*') ? 'active' : '' }}">
+                <i class="fas fa-building me-2"></i> Marcas
+            </a>
+        </li>
+
+        <li class="mb-2">
+            <a href="{{ route('admin.productos.tallas.index') }}"
+               class="nav-link {{ request()->routeIs('admin.productos.tallas.*') ? 'active' : '' }}">
+                <i class="fas fa-ruler-combined me-2"></i> Tallas
+            </a>
+        </li>
+
+   
+        <li class="mb-2">
+            <a href="{{ route('admin.productos.generos.index') }}"
+               class="nav-link {{ request()->routeIs('admin.productos.generos.*') ? 'active' : '' }}">
+                <i class="fas fa-venus-mars me-2"></i> Géneros
+            </a>
+        </li>
+
+        <li class="mb-2">
+            <a href="{{ route('admin.productos.colores.index') }}"
+               class="nav-link {{ request()->routeIs('admin.productos.colores.*') ? 'active' : '' }}">
+                <i class="fas fa-palette me-2"></i> Colores
+            </a>
+        </li>
+
+        <li class="mb-2">
+            <a href="{{ route('admin.productos.comentarios.index') }}"
+               class="nav-link {{ request()->routeIs('admin.productos.comentarios.*') ? 'active' : '' }}">
+                <i class="fas fa-comments me-2"></i> Comentarios
+            </a>
+        </li>
+    </ul>
+</li>
+
+
             <!-- Pedidos -->
             <li class="nav-item mb-2">
                 <a href="{{ route('admin.pedidos.index') }}" 

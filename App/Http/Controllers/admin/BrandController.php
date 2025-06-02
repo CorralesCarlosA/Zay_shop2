@@ -13,16 +13,10 @@ class BrandController extends Controller
     /**
      * Mostrar listado de marcas
      */
-    public function index(Request $request)
+       public function index()
     {
-        $query = Brand::query();
-    
-        if ($request->filled('q')) {
-            $query->where('nombre_marca', 'like', "%{$request->input('q')}%");
-        }
-    
-        $marcas = $query->get();
-        return view('admin.marcas.index', compact('marcas'));
+        $marcas = Brand::all();
+        return view('admin.productos.brands.index', compact('marcas'));
     }
 
     /**
@@ -36,18 +30,17 @@ class BrandController extends Controller
     /**
      * Guardar nueva marca
      */
-    public function store(Request $request)
+   public function store(Request $request)
     {
-        $validated = $request->validate([
-            'nombre_marca' => 'required|string|max:100|unique:marca_producto,nombre_marca',
+        $request->validate([
+            'nombre_marca' => 'required|string|max:100',
             'descripcion' => 'nullable|string',
-            'estado_marca' => ['required', 'integer', Rule::in([0, 1])]
+            'estado_marca' => 'boolean'
         ]);
 
-        Brand::create($validated);
+        Brand::create($request->all());
 
-        return redirect()->route('admin.marcas.index')
-            ->with('success', 'Marca creada correctamente');
+        return back()->with('success', 'Marca creada correctamente');
     }
 
     /**
@@ -71,33 +64,26 @@ class BrandController extends Controller
     /**
      * Actualizar marca
      */
-    public function update(Request $request, int $id_marca)
+ public function update(Request $request, $id_marca)
     {
-        $marca = Brand::findOrFail($id_marca);
-
-        $validated = $request->validate([
-            'nombre_marca' => 'required|string|max:100|unique:marca_producto,nombre_marca,' . $id_marca . ',id_marca',
+        $request->validate([
+            'nombre_marca' => 'required|string|max:100',
             'descripcion' => 'nullable|string',
-            'estado_marca' => ['required', 'integer', Rule::in([0, 1])]
+            'estado_marca' => 'boolean'
         ]);
 
-        $marca->fill($validated)->save();
+        $marca = Brand::findOrFail($id_marca);
+        $marca->update($request->all());
 
-        return redirect()->route('admin.marcas.index')
-            ->with('success', 'Marca actualizada correctamente');
+        return back()->with('success', 'Marca actualizada correctamente');
     }
 
     /**
      * Eliminar marca (solo si no tiene productos asociados)
      */
-    public function destroy(int $id_marca)
+   public function destroy($id_marca)
     {
         $marca = Brand::findOrFail($id_marca);
-
-        if ($marca->products->isNotEmpty()) {
-            return back()->withErrors(['error' => 'No puedes eliminar esta marca porque tiene productos asociados']);
-        }
-
         $marca->delete();
 
         return back()->with('success', 'Marca eliminada correctamente');

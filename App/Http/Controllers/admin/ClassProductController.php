@@ -12,11 +12,11 @@ class ClassProductController extends \App\Http\Controllers\Controller
     /**
      * Mostrar todas las clases de producto
      */
-    public function index()
-    {
-        $classes = ClassProduct::all();
-        return view('admin.productos.clase.index', compact('classes'));
-    }
+public function index()
+{
+    $clases = ClassProduct::all(); 
+    return view('admin.productos.classes.index', compact('clases'));
+}
 
     /**
      * Mostrar formulario para nueva clase de producto

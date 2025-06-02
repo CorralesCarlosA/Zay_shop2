@@ -15,7 +15,7 @@ class ColorController extends \App\Http\Controllers\Controller
     public function index()
     {
         $colors = Color::all();
-        return view('admin.productos.color.index', compact('colors'));
+        return view('admin.productos.colors.index', compact('colors'));
     }
 
     /**

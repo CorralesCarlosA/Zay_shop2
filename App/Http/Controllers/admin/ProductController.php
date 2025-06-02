@@ -97,11 +97,14 @@ public function create()
     /**
      * Ver detalles del producto
      */
-    public function show(int $idProducto)
-    {
-        $producto = Product::with(['category', 'color', 'size', 'productStatus', 'genderProduct', 'classProduct', 'images'])->findOrFail($idProducto);
-        return view('admin.productos.show', compact('producto'));
-    }
+ public function show($idProducto)
+{
+    $idProducto = (int)$idProducto; // Conversión explícita a integer
+    $producto = Product::with(['category', 'color', 'size', 'productStatus', 'genderProduct', 'classProduct', 'images'])
+                      ->findOrFail($idProducto);
+    
+    return view('admin.productos.show', compact('producto'));
+}
 
     /**
      * Formulario de edición de producto

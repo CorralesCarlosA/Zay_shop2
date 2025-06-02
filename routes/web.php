@@ -32,6 +32,8 @@ use App\Http\Controllers\admin\BrandController;
 use App\Http\Controllers\admin\facturaController;
 use App\Http\Controllers\admin\ClientController;
 use App\Http\Middleware\AuthenticateAdmin;
+use App\Http\Controllers\admin\ClassProductController;
+
 
 
 use App\Http\Controllers\Webhook\PayUWebhookController;
@@ -219,7 +221,7 @@ Route::prefix('cliente')->middleware(\App\Http\Middleware\AuthenticateClient::cl
     // Dashboard y perfil
 
 
-    // Reseñas
+    // resenas
     Route::post('/resenas/guardar', [ ReviewController::class, 'store' ])->name('client.productos.resenas.store');
 
     // Route::get('/dashboard', [\App\Http\Controllers\Client\DashboardController::class, 'index'])->name('client.dashboard');
@@ -334,25 +336,142 @@ Route::prefix(prefix: 'admin')->middleware(AuthenticateAdmin::class)->group(func
     });
 
 
-    // reseñas
-    Route::get('/reseñas', [ReviewController::class, 'index'])->name('admin.reseñas.index');
-    Route::get('/reseñas/nueva', [ReviewController::class, 'create'])->name('admin.reseñas.create');
-    Route::post('/reseñas', [ReviewController::class, 'store'])->name('admin.reseñas.store');
-    Route::get('/reseñas/{id_reseña}', [ReviewController::class, 'show'])->name('admin.reseñas.show');
-    Route::get('/reseñas/{id_reseña}/editar', [ReviewController::class, 'edit'])->name('admin.reseñas.edit');
-    Route::put('/reseñas/{id_reseña}', [ReviewController::class, 'update'])->name('admin.reseñas.update');
-    Route::delete('/reseñas/{id_reseña}', [ReviewController::class, 'destroy'])->name('admin.reseñas.destroy');
+    // resenas
+    Route::get('/resenas', [ReviewController::class, 'index'])->name('admin.resenas.index');
+    Route::get('/resenas/nueva', [ReviewController::class, 'create'])->name('admin.resenas.create');
+    Route::post('/resenas', [ReviewController::class, 'store'])->name('admin.resenas.store');
+    Route::get('/resenas/{id_resena}', [ReviewController::class, 'show'])->name('admin.resenas.show');
+    Route::get('/resenas/{id_resena}/editar', [ReviewController::class, 'edit'])->name('admin.resenas.edit');
+    Route::put('/resenas/{id_resena}', [ReviewController::class, 'update'])->name('admin.resenas.update');
+    Route::delete('/resenas/{id_resena}', [ReviewController::class, 'destroy'])->name('admin.resenas.destroy');
 
+    // // Productos
+    // Route::prefix('productos')->group(function () {
+    //     Route::get('/', [ProductController::class, 'index'])->name('admin.productos.index');
+    //     Route::get('/nuevo', [ProductController::class, 'create'])->name('admin.productos.create');
+    //     Route::post('/', [ProductController::class, 'store'])->name('admin.productos.store');
+    //     Route::get('/{idProducto}', [ProductController::class, 'show'])->name('admin.productos.show');
+    //     Route::get('/{idProducto}/editar', [ProductController::class, 'edit'])->name('admin.productos.edit');
+    //     Route::put('/{idProducto}', [ProductController::class, 'update'])->name('admin.productos.update');
+    //     Route::delete('/{idProducto}', [ProductController::class, 'destroy'])->name('admin.productos.destroy');
+
+         
+  
+    //     Route::get('/tallas', SizeController::class, 'index')->name('admin.productos.tallas.index');
+    //     Route::get('/clases-productos', App\Http\Controllers\Admin\ClassProductController::class);
+    //     Route::resource('generos', GenderProductController::class);
+    //     Route::resource('colores', ColorController::class);
+    //     Route::resource('marcas', BrandController::class);
+    //     Route::resource('comentarios', ReviewController::class);
+
+    //     // Imágenes (requiere ID de producto)
+    //     Route::prefix('{idProducto}/imagenes')->as('imagenes.')->group(function () {
+    //         Route::get('/', [ImageProductController::class, 'index'])->name('index');
+    //         Route::get('/nueva', [ImageProductController::class, 'create'])->name('create');
+    //         Route::post('/', [ImageProductController::class, 'store'])->name('store');
+    //         Route::get('/{id_imagen}', [ImageProductController::class, 'show'])->name('show');
+    //         Route::get('/{id_imagen}/editar', [ImageProductController::class, 'edit'])->name('edit');
+    //         Route::put('/{id_imagen}', [ImageProductController::class, 'update'])->name('update');
+    //         Route::delete('/{id_imagen}', [ImageProductController::class, 'destroy'])->name('destroy');
+    //     });
+    // });
+ 
     // Productos
-    Route::prefix('productos')->group(function () {
-        Route::get('/', [ProductController::class, 'index'])->name('admin.productos.index');
-        Route::get('/nuevo', [ProductController::class, 'create'])->name('admin.productos.create');
-        Route::post('/', [ProductController::class, 'store'])->name('admin.productos.store');
-        Route::get('/{idProducto}', [ProductController::class, 'show'])->name('admin.productos.show');
-        Route::get('/{idProducto}/editar', [ProductController::class, 'edit'])->name('admin.productos.edit');
-        Route::put('/{idProducto}', [ProductController::class, 'update'])->name('admin.productos.update');
-        Route::delete('/{idProducto}', [ProductController::class, 'destroy'])->name('admin.productos.destroy');
+Route::prefix('productos')->name('admin.productos.')->group(function () {
+    // Rutas principales de productos
+    Route::get('/', [ProductController::class, 'index'])->name('index');
+    Route::get('/nuevo', [ProductController::class, 'create'])->name('create');
+    Route::post('/', [ProductController::class, 'store'])->name('store');
+   Route::get('productos/{idProducto}', [ProductController::class, 'show'])
+     ->name('admin.productos.show')
+     ->where('idProducto', '[0-9]+');
+    Route::get('/{idProducto}/editar', [ProductController::class, 'edit'])->name('edit');
+    Route::put('/{idProducto}', [ProductController::class, 'update'])->name('update');
+    Route::delete('/{idProducto}', [ProductController::class, 'destroy'])->name('destroy');
+
+
+
+    Route::prefix('resenas')->name('resenas.')->group(function () {
+    Route::get('/', [ReviewController::class, 'index'])->name('index');
+    Route::get('/crear', [ReviewController::class, 'create'])->name('create');
+    Route::post('/', [ReviewController::class, 'store'])->name('store');
+    Route::get('/{id_resena}', [ReviewController::class, 'show'])->name('show');
+    Route::get('/{id_resena}/editar', [ReviewController::class, 'edit'])->name('edit');
+    Route::put('/{id_resena}', [ReviewController::class, 'update'])->name('update');
+    Route::delete('/{id_resena}', [ReviewController::class, 'destroy'])->name('destroy');
+});
+
+Route::prefix('comentarios')->name('comentarios.')->group(function () {
+    Route::post('/{id_resena}/aprobar', [ReviewController::class, 'approve'])->name('approve');
+    Route::post('/{id_resena}/rechazar', [ReviewController::class, 'reject'])->name('reject');
+});
+
+
+Route::get('/test-view', function() {
+    return view('admin.productos.clases.index', [
+        'clases' => \App\Models\admin\ClassProduct::all()
+    ]);
+});
+
+
+
+
+
+
+    // Subsecciones de productos
+    Route::prefix('marcas')->name('marcas.')->group(function () {
+        Route::get('/', [BrandController::class, 'index'])->name('index');
+        Route::post('/', [BrandController::class, 'store'])->name('store');
+        Route::put('/{id_marca}', [BrandController::class, 'update'])->name('update');
+        Route::delete('/{id_marca}', [BrandController::class, 'destroy'])->name('destroy');
     });
+
+    Route::prefix('tallas')->name('tallas.')->group(function () {
+        Route::get('/', [SizeController::class, 'index'])->name('index');
+        Route::post('/', [SizeController::class, 'store'])->name('store');
+        Route::put('/{id_talla}', [SizeController::class, 'update'])->name('update');
+        Route::delete('/{id_talla}', [SizeController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('clases')->name('clases.')->group(function () {
+        Route::get('/', [ClassProductController::class, 'index'])->name('index');
+        Route::post('/', [ClassProductController::class, 'store'])->name('store');
+        Route::put('/{idClaseProducto}', [ClassProductController::class, 'update'])->name('update');
+        Route::delete('/{idClaseProducto}', [ClassProductController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('generos')->name('generos.')->group(function () {
+        Route::get('/', [GenderProductController::class, 'index'])->name('index');
+        Route::post('/', [GenderProductController::class, 'store'])->name('store');
+        Route::put('/{idSexoProducto}', [GenderProductController::class, 'update'])->name('update');
+        Route::delete('/{idSexoProducto}', [GenderProductController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('colores')->name('colores.')->group(function () {
+        Route::get('/', [ColorController::class, 'index'])->name('index');
+        Route::post('/', [ColorController::class, 'store'])->name('store');
+        Route::put('/{idColor}', [ColorController::class, 'update'])->name('update');
+        Route::delete('/{idColor}', [ColorController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('comentarios')->name('comentarios.')->group(function () {
+        Route::get('/', [ReviewController::class, 'index'])->name('index');
+        Route::post('/{id_resena}/aprobar', [ReviewController::class, 'approve'])->name('approve');
+        Route::post('/{id_resena}/rechazar', [ReviewController::class, 'reject'])->name('reject');
+        Route::delete('/{id_resena}', [ReviewController::class, 'destroy'])->name('destroy');
+    });
+
+    // Imágenes (requiere ID de producto)
+    Route::prefix('{idProducto}/imagenes')->name('imagenes.')->group(function () {
+        Route::get('/', [ImageProductController::class, 'index'])->name('index');
+        Route::get('/nueva', [ImageProductController::class, 'create'])->name('create');
+        Route::post('/', [ImageProductController::class, 'store'])->name('store');
+        Route::get('/{id_imagen}', [ImageProductController::class, 'show'])->name('show');
+        Route::get('/{id_imagen}/editar', [ImageProductController::class, 'edit'])->name('edit');
+        Route::put('/{id_imagen}', [ImageProductController::class, 'update'])->name('update');
+        Route::delete('/{id_imagen}', [ImageProductController::class, 'destroy'])->name('destroy');
+    });
+});
 
     // Categorías
     Route::prefix('categorias')->group(function () {
@@ -413,6 +532,12 @@ Route::prefix(prefix: 'admin')->middleware(AuthenticateAdmin::class)->group(func
             Route::delete('/{id_mensaje}', [MessageController::class, 'destroy'])->name('admin.mensajes.destroy');
         });
     });
+
+     Route::prefix('ofertas')->group(function () {
+            Route::get('/', function () {
+                return view('admin.productos.ofertas.index');
+            })->name('admin.productos.ofertas.index'); 
+       });
 
     // Ofertas por categoría
     Route::prefix('ofertas/categoria')->group(function () {
