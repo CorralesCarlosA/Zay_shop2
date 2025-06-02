@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 02-06-2025 a las 15:58:15
+-- Tiempo de generación: 03-06-2025 a las 00:43:00
 -- Versión del servidor: 11.8.0-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -188,7 +188,8 @@ CREATE TABLE `clientes` (
 -- Volcado de datos para la tabla `clientes`
 --
 
-INSERT INTO `clientes` (`nombres`, `apellidos`, `tipo_identificacion`, `n_identificacion`, `estado_cliente`, `foto_perfil_id`, `tipo_cliente`, `n_telefono`, `Direccion_recidencia`, `correoE`, `sexo`, `estatura(m)`, `fecha_registro`, `fecha_nacimiento`, `password`, `ciudad`, `id_administrador`, `id_clientes`, `email_verified_at`, `deleted_at`, `created_at`, `updated_at`) VALUES
+INSERT INTO `clientes` (`nombres`, `apellidos`, `tipo_identificacion`, `n_identificacion`, `estado_cliente`, `foto_perfil_id`, `tipo_cliente`, `n_telefono`, `Direccion_recidencia`, `correoE`, `sexo`, `estatura_m`, `fecha_registro`, `fecha_nacimiento`, `password`, `ciudad`, `id_administrador`, `id_clientes`, `email_verified_at`, `deleted_at`, `created_at`, `updated_at`) VALUES
+('carlosandres', 'corrales diaz', 'Cedula de ciudadania (CC)', '1077480909', 1, NULL, 'Hierro', '3102589323', 'barrio cielo', 'carlos@carlos.coom', 'Masculino', 1.78, '2025-06-03 02:13:35', NULL, '$2y$12$aKjCAbah5kwNB.vcNRmhtem2dzvB5daBLewt/j6RYN8h94yOo9WoO', 1, NULL, 7, NULL, NULL, '2025-06-02 21:13:35', '2025-06-02 21:13:35'),
 ('Pedro', 'López', 'Cedula de ciudadania (CC)', '8765432109', 1, NULL, 'Hierro', '3124444444', 'Av 5 #15-25', 'pedro@example.com', 'Masculino', NULL, '2025-05-14 22:08:14', NULL, '', 2, 2, 2, NULL, NULL, '2025-05-31 23:42:04', '2025-06-01 07:42:18'),
 ('Ana', 'Rodríguez', 'Cedula de ciudadania (CC)', '9876543210', 1, NULL, 'Hierro', '3105555555', 'Cra 10 #20-30', 'ana@example.com', 'Femenino', NULL, '2025-05-14 22:08:14', NULL, '', 1, 1, 1, NULL, '2025-06-01 12:42:21', '2025-05-31 23:42:04', '2025-06-01 07:42:21');
 
@@ -394,9 +395,7 @@ CREATE TABLE `estadoproducto` (
 INSERT INTO `estadoproducto` (`idEstadoProducto`, `estado`) VALUES
 (1, 'Disponible'),
 (2, 'Agotado'),
-(3, 'Descontinuado'),
-(26, 'Agotado'),
-(27, 'Descontinuado');
+(3, 'Descontinuado');
 
 -- --------------------------------------------------------
 
@@ -823,17 +822,17 @@ CREATE TABLE `productos` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `reseñas_productos`
+-- Estructura de tabla para la tabla `resenas_productos`
 --
 
-CREATE TABLE `reseñas_productos` (
-  `id_reseña` int(11) NOT NULL,
+CREATE TABLE `resenas_productos` (
+  `id_resena` int(11) NOT NULL,
   `n_identificacion_cliente` varchar(10) NOT NULL,
   `idProducto` int(11) NOT NULL,
   `calificacion` tinyint(4) NOT NULL,
   `comentario` text DEFAULT NULL,
-  `fecha_reseña` datetime NOT NULL DEFAULT current_timestamp(),
-  `estado_reseña` enum('Pendiente','Aprobada','Rechazada') NOT NULL DEFAULT 'Pendiente'
+  `fecha_resena` datetime NOT NULL DEFAULT current_timestamp(),
+  `estado_resena` enum('Pendiente','Aprobada','Rechazada') NOT NULL DEFAULT 'Pendiente'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -876,7 +875,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('7EU4JEMrd6sglA9bzkDbLorKKwwG0gYC0L6sFOsV', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiYUNBV2dCQzgyTEN4WFlqT0RUODdGRDFlc01pMnJpNU1mUVVPRkNlVyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC8xL3BlZGlkb3MiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjYyOiJsb2dpbl9hZG1pbmlzdHJhZG9yZXNfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7czoxOToiYWRtaW5pc0BhZG1pbmlzLmNvbSI7fQ==', 1748872674);
+('rb3snwHn0sPusf6cqL6bvYtfRQlEQMRORVlgcFHn', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiYjFCcmNvMmhuN3JmOG5ZTlhOaWlZUWRIakk5bzVKdmdHMkZGdkp6NSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDU6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC8xL3Byb2R1Y3Rvcy9jb21lbnRhcmlvcyI7fXM6NjI6ImxvZ2luX2FkbWluaXN0cmFkb3Jlc181OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtzOjE5OiJhZG1pbmlzQGFkbWluaXMuY29tIjtzOjU1OiJsb2dpbl9jbGllbnRlc181OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjEwNzc0ODA5MDk7fQ==', 1748904142);
 
 -- --------------------------------------------------------
 
@@ -1311,10 +1310,10 @@ ALTER TABLE `productos`
   ADD KEY `fk_producto_admin_oferta` (`id_administrador_oferta`);
 
 --
--- Indices de la tabla `reseñas_productos`
+-- Indices de la tabla `resenas_productos`
 --
-ALTER TABLE `reseñas_productos`
-  ADD PRIMARY KEY (`id_reseña`),
+ALTER TABLE `resenas_productos`
+  ADD PRIMARY KEY (`id_resena`),
   ADD KEY `n_identificacion_cliente` (`n_identificacion_cliente`),
   ADD KEY `idProducto` (`idProducto`);
 
@@ -1404,7 +1403,7 @@ ALTER TABLE `claseproducto`
 -- AUTO_INCREMENT de la tabla `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `id_clientes` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_clientes` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `codigos_identificadores`
@@ -1587,10 +1586,10 @@ ALTER TABLE `productos`
   MODIFY `idProducto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT de la tabla `reseñas_productos`
+-- AUTO_INCREMENT de la tabla `resenas_productos`
 --
-ALTER TABLE `reseñas_productos`
-  MODIFY `id_reseña` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `resenas_productos`
+  MODIFY `id_resena` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `roles_administradores`
@@ -1791,11 +1790,11 @@ ALTER TABLE `productos`
   ADD CONSTRAINT `fk_productos_tipooferta` FOREIGN KEY (`idTipoOferta`) REFERENCES `tipooferta` (`idTipoOferta`) ON UPDATE CASCADE;
 
 --
--- Filtros para la tabla `reseñas_productos`
+-- Filtros para la tabla `resenas_productos`
 --
-ALTER TABLE `reseñas_productos`
-  ADD CONSTRAINT `reseñas_productos_ibfk_1` FOREIGN KEY (`n_identificacion_cliente`) REFERENCES `clientes` (`n_identificacion`),
-  ADD CONSTRAINT `reseñas_productos_ibfk_2` FOREIGN KEY (`idProducto`) REFERENCES `productos` (`idProducto`);
+ALTER TABLE `resenas_productos`
+  ADD CONSTRAINT `resenas_productos_ibfk_1` FOREIGN KEY (`n_identificacion_cliente`) REFERENCES `clientes` (`n_identificacion`),
+  ADD CONSTRAINT `resenas_productos_ibfk_2` FOREIGN KEY (`idProducto`) REFERENCES `productos` (`idProducto`);
 
 --
 -- Filtros para la tabla `ventas`
