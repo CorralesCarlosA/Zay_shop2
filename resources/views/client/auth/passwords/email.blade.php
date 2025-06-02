@@ -30,7 +30,7 @@
                         </div>
 
                         <div class="mt-3 d-flex justify-content-between">
-                            <a href="{{ route('admin.login') }}" class="text-decoration-none">Volver al inicio de
+                            <a href="{{ route('client.login') }}" class="text-decoration-none">Volver al inicio de
                                 sesión</a>
                         </div>
                     </form>
