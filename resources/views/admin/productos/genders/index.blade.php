@@ -37,7 +37,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($generos as $genero)
+                        @foreach($genders as $genero)
                         <tr data-id="{{ $genero->idSexoProducto }}">
                             <td>{{ $genero->idSexoProducto }}</td>
                             <td>

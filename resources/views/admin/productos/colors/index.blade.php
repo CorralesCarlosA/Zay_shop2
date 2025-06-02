@@ -38,7 +38,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($colores as $color)
+                        @foreach($colors as $color)
                         <tr data-id="{{ $color->idColor }}">
                             <td>{{ $color->idColor }}</td>
                             <td>
