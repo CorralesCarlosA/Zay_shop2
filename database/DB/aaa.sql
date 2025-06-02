@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 01-06-2025 a las 03:38:28
+-- Tiempo de generación: 02-06-2025 a las 15:58:15
 -- Versión del servidor: 11.8.0-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -151,31 +151,7 @@ CREATE TABLE `claseproducto` (
 INSERT INTO `claseproducto` (`idClaseProducto`, `nombreClase`) VALUES
 (1, 'Ropa'),
 (2, 'Calzado'),
-(3, 'Accesorios'),
-(4, 'Ropa'),
-(5, 'Calzado'),
-(6, 'Accesorios'),
-(7, 'Ropa'),
-(8, 'Calzado'),
-(9, 'Accesorios'),
-(10, 'Ropa'),
-(11, 'Calzado'),
-(12, 'Accesorios'),
-(13, 'Ropa'),
-(14, 'Calzado'),
-(15, 'Accesorios'),
-(16, 'Ropa'),
-(17, 'Calzado'),
-(18, 'Accesorios'),
-(19, 'Ropa'),
-(20, 'Calzado'),
-(21, 'Accesorios'),
-(22, 'Ropa'),
-(23, 'Calzado'),
-(24, 'Accesorios'),
-(25, 'Ropa'),
-(26, 'Calzado'),
-(27, 'Accesorios');
+(3, 'Accesorios');
 
 -- --------------------------------------------------------
 
@@ -213,8 +189,21 @@ CREATE TABLE `clientes` (
 --
 
 INSERT INTO `clientes` (`nombres`, `apellidos`, `tipo_identificacion`, `n_identificacion`, `estado_cliente`, `foto_perfil_id`, `tipo_cliente`, `n_telefono`, `Direccion_recidencia`, `correoE`, `sexo`, `estatura(m)`, `fecha_registro`, `fecha_nacimiento`, `password`, `ciudad`, `id_administrador`, `id_clientes`, `email_verified_at`, `deleted_at`, `created_at`, `updated_at`) VALUES
-('Pedro', 'López', 'Cedula de ciudadania (CC)', '8765432109', 1, NULL, 'Hierro', '3124444444', 'Av 5 #15-25', 'pedro@example.com', 'Masculino', NULL, '2025-05-14 22:08:14', NULL, '', 2, 2, 2, NULL, NULL, '2025-05-31 23:42:04', '2025-05-31 23:42:04'),
-('Ana', 'Rodríguez', 'Cedula de ciudadania (CC)', '9876543210', 1, NULL, 'Hierro', '3105555555', 'Cra 10 #20-30', 'ana@example.com', 'Femenino', NULL, '2025-05-14 22:08:14', NULL, '', 1, 1, 1, NULL, NULL, '2025-05-31 23:42:04', '2025-05-31 23:42:04');
+('Pedro', 'López', 'Cedula de ciudadania (CC)', '8765432109', 1, NULL, 'Hierro', '3124444444', 'Av 5 #15-25', 'pedro@example.com', 'Masculino', NULL, '2025-05-14 22:08:14', NULL, '', 2, 2, 2, NULL, NULL, '2025-05-31 23:42:04', '2025-06-01 07:42:18'),
+('Ana', 'Rodríguez', 'Cedula de ciudadania (CC)', '9876543210', 1, NULL, 'Hierro', '3105555555', 'Cra 10 #20-30', 'ana@example.com', 'Femenino', NULL, '2025-05-14 22:08:14', NULL, '', 1, 1, 1, NULL, '2025-06-01 12:42:21', '2025-05-31 23:42:04', '2025-06-01 07:42:21');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `codigos_identificadores`
+--
+
+CREATE TABLE `codigos_identificadores` (
+  `id_codigo` int(11) NOT NULL,
+  `codigo` varchar(50) NOT NULL,
+  `descripcion` text DEFAULT NULL,
+  `activo` tinyint(1) NOT NULL DEFAULT 1 COMMENT '1 = activo, 0 = inactivo'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -226,6 +215,14 @@ CREATE TABLE `colorproducto` (
   `idColor` int(11) NOT NULL,
   `nombreColor` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `colorproducto`
+--
+
+INSERT INTO `colorproducto` (`idColor`, `nombreColor`) VALUES
+(30, 'Negro'),
+(31, 'Blanco');
 
 -- --------------------------------------------------------
 
@@ -398,28 +395,6 @@ INSERT INTO `estadoproducto` (`idEstadoProducto`, `estado`) VALUES
 (1, 'Disponible'),
 (2, 'Agotado'),
 (3, 'Descontinuado'),
-(4, 'Disponible'),
-(5, 'Agotado'),
-(6, 'Descontinuado'),
-(7, 'Disponible'),
-(8, 'Agotado'),
-(9, 'Descontinuado'),
-(10, 'Disponible'),
-(11, 'Agotado'),
-(12, 'Descontinuado'),
-(13, 'Disponible'),
-(14, 'Agotado'),
-(15, 'Descontinuado'),
-(16, 'Disponible'),
-(17, 'Agotado'),
-(18, 'Descontinuado'),
-(19, 'Disponible'),
-(20, 'Agotado'),
-(21, 'Descontinuado'),
-(22, 'Disponible'),
-(23, 'Agotado'),
-(24, 'Descontinuado'),
-(25, 'Disponible'),
 (26, 'Agotado'),
 (27, 'Descontinuado');
 
@@ -477,6 +452,20 @@ CREATE TABLE `favoritos_clientes` (
   `n_identificacion_cliente` varchar(10) NOT NULL,
   `idProducto` int(11) NOT NULL,
   `fecha_agregado` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `foto_perfil_admin`
+--
+
+CREATE TABLE `foto_perfil_admin` (
+  `id_foto_perfil` int(11) NOT NULL,
+  `url_imagen` varchar(255) NOT NULL COMMENT 'Ruta o nombre del archivo',
+  `id_administrador` varchar(10) NOT NULL COMMENT 'Administrador al que pertenece la foto',
+  `fecha_subida` datetime NOT NULL DEFAULT current_timestamp(),
+  `principal` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -569,7 +558,8 @@ CREATE TABLE `inventario_productos` (
   `stock_actual` int(11) NOT NULL DEFAULT 0,
   `stock_minimo` int(11) NOT NULL DEFAULT 10,
   `fecha_actualizacion` datetime NOT NULL DEFAULT current_timestamp(),
-  `id_administrador` int(11) NOT NULL
+  `id_administrador` int(11) NOT NULL,
+  `codigo_producto` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -804,6 +794,7 @@ INSERT INTO `pedidos` (`id_pedido`, `n_identificacion_cliente`, `fecha_pedido`, 
 
 CREATE TABLE `productos` (
   `idProducto` int(11) NOT NULL,
+  `codigoIdentificador` varchar(50) NOT NULL COMMENT 'Código único del producto',
   `nombreProducto` varchar(100) NOT NULL,
   `precioProducto` decimal(10,2) NOT NULL COMMENT 'Precio del producto',
   `tallaProducto` varchar(10) DEFAULT NULL,
@@ -811,7 +802,6 @@ CREATE TABLE `productos` (
   `idSexoProducto` int(11) NOT NULL,
   `cantidadDisponible` int(11) DEFAULT 0,
   `descripcionProducto` text DEFAULT NULL,
-  `codigoIdentificador` varchar(50) NOT NULL,
   `destacado` tinyint(1) NOT NULL DEFAULT 0,
   `idEstadoOferta` int(11) DEFAULT NULL,
   `idTipoOferta` int(11) DEFAULT NULL,
@@ -886,11 +876,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('aLoeO3r4YPZ3NPeJHBEgwTBTPxsekpsAADLmxzFV', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiME42bjJoS1hpWndDRXRpNDlNRzg4RTNQdndYYVh2Zm5VYmEzc0RVUCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1748717377),
-('i5tCRDf8PD9Q00GUarBwobeQpwHjNtROASY7OjBs', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiTFZMU0VibGpZeDNWWmFBTklmY3QzOVFLWUdmNjUwd05vSkREUk9PaiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9jbGllbnRlcy85ODc2NTQzMjEwIjt9czo2MjoibG9naW5fYWRtaW5pc3RyYWRvcmVzXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO3M6MTk6ImFkbWluaXNAYWRtaW5pcy5jb20iO30=', 1748741571),
-('mz06KJGgwfjdn9VmTteOBtro4p4hj7lGS38J6Msu', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiNHg4bWJwY1JRRk9iV2tpV1BTSFhDalJoUVAxN3NmN0dyb2NCeGhnUyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9jbGllbnRlcyI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NjI6ImxvZ2luX2FkbWluaXN0cmFkb3Jlc181OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtzOjE5OiJhZG1pbmlzQGFkbWluaXMuY29tIjt9', 1748659900),
-('Ni4tK9sVJIF2LfKDHBvTXLNz1xQSsFOoJCyw5T6V', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiUUVscVRqYWdyR2VhbkpBNHpNdU1tVW02aUd1RVBjQ1BVQUxSNTB4SCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1748717343),
-('ZQAzuC1kW8APPgd5XmbbmMYXF0mrXve1szOEmjwS', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiMm8wYTdwVER1UElVSElDanQ1QjVPbENEbFFXbDBuRzBPaTBMMEJnbCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzU6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9wZWRpZG9zIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo2MjoibG9naW5fYWRtaW5pc3RyYWRvcmVzXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO3M6MTk6ImFkbWluaXNAYWRtaW5pcy5jb20iO30=', 1748650014);
+('7EU4JEMrd6sglA9bzkDbLorKKwwG0gYC0L6sFOsV', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiYUNBV2dCQzgyTEN4WFlqT0RUODdGRDFlc01pMnJpNU1mUVVPRkNlVyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC8xL3BlZGlkb3MiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjYyOiJsb2dpbl9hZG1pbmlzdHJhZG9yZXNfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7czoxOToiYWRtaW5pc0BhZG1pbmlzLmNvbSI7fQ==', 1748872674);
 
 -- --------------------------------------------------------
 
@@ -902,39 +888,6 @@ CREATE TABLE `sexoproducto` (
   `idSexoProducto` int(11) NOT NULL,
   `nombreSexo` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `sexoproducto`
---
-
-INSERT INTO `sexoproducto` (`idSexoProducto`, `nombreSexo`) VALUES
-(1, 'Unisex'),
-(2, 'Hombre'),
-(3, 'Mujer'),
-(4, 'Unisex'),
-(5, 'Hombre'),
-(6, 'Mujer'),
-(7, 'Unisex'),
-(8, 'Hombre'),
-(9, 'Mujer'),
-(10, 'Unisex'),
-(11, 'Hombre'),
-(12, 'Mujer'),
-(13, 'Unisex'),
-(14, 'Hombre'),
-(15, 'Mujer'),
-(16, 'Unisex'),
-(17, 'Hombre'),
-(18, 'Mujer'),
-(19, 'Unisex'),
-(20, 'Hombre'),
-(21, 'Mujer'),
-(22, 'Unisex'),
-(23, 'Hombre'),
-(24, 'Mujer'),
-(25, 'Unisex'),
-(26, 'Hombre'),
-(27, 'Mujer');
 
 -- --------------------------------------------------------
 
@@ -1109,6 +1062,13 @@ ALTER TABLE `clientes`
   ADD KEY `fk_clientes_administradores` (`id_administrador`);
 
 --
+-- Indices de la tabla `codigos_identificadores`
+--
+ALTER TABLE `codigos_identificadores`
+  ADD PRIMARY KEY (`id_codigo`),
+  ADD UNIQUE KEY `codigo` (`codigo`);
+
+--
 -- Indices de la tabla `colorproducto`
 --
 ALTER TABLE `colorproducto`
@@ -1202,6 +1162,13 @@ ALTER TABLE `favoritos_clientes`
   ADD KEY `idProducto` (`idProducto`);
 
 --
+-- Indices de la tabla `foto_perfil_admin`
+--
+ALTER TABLE `foto_perfil_admin`
+  ADD PRIMARY KEY (`id_foto_perfil`),
+  ADD UNIQUE KEY `id_administrador` (`id_administrador`);
+
+--
 -- Indices de la tabla `foto_perfil_cliente`
 --
 ALTER TABLE `foto_perfil_cliente`
@@ -1244,7 +1211,8 @@ ALTER TABLE `imagenes_producto`
 ALTER TABLE `inventario_productos`
   ADD PRIMARY KEY (`id_inventario`),
   ADD KEY `idProducto` (`idProducto`),
-  ADD KEY `id_administrador` (`id_administrador`);
+  ADD KEY `id_administrador` (`id_administrador`),
+  ADD KEY `fk_inventario_codigo` (`codigo_producto`);
 
 --
 -- Indices de la tabla `jobs`
@@ -1331,6 +1299,7 @@ ALTER TABLE `pedidos`
 ALTER TABLE `productos`
   ADD PRIMARY KEY (`idProducto`),
   ADD UNIQUE KEY `codigoIdentificador` (`codigoIdentificador`),
+  ADD UNIQUE KEY `idx_codigo_identificador` (`codigoIdentificador`),
   ADD KEY `fk_productos_claseproducto` (`idClaseProducto`),
   ADD KEY `fk_productos_sexoproducto` (`idSexoProducto`),
   ADD KEY `fk_productos_estadooferta` (`idEstadoOferta`),
@@ -1438,10 +1407,16 @@ ALTER TABLE `clientes`
   MODIFY `id_clientes` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
+-- AUTO_INCREMENT de la tabla `codigos_identificadores`
+--
+ALTER TABLE `codigos_identificadores`
+  MODIFY `id_codigo` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `colorproducto`
 --
 ALTER TABLE `colorproducto`
-  MODIFY `idColor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `idColor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT de la tabla `cupones_descuento`
@@ -1508,6 +1483,12 @@ ALTER TABLE `failed_jobs`
 --
 ALTER TABLE `favoritos_clientes`
   MODIFY `id_favorito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `foto_perfil_admin`
+--
+ALTER TABLE `foto_perfil_admin`
+  MODIFY `id_foto_perfil` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `foto_perfil_cliente`
@@ -1755,6 +1736,7 @@ ALTER TABLE `imagenes_producto`
 -- Filtros para la tabla `inventario_productos`
 --
 ALTER TABLE `inventario_productos`
+  ADD CONSTRAINT `fk_inventario_codigo` FOREIGN KEY (`codigo_producto`) REFERENCES `productos` (`codigoIdentificador`),
   ADD CONSTRAINT `inventario_productos_ibfk_1` FOREIGN KEY (`idProducto`) REFERENCES `productos` (`idProducto`),
   ADD CONSTRAINT `inventario_productos_ibfk_2` FOREIGN KEY (`id_administrador`) REFERENCES `administradores` (`id_administrador`);
 

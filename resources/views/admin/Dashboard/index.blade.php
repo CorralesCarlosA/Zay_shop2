@@ -36,13 +36,14 @@
         <div class="animate-card">
             @include('admin.partials.recent-orders')
         </div>
+
     </div>
     
     <!-- Contenido secundario -->
     <div class="secondary-content-grid">
         <!-- Productos agotados -->
         <div class="animate-card">
-            @include('admin.partials.out-of-stock')
+            @include('admin.partials.out_of_stock_products')
         </div>
         
         <!-- Clientes recientes -->
@@ -52,6 +53,14 @@
             ])
         </div>
     </div>
+ <div class="animate-card">
+            @include('admin.partials.last_orders_table', [
+                'recentCustomers' => $recentCustomers ?? collect()
+            ])
+        </div>
+
+
+       
 </div>
 
 <!-- Scripts (deberían estar en archivos externos) -->
