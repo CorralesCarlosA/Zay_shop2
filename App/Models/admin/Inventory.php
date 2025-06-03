@@ -2,20 +2,19 @@
 
 namespace App\Models\admin;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Inventory extends Model
 {
-    use HasFactory;
-
     protected $table = 'inventario_productos';
     protected $primaryKey = 'id_inventario';
+    public $timestamps = false;
 
     protected $fillable = [
         'idProducto',
         'stock_actual',
         'stock_minimo',
+        'fecha_actualizacion',
         'id_administrador'
     ];
 
@@ -31,3 +30,4 @@ class Inventory extends Model
         return $this->belongsTo(\App\Models\admin\Administrator::class, 'id_administrador', 'id_administrador');
     }
 }
+

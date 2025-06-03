@@ -3,7 +3,7 @@
 @section('title', 'Detalles de Clase de Producto')
 @section('breadcrumbs')
     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Inicio</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('admin.productos.classes.index') }}">Clases de Producto</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.productos.clases.show') }}">Clases de Producto</a></li>
     <li class="breadcrumb-item active">Detalles</li>
 @endsection
 
@@ -73,7 +73,7 @@
                     @endif
                 </div>
                 <div class="card-footer text-right">
-                    <a href="{{ route('admin.productos.classes.index') }}" class="btn btn-secondary">
+                    <a href="#" class="btn btn-secondary"> 
                         <i class="fas fa-arrow-left"></i> Volver
                     </a>
                 </div>

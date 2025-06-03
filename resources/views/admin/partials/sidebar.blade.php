@@ -30,8 +30,8 @@
                                 </a>
                             </li>
                             <li class="mb-2">
-                                <a href="{{ route('admin.productos.clases.index') }}"
-                                   class="nav-link {{ request()->routeIs('admin.productos.clases.*') ? 'active' : '' }}">
+                                <a href="#"
+                                   class="nav-link {{ request()->routeIs('admin.productos.clases.*') ? 'active' : '' }}"> 
                                     <i class="fas fa-th-large me-2"></i> Clases
                                 </a>
                             </li>

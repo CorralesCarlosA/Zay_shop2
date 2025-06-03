@@ -13,7 +13,7 @@
                 <label for="nombreClase">Nombre de la Clase *</label>
                 <input type="text" class="form-control @error('nombreClase') is-invalid @enderror" 
                        id="nombreClase" name="nombreClase" 
-                       value="{{ old('nombreClase', $clase->nombreClase ?? '') }}" required>
+                       value="{{ old('nombreClase', $clase->clase ?? '') }}" required>
                 @error('nombreClase')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -23,7 +23,7 @@
             </div>
 
             <div class="form-group text-right mt-4">
-                <a href="{{ route('admin.productos.classes.index') }}" class="btn btn-secondary">
+                <a href="#" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Cancelar
                 </a>
                 <button type="submit" class="btn btn-primary">

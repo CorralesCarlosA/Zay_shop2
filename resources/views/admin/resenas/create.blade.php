@@ -1,11 +1,17 @@
 @extends('admin.layouts.app')
 
 @section('title', 'Crear Nueva Reseña')
-@section('breadcrumbs', [
-['name' => 'Inicio', 'url' => route('admin.dashboard')],
-['name' => 'Reseñas', 'url' => route('admin.reseñas.index')],
-['name' => 'Nueva']
-])
+
+
+@section('breadcrumbs')
+    <li class="breadcrumb-item">
+        <a href="{{ route('admin.dashboard') }}">Inicio</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="{{ route('admin.resenas.index') }}">Reseñas</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">Nueva</li>
+@endsection
 
 @section('content')
 <div class="container-fluid">

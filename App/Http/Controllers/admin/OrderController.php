@@ -35,7 +35,7 @@ public function index(Request $request)
      */
     public function create()
     {
-        $clientes = \App\Models\client\Client::orderBy('nombres')->get();
+        $clientes = \App\Models\admin\Client::orderBy('nombres')->get();
         $productos = \App\Models\admin\Product::with(['inventory'])->get();
         $colores = \App\Models\admin\Color::all();
         $tallas = \App\Models\admin\Size::all();

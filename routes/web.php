@@ -345,37 +345,6 @@ Route::prefix(prefix: 'admin')->middleware(AuthenticateAdmin::class)->group(func
     Route::put('/resenas/{id_resena}', [ReviewController::class, 'update'])->name('admin.resenas.update');
     Route::delete('/resenas/{id_resena}', [ReviewController::class, 'destroy'])->name('admin.resenas.destroy');
 
-    // // Productos
-    // Route::prefix('productos')->group(function () {
-    //     Route::get('/', [ProductController::class, 'index'])->name('admin.productos.index');
-    //     Route::get('/nuevo', [ProductController::class, 'create'])->name('admin.productos.create');
-    //     Route::post('/', [ProductController::class, 'store'])->name('admin.productos.store');
-    //     Route::get('/{idProducto}', [ProductController::class, 'show'])->name('admin.productos.show');
-    //     Route::get('/{idProducto}/editar', [ProductController::class, 'edit'])->name('admin.productos.edit');
-    //     Route::put('/{idProducto}', [ProductController::class, 'update'])->name('admin.productos.update');
-    //     Route::delete('/{idProducto}', [ProductController::class, 'destroy'])->name('admin.productos.destroy');
-
-         
-  
-    //     Route::get('/tallas', SizeController::class, 'index')->name('admin.productos.tallas.index');
-    //     Route::get('/clases-productos', App\Http\Controllers\Admin\ClassProductController::class);
-    //     Route::resource('generos', GenderProductController::class);
-    //     Route::resource('colores', ColorController::class);
-    //     Route::resource('marcas', BrandController::class);
-    //     Route::resource('comentarios', ReviewController::class);
-
-    //     // Imágenes (requiere ID de producto)
-    //     Route::prefix('{idProducto}/imagenes')->as('imagenes.')->group(function () {
-    //         Route::get('/', [ImageProductController::class, 'index'])->name('index');
-    //         Route::get('/nueva', [ImageProductController::class, 'create'])->name('create');
-    //         Route::post('/', [ImageProductController::class, 'store'])->name('store');
-    //         Route::get('/{id_imagen}', [ImageProductController::class, 'show'])->name('show');
-    //         Route::get('/{id_imagen}/editar', [ImageProductController::class, 'edit'])->name('edit');
-    //         Route::put('/{id_imagen}', [ImageProductController::class, 'update'])->name('update');
-    //         Route::delete('/{id_imagen}', [ImageProductController::class, 'destroy'])->name('destroy');
-    //     });
-    // });
- 
     // Productos
 Route::prefix('productos')->name('admin.productos.')->group(function () {
     // Rutas principales de productos
@@ -407,16 +376,6 @@ Route::prefix('comentarios')->name('comentarios.')->group(function () {
 });
 
 
-Route::get('/test-view', function() {
-    return view('admin.productos.clases.index', [
-        'clases' => \App\Models\admin\ClassProduct::all()
-    ]);
-});
-
-
-
-
-
 
     // Subsecciones de productos
     Route::prefix('marcas')->name('marcas.')->group(function () {
@@ -432,13 +391,15 @@ Route::get('/test-view', function() {
         Route::put('/{id_talla}', [SizeController::class, 'update'])->name('update');
         Route::delete('/{id_talla}', [SizeController::class, 'destroy'])->name('destroy');
     });
-
-    Route::prefix('clases')->name('clases.')->group(function () {
-        Route::get('/', [ClassProductController::class, 'index'])->name('index');
-        Route::post('/', [ClassProductController::class, 'store'])->name('store');
-        Route::put('/{idClaseProducto}', [ClassProductController::class, 'update'])->name('update');
-        Route::delete('/{idClaseProducto}', [ClassProductController::class, 'destroy'])->name('destroy');
-    });
+Route::prefix('clases')->name('admin.productos.clases.')->group(function () {
+    Route::get('/', [ClassProductController::class, 'index'])->name('index');
+    Route::get('/crear', [ClassProductController::class, 'create'])->name('create');
+    Route::post('/', [ClassProductController::class, 'store'])->name('store');
+    Route::get('/{idClaseProducto}', [ClassProductController::class, 'show'])->name('show');
+    Route::get('/{idClaseProducto}/editar', [ClassProductController::class, 'edit'])->name('edit');
+    Route::put('/{idClaseProducto}', [ClassProductController::class, 'update'])->name('update');
+    Route::delete('/{idClaseProducto}', [ClassProductController::class, 'destroy'])->name('destroy');
+});
 
     Route::prefix('generos')->name('generos.')->group(function () {
         Route::get('/', [GenderProductController::class, 'index'])->name('index');
@@ -493,10 +454,14 @@ Route::get('/test-view', function() {
     Route::post('/webhook/payu', [PayUWebhookController::class, 'handle'])->name('webhook.payu');
 
     // Inventario
-    Route::prefix('inventario')->group(function () {
-        Route::get('/', [InventoryController::class, 'index'])->name('admin.inventario.index');
-        Route::get('/{id_inventario}/editar', [InventoryController::class, 'edit'])->name('admin.inventario.edit');
-        Route::put('/{id_inventario}', [InventoryController::class, 'update'])->name('admin.inventario.update');
+    Route::prefix('inventario')->name('admin.inventario.')->group(function () {
+        Route::get('/', [InventoryController::class, 'index'])->name('index');
+        Route::get('/nuevo', [InventoryController::class, 'create'])->name('create');
+        Route::post('/', [InventoryController::class, 'store'])->name('store');
+        Route::get('/{id_inventario}', [InventoryController::class, 'show'])->name('show');
+        Route::get('/{id_inventario}/editar', [InventoryController::class, 'edit'])->name('edit');
+        Route::put('/{id_inventario}', [InventoryController::class, 'update'])->name('update');
+        Route::delete('/{id_inventario}', [InventoryController::class, 'destroy'])->name('destroy');
     });
 
     // Cupones

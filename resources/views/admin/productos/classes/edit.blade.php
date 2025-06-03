@@ -3,7 +3,7 @@
 @section('title', 'Editar Clase de Producto')
 @section('breadcrumbs')
     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Inicio</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('admin.productos.classes.index') }}">Clases de Producto</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.productos.clases.edit') }}">Clases de Producto</a></li>
     <li class="breadcrumb-item active">Editar</li>
 @endsection
 

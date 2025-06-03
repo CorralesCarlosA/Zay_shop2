@@ -31,7 +31,7 @@ class ReviewController extends \App\Http\Controllers\Controller
         }
 
         $reseñas = $query->paginate(10); // Agregado paginación
-        return view('admin.reseñas.index', compact('reseñas'));
+        return view('admin.resenas.index', compact('reseñas'));
     }
 
     public function create()
@@ -59,7 +59,7 @@ class ReviewController extends \App\Http\Controllers\Controller
             'estado_reseña' => 'Aprobada' // Las creadas manualmente se aprueban automáticamente
         ]);
 
-        return redirect()->route('admin.reseñas.index')->with('success', 'Reseña creada correctamente');
+        return redirect()->route('admin.resenas.index')->with('success', 'Reseña creada correctamente');
     }
 
     public function show(int $id_reseña)
