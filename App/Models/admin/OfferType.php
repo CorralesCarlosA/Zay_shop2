@@ -15,7 +15,7 @@ class OfferType extends Model
     protected $keyType = 'int';
     public $timestamps = false;
 
-    protected $fillable = ['nombreTipo'];
+    protected $fillable = ['nombreTipo', 'descripcion'];
 
     public function products()
     {

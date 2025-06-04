@@ -1,100 +1,48 @@
 <?php
 
-namespace App\Http\Controllers\admin;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\admin\ImageProduct;
-use App\Models\admin\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
-class ImageProductController extends \App\Http\Controllers\Controller
+class ImageProductController extends Controller
 {
-    /**
-     * Mostrar todas las imágenes de un producto
-     */
+    // Mostrar listado de imágenes de un producto
     public function index(int $idProducto)
     {
-        $producto = Product::findOrFail($idProducto);
-        $imagenes = $producto->images()->orderBy('orden')->get();
-
+        $producto = \App\Models\admin\Product::findOrFail($idProducto);
+        $imagenes = $producto->images;
         return view('admin.productos.imagenes.index', compact('producto', 'imagenes'));
     }
 
-    /**
-     * Formulario para nueva imagen
-     */
-    public function create(int $idProducto)
-    {
-        $producto = Product::findOrFail($idProducto);
-        return view('admin.productos.imagenes.create', compact('producto'));
-    }
-
-    /**
-     * Guardar nueva imagen
-     */
+    // Guardar nuevas imágenes
     public function store(Request $request, int $idProducto)
     {
-        $validated = $request->validate([
-            'url_imagen' => 'required|url|unique:imagenes_producto,url_imagen,NULL,id_imagen,id_producto,' . $idProducto,
-            'orden' => 'required|numeric|min:1'
-        ]);
-
-        ImageProduct::create([
-            'id_producto' => $idProducto,
-            'url_imagen' => $request->input('url_imagen'),
-            'orden' => $request->input('orden')
-        ]);
-
-        return redirect()->route('admin.productos.imagenes.index', $idProducto)->with('success', 'Imagen agregada correctamente');
-    }
-
-    /**
-     * Ver detalles de una imagen
-     */
-    public function show(int $idProducto, int $id_imagen)
-    {
-        $producto = Product::findOrFail($idProducto);
-        $imagen = ImageProduct::where('id_producto', $idProducto)->findOrFail($id_imagen);
-
-        return view('admin.productos.imagenes.show', compact('producto', 'imagen'));
-    }
-
-    /**
-     * Editar imagen
-     */
-    public function edit(int $idProducto, int $id_imagen)
-    {
-        $producto = Product::findOrFail($idProducto);
-        $imagen = ImageProduct::where('id_producto', $idProducto)->findOrFail($id_imagen);
-
-        return view('admin.productos.imagenes.edit', compact('producto', 'imagen'));
-    }
-
-    /**
-     * Actualizar imagen
-     */
-    public function update(Request $request, int $idProducto, int $id_imagen)
-    {
-        $imagen = ImageProduct::where('id_producto', $idProducto)->findOrFail($id_imagen);
-
         $request->validate([
-            'url_imagen' => "required|url|unique:imagenes_producto,url_imagen,$id_imagen,id_imagen,id_producto,$idProducto",
-            'orden' => 'required|numeric|min:1'
+            'imagenes' => 'required|array',
+            'imagenes.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        $imagen->fill([
-            'url_imagen' => $request->input('url_imagen'),
-            'orden' => $request->input('orden')
-        ])->save();
+        $producto = \App\Models\admin\Product::findOrFail($idProducto);
 
-        return back()->with('success', 'Imagen actualizada correctamente');
+        foreach ($request->file('imagenes') as $imagen) {
+            $ruta = $imagen->store('productos/' . $producto->idProducto, 'public');
+
+            $producto->images()->create([
+                'url_imagen' => $ruta
+            ]);
+        }
+
+        return back()->with('success', 'Imágenes subidas correctamente');
     }
 
-    /**
-     * Eliminar imagen
-     */
+    // Eliminar imagen
     public function destroy(int $idProducto, int $id_imagen)
     {
-        $imagen = ImageProduct::where('id_producto', $idProducto)->findOrFail($id_imagen);
+        $imagen = ImageProduct::where('idProducto', $idProducto)->findOrFail($id_imagen);
+        Storage::disk('public')->delete($imagen->url_imagen);
         $imagen->delete();
 
         return back()->with('success', 'Imagen eliminada correctamente');

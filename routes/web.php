@@ -348,6 +348,9 @@ Route::prefix(prefix: 'admin')->middleware(AuthenticateAdmin::class)->group(func
             Route::get('/nuevo', [ProductController::class, 'create'])->name('create');
             
             Route::post('/', [ProductController::class, 'store'])->name('store');
+             Route::prefix('{idProducto}/imagenes')->name('imagenes.')->group(function () {
+            Route::post('/', [ImageProductController::class, 'store'])->name('store');
+        });
             Route::get('/{idProducto}/editar', [ProductController::class, 'edit'])->name('edit');
           
             Route::put('/{idProducto}', [ProductController::class, 'update'])->name('update');

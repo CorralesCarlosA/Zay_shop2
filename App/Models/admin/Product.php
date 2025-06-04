@@ -73,15 +73,18 @@ public function scopeRecent(Builder $query, $days = 30): Builder
     }
 
 
-    public function sizes()
-    {
-        return $this->belongsToMany(Size::class, 'tallas_producto', 'idProducto', 'id_talla');
-    }
-    public function inventario()
+public function sizes()
+{
+    return $this->hasMany(Size::class, 'nombre_talla', 'tallaProducto');
+}
+    public function inventory()
     {
         return $this->hasOne(\App\Models\admin\Inventory::class, 'idProducto', 'idProducto');
     }
 
+    public function inventario(){
+        return $this->hasOne(\App\Models\admin\Inventory::class, 'idProducto', 'idProducto');
+    }
 
     // Relación con categoría
   
@@ -91,10 +94,10 @@ public function scopeRecent(Builder $query, $days = 30): Builder
     }
 
     // Relación con color
-    public function color()
-    {
-        return $this->belongsTo(\App\Models\admin\Color::class, 'idColor', 'idColor');
-    }
+public function color()
+{
+    return $this->belongsTo(Color::class, 'idColor', 'idColor');
+}
 
     // Relación con talla
     public function size()
@@ -115,7 +118,7 @@ public function scopeRecent(Builder $query, $days = 30): Builder
     }
 
     // Relación con sexo del producto
-    public function genderProduct()
+    public function gender()
     {
         return $this->belongsTo(\App\Models\admin\GenderProduct::class, 'idSexoProducto', 'idSexoProducto');
     }
