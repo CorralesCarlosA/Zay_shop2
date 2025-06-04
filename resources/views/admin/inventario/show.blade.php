@@ -1,6 +1,8 @@
 @extends('admin.layouts.app')
 
 @section('title', 'Detalle Inventario #' . $inventario->id_inventario)
+
+
 @section('breadcrumbs', [
 ['name' => 'Inicio', 'url' => route('admin.dashboard')],
 ['name' => 'Inventario', 'url' => route('admin.inventario.index')],

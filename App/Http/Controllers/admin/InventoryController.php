@@ -68,11 +68,11 @@ class InventoryController extends Controller
     /**
      * Mostrar detalles del inventario
      */
-    public function show(int $id_inventario)
-    {
-        $inventario = Inventory::with(['product', 'admin'])->findOrFail($id_inventario);
-        return view('admin.inventario.show', compact('inventario'));
-    }
+public function show(int $id_inventario)
+{
+    $inventario = Inventory::with(['product', 'admin'])->findOrFail($id_inventario);
+    return view('admin.inventario.show', compact('inventario'));
+}
 
     /**
      * Mostrar formulario de edición

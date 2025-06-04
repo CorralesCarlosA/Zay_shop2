@@ -14,8 +14,9 @@ class ClassProductController extends \App\Http\Controllers\Controller
      */
 public function index()
 {
-    $clases = ClassProduct::all(); 
-    return view('admin.productos.classes.index', compact('clases'));
+    $clases = ClassProduct::all();
+    // Corregir la ruta de la vista (faltaba un punto)
+    return view('admin.productos.clases.index', compact('clases'));
 }
 
     /**
@@ -23,7 +24,7 @@ public function index()
      */
 public function create()
 {
-    return view('admin.productos.classes.create');
+    return view('admin.productos.clases.create');
 }
     /**
      * Guardar nueva clase de producto
@@ -52,7 +53,7 @@ public function create()
     public function show(int $idClaseProducto)
     {
         $classProduct = ClassProduct::findOrFail($idClaseProducto);
-        return view('admin.productos.classes.show', compact('classProduct'));
+        return view('admin.productos.clases.show', compact('classProduct'));
     }
 
     /**
@@ -61,31 +62,32 @@ public function create()
     public function edit(int $idClaseProducto)
     {
         $classProduct = ClassProduct::findOrFail($idClaseProducto);
-        return view('admin.productos.clase.edit', compact('classProduct'));
+        return view('admin.productos.clases.edit', compact('classProduct'));
     }
 
     /**
      * Actualizar clase de producto
      */
-    public function update(Request $request, int $idClaseProducto)
-    {
-        $classProduct = ClassProduct::findOrFail($idClaseProducto);
+ public function update(Request $request, int $idClaseProducto)
+{
+    $classProduct = ClassProduct::findOrFail($idClaseProducto);
 
-        $validator = Validator::make($request->all(), [
-            'nombreClase' => 'required|string|max:50|unique:claseproducto,nombreClase,' . $idClaseProducto . ',idClaseProducto',
-        ]);
+    $validator = Validator::make($request->all(), [
+        // Corregir el nombre del campo (de nombreClase a clase)
+        'nombreClase' => 'required|string|max:50|unique:claseproducto,clase,' . $idClaseProducto . ',idClaseProducto',
+    ]);
 
-        if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
-        }
-
-        $classProduct->fill([
-            'nombreClase' => $request->input('nombreClase'),
-        ])->save();
-
-        return redirect()->route('admin.productos.classes.index')
-            ->with('success', 'Clase actualizada correctamente');
+    if ($validator->fails()) {
+        return back()->withErrors($validator)->withInput();
     }
+
+    $classProduct->update([
+        'clase' => $request->input('nombreClase') // Usar 'clase' en lugar de 'nombreClase'
+    ]);
+
+    return redirect()->route('admin.productos.classes.index')
+        ->with('success', 'Clase actualizada correctamente');
+}
 
     /**
      * Eliminar clase de producto

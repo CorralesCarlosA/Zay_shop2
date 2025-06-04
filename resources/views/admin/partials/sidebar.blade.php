@@ -25,18 +25,18 @@
                         <ul class="collapse list-unstyled ps-3" id="productosSubMenu">
                             <li class="mb-2">
                                 <a href="{{ route('admin.productos.index') }}"
-                                   class="nav-link {{ request()->routeIs('admin.productos.index') ? 'active' : '' }}">
+                                   class="nav-link {{ request()->routeIs('admin.productos.*') ? 'active' : '' }}">
                                     <i class="fas fa-list me-2"></i> Listado
                                 </a>
                             </li>
                             <li class="mb-2">
-                                <a href="#"
-                                   class="nav-link {{ request()->routeIs('admin.productos.clases.*') ? 'active' : '' }}"> 
-                                    <i class="fas fa-th-large me-2"></i> Clases
-                                </a>
+                               <a href="{{ route('admin.productos.classes.index') }}"
+   class="nav-link {{ request()->routeIs('admin.productos.clases.*') ? 'active' : '' }}"> 
+    <i class="fas fa-th-large me-2"></i> Clases
+</a>
                             </li>
                             <li class="mb-2">
-                                <a href="{{ route('admin.productos.marcas.index') }}"
+                                <a href="{{ route('admin.productos.classes.index') }}"
                                    class="nav-link {{ request()->routeIs('admin.productos.marcas.*') ? 'active' : '' }}">
                                     <i class="fas fa-building me-2"></i> Marcas
                                 </a>

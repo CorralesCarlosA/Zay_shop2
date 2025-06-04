@@ -1,12 +1,14 @@
 @extends('admin.layouts.app')
 
 @section('title', 'Detalles del Producto #' . $producto->idProducto)
-@section('breadcrumbs', [
-['name' => 'Inicio', 'url' => route('admin.dashboard')],
-['name' => 'Productos', 'url' => route('admin.productos.index')],
-['name' => 'Detalle #' . $producto->idProducto]
-])
-
+@section('breadcrumbs')
+@section('breadcrumbs')
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Inicio</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('admin.productos.index') }}">Productos</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Detalle #{{ $producto->idProducto }}</li>
+    </ol>
+@endsection
 @section('content')
 <div class="container-fluid">
     <div class="card shadow-sm border-0 mb-4">

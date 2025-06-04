@@ -16,14 +16,14 @@
                        value="{{ old('nombreClase', $clase->clase ?? '') }}" required>
                 @error('nombreClase')
                     <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
+                        <stron>{{ $message }}</strong>
                     </span>
                 @enderror
                 <small class="form-text text-muted">Ejemplo: Ropa, Calzado, Accesorios</small>
             </div>
 
             <div class="form-group text-right mt-4">
-                <a href="#" class="btn btn-secondary">
+                <a href="{{ route('admin.productos.clases.store') }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Cancelar
                 </a>
                 <button type="submit" class="btn btn-primary">
