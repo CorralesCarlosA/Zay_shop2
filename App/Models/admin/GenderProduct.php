@@ -15,7 +15,7 @@ class GenderProduct extends Model
     protected $keyType = 'int';
     public $timestamps = false;
 
-    protected $fillable = ['sexo'];
+    protected $fillable = ['nombre_sexo'];
 
     public function products()
     {

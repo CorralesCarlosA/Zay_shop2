@@ -23,7 +23,7 @@ class CategoriasController extends Controller
     // Listar categorías activas en JSON
     public function listar()
     {
-        $categorias = CategoriasModel::where('estado', 1)->get();
+        $categorias = CategoriasModel::all();
 
         foreach ($categorias as $categoria) {
             $categoria->accion = '<div class="d-flex">
