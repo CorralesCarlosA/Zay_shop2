@@ -111,7 +111,7 @@
                         <a class="nav-link" href="{{ route('about') }}"><i class="bi bi-info-circle"></i> Nosotros</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="bi bi-headset"></i> Contacto</a>
+                        <a class="nav-link" href="{{ route('contacto') }}"><i class="bi bi-headset"></i> Contacto</a>
                     </li>
                 </ul>
 
@@ -181,7 +181,7 @@
                     <ul class="list-unstyled">
                         <li style="color: #D9D9D9;"><i class="bi bi-envelope" style="color: #d4af37;"></i>
                             info@Zayshop.com</li>
-                        <li style="color: #D9D9D9;"><i class="bi bi-phone" style="color: #d4af37;"></i> +57 300 0000 00 00
+                        <li style="color: #D9D9D9;"><i class="bi bi-phone" style="color: #d4af37;"></i> +54 123 456 7890
                         </li>
                     </ul>
                 </div>

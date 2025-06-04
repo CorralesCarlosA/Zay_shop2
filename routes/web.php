@@ -73,7 +73,10 @@ use App\Http\Controllers\HomeController;
 Route::get('/about', function () {
     return view('about');
 })->name('about');
-
+//contacto
+Route::get('/contacto', function () {
+    return view('contacto');
+})->name('contacto');
 
 
 // Página principal – Home
