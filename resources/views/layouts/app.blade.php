@@ -84,6 +84,8 @@
         color: #d4af37;
 
     }
+
+    
     </style>
 </head>
 
@@ -164,25 +166,31 @@
     <footer class="text-center">
         <div class="container">
             <div class="row">
+
                 <div class="col-md-4 mb-4 mb-md-0">
                     <h5 style="color: #28a745;">Zay Shop</h5>
-                    <p class="fooli" style="color: #000000;">La excelencia en cada producto.</p>
+                    <p class="fooli" style="color: #000000;">Estilo y rendimiento en cada prenda y accesorio deportivo.</p>
+                    <div class="d-flex justify-content-center justify-content-md-start gap-3 mt-3">
+                        <a href="#" aria-label="Facebook" class="text-light"><i class="bi bi-facebook"></i></a>
+                        <a href="#" aria-label="Instagram" class="text-light"><i class="bi bi-instagram"></i></a>
+                        <a href="#" aria-label="Twitter" class="text-light"><i class="bi bi-twitter-x"></i></a>
+                    </div>
                 </div>
                 <div class="col-md-4 mb-4 mb-md-0">
                     <h5 style="color: #28a745;">Enlaces Rápidos</h5>
                     <ul class="list-unstyled">
-                        <li class="fooli"><a class="fooli" href="#" style="color: #000000; text-decoration: none;">Inicio</a></li>
-                        <li class="fooli"><a class="fooli" href="#" style="color: #000000; text-decoration: none;">Productos</a></li>
-                        <li class="fooli"><a class="fooli" href="#" style="color: #000000; text-decoration: none;">Contacto</a></li>
+                        <li class="fooli"><a class="fooli" href="{{ route('home.index') }}" style="color: #000000; text-decoration: none;">Inicio</a></li>
+                        <li class="fooli"><a class="fooli" href="{{ route('productos.publico.index') }}" style="color: #000000; text-decoration: none;">Productos</a></li>
+                        <li class="fooli"><a class="fooli" href="{{ route('about') }}" style="color: #000000; text-decoration: none;">Nosotros</a></li>
+                        <li class="fooli"><a class="fooli" href="{{ route('contacto') }}" style="color: #000000; text-decoration: none;">Contacto</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
                     <h5 style="color: #28a745;">Contacto</h5>
                     <ul class="list-unstyled">
-                        <li style="color: #D9D9D9;"><i class="bi bi-envelope" style="color: #d4af37;"></i>
-                            info@Zayshop.com</li>
-                        <li style="color: #D9D9D9;"><i class="bi bi-phone" style="color: #d4af37;"></i> +54 123 456 7890
-                        </li>
+                        <li style="color: #D9D9D9;"><i class="bi bi-envelope me-2" style="color: #d4af37;"></i>info@zayshop.com</li>
+                        <li style="color: #D9D9D9;"><i class="bi bi-phone  me-2" style="color: #d4af37;"></i>+54 123 456 7890</li>
+                        <li style="color: #D9D9D9;"><i class="bi bi-geo-alt  me-2" style="color: #d4af37;"></i>Av. Siempre Viva 123, Buenos Aires</li>
                     </ul>
                 </div>
             </div>
